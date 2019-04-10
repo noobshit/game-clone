@@ -12,55 +12,34 @@ server.listen(port);
 
 var sockets = []
 const io = require('socket.io')(server);
+const game = require('./server/game.js')
+const events = game.events
 
 const bound = 500
 io.on('connection', (socket) => { 
-    sockets.push(socket)
-    console.log('connection')
-    socket.player = {
-        x: Math.random() * bound,
-        y: Math.random() * bound,
-        width: 10 + Math.random() * 20, 
-        height: 10 + Math.random() * 20,
-        speed: 3
-    }
+    let {id} = socket
+    events.on_connection(id)
 
-    socket.on('debug', (cmd) => {
+    socket.on('debug', function(cmd){
         let data = eval(cmd)
         console.log(data)
         socket.emit('debug_answer', data)
     })
-
-    socket.on('input', (data) => {
-        if (data.move_left) {
-            socket.player.x -= socket.player.speed 
-            socket.player.x %= bound
-        } 
-        if (data.move_right) {
-            socket.player.x += socket.player.speed 
-            socket.player.x %= bound
-        }
-        if (data.move_up) {
-            socket.player.y -= socket.player.speed 
-            socket.player.y %= bound
-        }
-        if (data.move_down) {
-            socket.player.y += socket.player.speed 
-            socket.player.y %= bound
-        }
-    })
+    socket.on('input', data => events.on_input(id, data))
+    socket.on('disconnect', data => events.on_disconnect(id))
+    sockets.push(socket)
 })
 
 function tick() {
     sockets = sockets.filter(socket => socket.connected)
 
-    players = sockets.map(socket => socket.player)
+    players = game.players
 
     sockets.forEach(socket => {
         socket.emit('update', {
-            entites: players,
-            player: socket.player
+            entites: Array.from(players.values()),
+            player: players.get(socket.id)
         })
     })
 }
-setInterval(tick, 1000/60)
+setInterval(tick, 1000/20)
