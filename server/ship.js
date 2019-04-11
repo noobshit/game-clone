@@ -64,12 +64,6 @@ class Ship {
         World.add(this.engine.world, entity.body)
     }
 
-    add_player() {
-        let player = new Player()
-        this.add_entity(player, {x: 3, y: 3})
-        return player
-    }
-
     remove_entity(entity) {
         World.remove(this.engine.world, entity.body)
         let index = this.entites.findIndex(e => e.id == entity.id)
@@ -203,4 +197,5 @@ class Explo extends Entity {
         )
     }
 }
-module.exports = Ship
+exports.Ship = Ship
+exports.Player = Player

@@ -1,12 +1,13 @@
 const bound = 500
 
-const Ship = require('./ship.js')
+const {Ship, Player} = require('./ship.js')
 const players = new Map()
 const entites = []
 
 const game = {
     add_player: function(socket_id) {
-        let player = this.ship.add_player()
+        let player = new Player()
+        this.ship.add_entity(player, {x: 3, y: 3})
         players.set(socket_id, player)
     },
 
