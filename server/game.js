@@ -1,5 +1,6 @@
 const bound = 500
 
+const Ship = require('./ship.js')
 const players = new Map()
 const entites = []
 
@@ -61,28 +62,8 @@ const game = {
 
     init: function() {
         game.input_buffer = new Map() 
-        game.add_ship()
+        game.ship = new Ship(12, 8)
     },
-
-    add_ship: function() {
-        let width = 12
-        let height = 8
-
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
-                if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
-                {
-                    entites.push({
-                        x: x * 32,
-                        y: y * 32,
-                        width: 32,
-                        height: 32,
-                        image_key: 'brick.png'
-                    })
-                }
-            }
-        }
-    }
 }
 game.init()
 

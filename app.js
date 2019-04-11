@@ -35,7 +35,8 @@ function tick() {
 
     game.tick()
     players = game.players
-    entites = game.entites.concat(Array.from(game.players.values()))
+    let entites = game.ship.get_entites()
+    entites = entites.concat(Array.from(game.players.values()))
 
     sockets.forEach(socket => {
         socket.emit('update', {
