@@ -49,6 +49,8 @@ class Ship {
         this.add(new Brick(), {x: 1, y: 4})
         this.add(new Brick(), {x: 2, y: 4})
         this.add(new Brick(), {x: 3, y: 4})
+        this.add(new Explo(), {x: 1, y: 6})
+        this.add(new Explo(), {x: 5, y: 6})
     }
 
     add(entity, pos_grid) {
@@ -175,6 +177,19 @@ class Player extends Entity {
 
         this.speed = 5
         Body.setInertia(this.body, Infinity)
+    }
+}
+
+class Explo extends Entity {
+    constructor() {
+        super(
+            0.8,
+            0.8,
+            'explo.png',
+            {
+                collisionFilter: COLLISION_MOBILE,
+            }
+        )
     }
 }
 module.exports = Ship
