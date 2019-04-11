@@ -1,3 +1,6 @@
+const Engine = require('matter-js').Engine
+
+
 const express = require('express')
 const app = express();
 app.get('/', function(req, res) {
@@ -34,6 +37,7 @@ function tick() {
     sockets = sockets.filter(socket => socket.connected)
 
     game.tick()
+    Engine.update(game.ship.engine)
     players = game.players
     let entites = game.ship.get_entites()
     entites = entites.concat(Array.from(game.players.values()))

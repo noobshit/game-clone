@@ -1,12 +1,15 @@
 const Matter = require('matter-js')
 const Body = Matter.Body
 const Bodies = Matter.Bodies
+const Engine = Matter.Engine
+const World = Matter.World
 
 const SMALL_BLOCK_SIZE = 32
 
 class Ship {
     constructor(width, height) {
         this.entites = []
+        this.engine = Engine.create()
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
                 if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
@@ -24,6 +27,7 @@ class Ship {
 
         Body.setPosition(entity.body, pos_game)
         this.entites.push(entity)
+        World.add(this.engine.world, entity.body)
     }
 
     get_entites() {
