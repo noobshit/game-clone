@@ -57,10 +57,12 @@ class Entity {
         this.height = height
         this.image_key = image_key
         this.body = Bodies.rectangle(0, 0, width, height, options)
+        this.id = this.generate_id()
     }
 
     get_entity() {
         return {
+            id: this.id,
             x: this.body.position.x,
             y: this.body.position.y,
             width: this.width,
@@ -70,10 +72,25 @@ class Entity {
         }
     }
 
+    generate_id() {
+        if (!Entity.ids) {
+            Entity.ids = new Set()
+        }
+
+        let id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+        if (Entity.ids.has(id)) {
+            return this.generate_id()
+        } else {
+            Entity.ids.add(id)
+            return id
+        }
+    }
+
     translate(vector) {
         Body.translate(this.body, vector)
     }
 }
+
 
 class Brick extends Entity {
     constructor() {
@@ -86,6 +103,7 @@ class Brick extends Entity {
     }
 }
 
+
 class Ladder extends Entity {
     constructor() {
         super(
@@ -96,6 +114,7 @@ class Ladder extends Entity {
         )
     }
 }
+
 
 class Factory extends Entity {
     constructor() {
