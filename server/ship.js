@@ -6,6 +6,30 @@ const World = Matter.World
 
 const SMALL_BLOCK_SIZE = 32
 
+const CATEGORY_WALL = 0x01
+const CATEGORY_BACK = 0x02
+const CATEGORY_MOBILE = 0x04
+const CATEGORY_PLAYER = 0x08
+
+const MASK_BUILDING = CATEGORY_WALL | CATEGORY_BACK
+const MASK_MOBILE = CATEGORY_WALL | CATEGORY_MOBILE | CATEGORY_PLAYER
+const MASK_PLAYER = CATEGORY_WALL | CATEGORY_MOBILE
+
+const COLLISION_MOBILE = {
+    category: CATEGORY_MOBILE,
+    mask: MASK_MOBILE
+}
+
+const COLLISION_BUILDING = {
+    category: CATEGORY_BACK,
+    mask: MASK_BUILDING
+}
+
+const COLLISION_PLAYER = {
+    category: CATEGORY_PLAYER,
+    mask: MASK_PLAYER
+}
+
 class Ship {
     constructor(width, height) {
         this.entites = []
@@ -98,7 +122,9 @@ class Brick extends Entity {
             1,
             1,
             'brick.png', 
-            {isStatic: true}   
+            {
+                isStatic: true,
+            }   
         )
     }
 }
@@ -110,7 +136,10 @@ class Ladder extends Entity {
             1, 
             1,
             'ladder.png',
-            {isStatic: true}
+            {
+                isStatic: true,
+                collisionFilter: COLLISION_BUILDING
+            }
         )
     }
 }
@@ -122,7 +151,10 @@ class Factory extends Entity {
             2,
             2,
             'factory.png',
-            {isStatic: true}
+            {
+                isStatic: true,
+                collisionFilter: COLLISION_BUILDING
+            }
         )
     }
 }
@@ -133,9 +165,16 @@ class Player extends Entity {
             0.8,
             1.6,
             null,
+            {
+                friction: 0.5,
+                frictionStatic: 0.1,
+                restitution: 0.5,
+                collisionFilter: COLLISION_PLAYER
+            }
         )
 
         this.speed = 5
+        Body.setInertia(this.body, Infinity)
     }
 }
 module.exports = Ship
