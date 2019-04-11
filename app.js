@@ -33,13 +33,15 @@ io.on('connection', (socket) => {
 function tick() {
     sockets = sockets.filter(socket => socket.connected)
 
+    game.tick()
     players = game.players
+    entites = game.entites.concat(Array.from(game.players.values()))
 
     sockets.forEach(socket => {
         socket.emit('update', {
-            entites: Array.from(players.values()),
+            entites: entites,
             player: players.get(socket.id)
         })
     })
 }
-setInterval(tick, 1000/20)
+setInterval(tick, 1000/120)

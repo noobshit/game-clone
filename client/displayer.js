@@ -3,6 +3,26 @@ var displayer = {
         displayer.canvas = canvas
         displayer.ctx = canvas.getContext("2d")
         displayer.scale = 1
+        let image_files = [
+            'brick.png',
+            'enlargment.png',
+            'explo.png',
+            'factory.png',
+            'hatch.png',
+            'helm.png',
+            'ladder.png',
+            'metal.png',
+            'repair.png',
+            'shredder.png',
+            'wrench.png'
+        ]
+        displayer.images = new Map()
+
+        for (let key of image_files) {
+            let img = new Image
+            img.src = `/client/img/${key}`
+            displayer.images.set(key, img)
+        }
     },
 
     clear: function() {
@@ -20,12 +40,22 @@ var displayer = {
     },
     
     draw_entity: function(entity) {
-        displayer.ctx.fillRect(
-            entity.x,
-            entity.y,
-            entity.width,
-            entity.height
-        )
+        if (entity.image_key) {
+            displayer.ctx.drawImage(
+                displayer.images.get(entity.image_key), 
+                entity.x,
+                entity.y,
+                entity.width,
+                entity.height
+            )
+        } else {
+            displayer.ctx.fillRect(
+                entity.x,
+                entity.y,
+                entity.width,
+                entity.height
+            )
+        }
     },
 
     zoom_in: function() {
