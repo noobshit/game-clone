@@ -43,6 +43,8 @@ class Ship {
 
 class Entity {
     constructor(width, height, image_key, options={}) {
+        width *= SMALL_BLOCK_SIZE
+        height *= SMALL_BLOCK_SIZE
         this.width = width
         this.height = height
         this.image_key = image_key
@@ -67,8 +69,8 @@ class Entity {
 class Brick extends Entity {
     constructor() {
         super(
-            SMALL_BLOCK_SIZE,
-            SMALL_BLOCK_SIZE,
+            1,
+            1,
             'brick.png', 
             {isStatic: true}   
         )
@@ -78,8 +80,8 @@ class Brick extends Entity {
 class Player extends Entity {
     constructor() {
         super(
-            SMALL_BLOCK_SIZE * 0.8,
-            SMALL_BLOCK_SIZE * 1.6,
+            0.8,
+            1.6,
             null,
         )
 
