@@ -29,8 +29,8 @@ class Ship {
 
     add(entity, pos_grid) {
         let pos_game = {
-            x: pos_grid.x * SMALL_BLOCK_SIZE,
-            y: pos_grid.y * SMALL_BLOCK_SIZE,
+            x: pos_grid.x * SMALL_BLOCK_SIZE + entity.width / 2,
+            y: pos_grid.y * SMALL_BLOCK_SIZE + entity.height / 2,
         }
 
         Body.setPosition(entity.body, pos_game)
@@ -65,6 +65,7 @@ class Entity {
             y: this.body.position.y,
             width: this.width,
             height: this.height,
+            angle: this.body.angle,
             image_key: this.image_key
         }
     }
@@ -115,7 +116,7 @@ class Player extends Entity {
             null,
         )
 
-        this.speed = 3
+        this.speed = 5
     }
 }
 module.exports = Ship

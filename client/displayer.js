@@ -41,20 +41,35 @@ var displayer = {
     
     draw_entity: function(entity) {
         if (entity.image_key) {
-            displayer.ctx.drawImage(
-                displayer.images.get(entity.image_key), 
-                entity.x,
-                entity.y,
-                entity.width,
-                entity.height
-            )
+            displayer.ctx.save()
+            displayer.ctx.translate(entity.x, entity.y)
+            displayer.ctx.rotate(entity.angle)
+            
+            let offset =  {
+                x: entity.width / 2,
+                y: entity.height / 2
+            }
+            let image = displayer.images.get(entity.image_key)
+            displayer.ctx.drawImage(image, -offset.x, -offset.y, entity.width, entity.height)
+            displayer.ctx.restore()
+            
         } else {
+            displayer.ctx.save()
+            displayer.ctx.translate(entity.x, entity.y)
+            displayer.ctx.rotate(entity.angle)
+            
+            let offset =  {
+                x: entity.width / 2,
+                y: entity.height / 2
+            }
+            let image = displayer.images.get(entity.image_key)
             displayer.ctx.fillRect(
-                entity.x,
-                entity.y,
+                -offset.x,
+                -offset.y,
                 entity.width,
                 entity.height
             )
+            displayer.ctx.restore()
         }
     },
 
