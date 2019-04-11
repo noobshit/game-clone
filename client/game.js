@@ -25,12 +25,20 @@ function check_input() {
 
 
 function build_input_packet() {
-    return {
+    let input = {}
+    for (let [key, value] of mouse.is_button_pressed) {
+        if (value) {
+            input['mouse' + key] = value
+        }
+    }
+    
+
+    return Object.assign(input, {
         move_left: keyboard.is_key_pressed['a'],
         move_right: keyboard.is_key_pressed['d'],
         move_up: keyboard.is_key_pressed['w'],
         move_down: keyboard.is_key_pressed['s']
-    }
+    })
 }
 
 tick()  
