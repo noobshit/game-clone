@@ -1,11 +1,12 @@
 var mouse = {
+    is_button_pressed: new Map(),
+
     game_pos: { 
         x: 0, 
         y: 0
     },
 
     get_entites_under_cursor: function() {
-        console.log('get_entites', mouse.game_pos)
         return state.entites.filter(entity => pos.is_inside_entity(mouse.game_pos, entity))
     },
 
@@ -34,8 +35,24 @@ var mouse = {
         }
     },
 
+    on_down: function(e) {
+        let entites_ids = mouse.get_entites_under_cursor().map(e => e.id)
+        mouse.is_button_pressed.set(e.button, {
+            game_pos: mouse.game_pos,
+            entites_ids: entites_ids
+        })
+        return false
+    },
+
+    on_up: function(e) {
+        mouse.is_button_pressed.set(e.button, false)
+    },
+
     init: function() {
         window.onmousemove = mouse.on_move
+        window.onmousedown = mouse.on_down
+        window.onmouseup = mouse.on_up
+        window.oncontextmenu = () => false // mouse.on_down
         window.onwheel = mouse.on_wheel
     },
 }
