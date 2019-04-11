@@ -11,6 +11,7 @@ const game = {
     },
 
     remove_player: function(id) {
+        game.ship.remove_player(players.get(id).id)
         players.delete(id)    
     },
 

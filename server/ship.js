@@ -70,6 +70,11 @@ class Ship {
         return player
     }
 
+    remove_player(id) {
+        let index = this.entites.findIndex(entity => entity.id == id)
+        this.entites.splice(index, 1)
+    }
+
     get_entites() {
         return this.entites.map(entity => entity.get_entity())
     }
