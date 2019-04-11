@@ -6,14 +6,7 @@ const entites = []
 
 const game = {
     add_player: function(id) {
-        let player = {
-            x: Math.random() * bound,
-            y: Math.random() * bound,
-            width: 10 + Math.random() * 20, 
-            height: 10 + Math.random() * 20,
-            speed: 3,
-            id: id
-        }
+        let player = this.ship.add_player()
         players.set(id, player)
     },
 
@@ -37,18 +30,24 @@ const game = {
                     continue
                 }
                 const d = player.speed 
-        
+                let dx = 0
+                let dy = 0
+
                 if (input.move_left) {
-                    player.x = Math.max(player.x - d, 0)
+                    dx -= d
                 } 
                 if (input.move_right) {
-                    player.x = Math.min(player.x + d, bound)
+                    dx += d
                 }
                 if (input.move_up) {
-                    player.y = Math.max(player.y - d, 0)
+                    dy -= d
                 }
                 if (input.move_down) {
-                    player.y = Math.min(player.y + d, bound)
+                    dy += d
+                }
+
+                if ( dx != 0 || dy != 0) {
+                    player.translate({x: dx, y: dy})
                 }
             }
 

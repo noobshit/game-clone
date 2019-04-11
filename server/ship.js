@@ -30,17 +30,23 @@ class Ship {
         World.add(this.engine.world, entity.body)
     }
 
+    add_player() {
+        let player = new Player()
+        this.add(player, {x: 3, y: 3})
+        return player
+    }
+
     get_entites() {
         return this.entites.map(entity => entity.get_entity())
     }
 }
 
 class Entity {
-    constructor(width, height, image_key, body) {
+    constructor(width, height, image_key, options={}) {
         this.width = width
         this.height = height
         this.image_key = image_key
-        this.body = body
+        this.body = Bodies.rectangle(0, 0, width, height, options)
     }
 
     get_entity() {
@@ -52,6 +58,10 @@ class Entity {
             image_key: this.image_key
         }
     }
+
+    translate(vector) {
+        Body.translate(this.body, vector)
+    }
 }
 
 class Brick extends Entity {
@@ -59,10 +69,21 @@ class Brick extends Entity {
         super(
             SMALL_BLOCK_SIZE,
             SMALL_BLOCK_SIZE,
-            'brick.png',
-            Bodies.rectangle(0, 0, SMALL_BLOCK_SIZE, SMALL_BLOCK_SIZE)    
+            'brick.png', 
+            {isStatic: true}   
         )
     }
 }
 
+class Player extends Entity {
+    constructor() {
+        super(
+            SMALL_BLOCK_SIZE * 0.8,
+            SMALL_BLOCK_SIZE * 1.6,
+            null,
+        )
+
+        this.speed = 3
+    }
+}
 module.exports = Ship
