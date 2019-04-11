@@ -37,23 +37,23 @@ class Ship {
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
                 if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
-                    this.add(new Brick(), {x, y})
+                    this.add_entity(new Brick(), {x, y})
                 }
             }
         }
 
-        this.add(new Factory(), {x: 7, y: 5})
-        this.add(new Ladder(), {x: 4, y: 4})
-        this.add(new Ladder(), {x: 4, y: 5})
-        this.add(new Ladder(), {x: 4, y: 6})
-        this.add(new Brick(), {x: 1, y: 4})
-        this.add(new Brick(), {x: 2, y: 4})
-        this.add(new Brick(), {x: 3, y: 4})
-        this.add(new Explo(), {x: 1, y: 6})
-        this.add(new Explo(), {x: 5, y: 6})
+        this.add_entity(new Factory(), {x: 7, y: 5})
+        this.add_entity(new Ladder(), {x: 4, y: 4})
+        this.add_entity(new Ladder(), {x: 4, y: 5})
+        this.add_entity(new Ladder(), {x: 4, y: 6})
+        this.add_entity(new Brick(), {x: 1, y: 4})
+        this.add_entity(new Brick(), {x: 2, y: 4})
+        this.add_entity(new Brick(), {x: 3, y: 4})
+        this.add_entity(new Explo(), {x: 1, y: 6})
+        this.add_entity(new Explo(), {x: 5, y: 6})
     }
 
-    add(entity, pos_grid) {
+    add_entity(entity, pos_grid) {
         let pos_game = {
             x: pos_grid.x * SMALL_BLOCK_SIZE + entity.width / 2,
             y: pos_grid.y * SMALL_BLOCK_SIZE + entity.height / 2,
@@ -66,12 +66,13 @@ class Ship {
 
     add_player() {
         let player = new Player()
-        this.add(player, {x: 3, y: 3})
+        this.add_entity(player, {x: 3, y: 3})
         return player
     }
 
-    remove_player(id) {
-        let index = this.entites.findIndex(entity => entity.id == id)
+    remove_entity(entity) {
+        World.remove(this.engine.world, entity.body)
+        let index = this.entites.findIndex(e => e.id == entity.id)
         this.entites.splice(index, 1)
     }
 
@@ -119,6 +120,11 @@ class Entity {
 
     translate(vector) {
         Body.translate(this.body, vector)
+    }
+
+    create(type) {
+        let object = new type()
+        this
     }
 }
 

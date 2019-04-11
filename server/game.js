@@ -5,21 +5,22 @@ const players = new Map()
 const entites = []
 
 const game = {
-    add_player: function(id) {
+    add_player: function(socket_id) {
         let player = this.ship.add_player()
-        players.set(id, player)
+        players.set(socket_id, player)
     },
 
-    remove_player: function(id) {
-        game.ship.remove_player(players.get(id).id)
-        players.delete(id)    
+    remove_player: function(socket_id) {
+        let entity = players.get(socket_id)
+        game.ship.remove_entity(entity)
+        players.delete(socket_id)    
     },
 
-    process_input: function(id, input) {
-        if (game.input_buffer.has(id)) {
-            game.input_buffer.get(id).push(input)
+    process_input: function(socket_id, input) {
+        if (game.input_buffer.has(socket_id)) {
+            game.input_buffer.get(socket_id).push(input)
         } else {
-            game.input_buffer.set(id, [input])
+            game.input_buffer.set(socket_id, [input])
         }
     },
 
@@ -69,16 +70,16 @@ game.init()
 
 
 const events = {
-    on_input: function(id, data) {
-        game.process_input(id, data)
+    on_input: function(socket_id, data) {
+        game.process_input(socket_id, data)
     },
 
-    on_connection: function(id) {
-        game.add_player(id)
+    on_connection: function(socket_id) {
+        game.add_player(socket_id)
     },
 
-    on_disconnect: function(id) {
-        game.remove_player(id)
+    on_disconnect: function(socket_id) {
+        game.remove_player(socket_id)
     },
 }
 
