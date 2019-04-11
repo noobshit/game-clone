@@ -17,6 +17,14 @@ class Ship {
                 }
             }
         }
+
+        this.add(new Factory(), {x: 7, y: 5})
+        this.add(new Ladder(), {x: 4, y: 4})
+        this.add(new Ladder(), {x: 4, y: 5})
+        this.add(new Ladder(), {x: 4, y: 6})
+        this.add(new Brick(), {x: 1, y: 4})
+        this.add(new Brick(), {x: 2, y: 4})
+        this.add(new Brick(), {x: 3, y: 4})
     }
 
     add(entity, pos_grid) {
@@ -73,6 +81,28 @@ class Brick extends Entity {
             1,
             'brick.png', 
             {isStatic: true}   
+        )
+    }
+}
+
+class Ladder extends Entity {
+    constructor() {
+        super(
+            1, 
+            1,
+            'ladder.png',
+            {isStatic: true}
+        )
+    }
+}
+
+class Factory extends Entity {
+    constructor() {
+        super(
+            2,
+            2,
+            'factory.png',
+            {isStatic: true}
         )
     }
 }
