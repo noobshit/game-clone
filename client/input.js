@@ -4,6 +4,11 @@ var mouse = {
         y: 0
     },
 
+    get_entites_under_cursor: function() {
+        console.log('get_entites', mouse.game_pos)
+        return state.entites.filter(entity => pos.is_inside_entity(mouse.game_pos, entity))
+    },
+
     get_game_pos: function(e) {
         let screenX = e.offsetX
         let screenY = e.offsetY
@@ -46,3 +51,26 @@ var keyboard = {
 
 }
 keyboard.init()
+
+
+var pos = {
+    is_inside_entity: function(game_pos, entity) {
+        let dx = game_pos.x - entity.x
+        let dy = game_pos.y - entity.y
+        // distance between the point and the center of the rectangle
+        let h1 = Math.sqrt(dx * dx + dy * dy);
+        let currA = Math.atan2(dy, dx);
+        // Angle of point rotated around origin of rectangle in opposition
+        let newA = currA - entity.angle;
+        // New position of mouse point when rotated
+        let x2 = Math.cos(newA) * h1;
+        let y2 = Math.sin(newA) * h1;
+        // Check relative to center of rectangle
+        return (
+            x2 > -0.5 * entity.width 
+            && x2 < 0.5 * entity.width 
+            && y2 > -0.5 * entity.height 
+            && y2 < 0.5 * entity.height
+        )
+    }
+}
