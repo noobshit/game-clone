@@ -2,7 +2,6 @@ const bound = 500
 
 const {Ship, Player} = require('./ship.js')
 const players = new Map()
-const entites = []
 
 const game = {
     add_player: function(socket_id) {
@@ -87,4 +86,3 @@ const events = {
 module.exports = game
 game.players = players
 game.events = events
-game.entites = entites
