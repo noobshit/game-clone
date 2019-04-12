@@ -59,12 +59,14 @@ class Ship {
             y: pos_grid.y * SMALL_BLOCK_SIZE + entity.height / 2,
         }
 
+        entity.parent = this
         Body.setPosition(entity.body, pos_game)
         this.entites.push(entity)
         World.add(this.engine.world, entity.body)
     }
 
     remove_entity(entity) {
+        entity.parent = null
         World.remove(this.engine.world, entity.body)
         let index = this.entites.findIndex(e => e.id == entity.id)
         this.entites.splice(index, 1)
@@ -84,6 +86,7 @@ class Entity {
         this.image_key = image_key
         this.body = Bodies.rectangle(0, 0, width, height, options)
         this.id = this.generate_id()
+        this.parent = null
     }
 
     get_entity() {
@@ -114,11 +117,6 @@ class Entity {
 
     translate(vector) {
         Body.translate(this.body, vector)
-    }
-
-    create(type) {
-        let object = new type()
-        this
     }
 }
 
