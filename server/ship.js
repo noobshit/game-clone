@@ -41,6 +41,8 @@ const COLLISION_TRANSPARENT = {
 
 class Ship {
     constructor(width, height) {
+        this.width = width
+        this.height = height
         this.entites = []
         this.engine = Engine.create()
         for (let x = 0; x < width; x++) {
@@ -62,6 +64,7 @@ class Ship {
         this.add_entity(new Explo(), {x: 5, y: 6})
         this.add_entity(new Wrench(), {x: 5, y: 5})
         this.add_entity(new Shredder(), {x: 5, y: 4})
+        this.add_entity(new Enlargment(), {x: 5, y: 3})
     }
 
     get world() {
@@ -81,6 +84,9 @@ class Ship {
     }
 
     remove_entity(entity) {
+        if (entity.holded_by != null) {
+            entity.holded_by.item = null
+        }
         entity.on_remove()
         entity.parent = null
         World.remove(this.world, entity.body)
@@ -104,6 +110,7 @@ class Entity {
         this.body = Bodies.rectangle(0, 0, width, height, options)
         this.id = this.generate_id()
         this.parent = null
+        this.holded_by = null
     }
 
     get world() {
@@ -112,6 +119,10 @@ class Entity {
         } else {
             return null
         }
+    }
+
+    get pos_grid() {
+        return Pos.to_grid(this.body.position)
     }
 
     get_entity() {
@@ -218,6 +229,7 @@ class Player extends Entity {
             execute: function(event) {
                 let entry = event.entites.find(e => e instanceof Box)
                 player.item = entry
+                entry.holded_by = player
                 player.item.collisionFilter = player.item.body.collisionFilter
                 player.item.body.collisionFilter = COLLISION_TRANSPARENT
                 Body.setPosition(player.item.body, player.body.position)
@@ -238,6 +250,7 @@ class Player extends Entity {
                 return player.item != null
             },
             execute: function(event) {
+                player.item.holded_by = null
                 player.item.body.collisionFilter = player.item.collisionFilter
                 delete player.item.collisionFilter
                 World.remove(player.world, player.item.constraint)
@@ -276,7 +289,7 @@ class Wrench extends Box {
             },
             execute: function(event) {
                 let building = event.entites.find(e => e instanceof Building)
-                event.parent.remove_entity(building)
+                event.ship.remove_entity(building)
             }
         }
     }
@@ -296,7 +309,35 @@ class Shredder extends Box {
             },
             execute: function(event) {
                 let box = event.entites.find(e => e instanceof Box && e != shredder)
-                event.parent.remove_entity(box)
+                event.ship.remove_entity(box)
+            }
+        }
+    }
+}
+
+
+class Enlargment extends Box {
+    constructor() {
+        super('enlargment.png')
+    }
+
+    get use() {
+        let enlargment = this
+        return {
+            can_execute: function(event) {
+                return event.pos_grid.x >= 0 
+                && event.pos_grid.y >= 0
+                && event.pos_grid.x < event.ship.width
+                && event.pos_grid.y < event.ship.height
+            },
+            execute: function(event) {
+                let entites_to_move = event.ship.entites.filter(
+                    e => e.pos_grid.x > event.pos_grid.x
+                )                
+                entites_to_move.forEach(e => e.translate({x: SMALL_BLOCK_SIZE, y: 0}))
+                event.ship.add_entity(new Brick(), {x: event.pos_grid.x + 1, y: 0})
+                event.ship.add_entity(new Brick(), {x: event.pos_grid.x + 1, y: event.ship.height - 1})
+                event.ship.remove_entity(enlargment)
             }
         }
     }
@@ -366,6 +407,15 @@ class Factory extends Building {
     }
 }
 
+var Pos = {
+    to_grid: function(pos) {
+        return {
+            x: Math.floor(pos.x / SMALL_BLOCK_SIZE),
+            y: Math.floor(pos.y / SMALL_BLOCK_SIZE)
+        }
+    } 
+}
 
 exports.Ship = Ship
 exports.Player = Player
+exports.Pos = Pos

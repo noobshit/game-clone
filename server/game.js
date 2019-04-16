@@ -1,6 +1,6 @@
 const bound = 500
 
-const {Ship, Player} = require('./ship.js')
+const {Ship, Player, Pos} = require('./ship.js')
 const players = new Map()
 
 const game = {
@@ -63,6 +63,7 @@ const game = {
                         from: player, 
                         ship: player.parent,
                         game_pos: input.mouse0.game_pos,
+                        pos_grid: Pos.to_grid(input.mouse0.game_pos),
                         entites_ids: input.mouse0.entites_ids,
                         entites: player.parent.entites.filter(e => input.mouse0.entites_ids.includes(e.id))
                     }
