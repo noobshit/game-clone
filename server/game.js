@@ -53,14 +53,17 @@ const game = {
                 }
 
                 if (input.press_q) {
-                    player.drop_item()
+                    if (player.drop_item.can_execute()) {
+                        player.drop_item.execute()
+                    }
                 }
 
                 if (input.mouse0) {
                     let event = {
                         from: player, 
                         game_pos: input.mouse0.game_pos,
-                        entites_ids: input.mouse0.entites_ids
+                        entites_ids: input.mouse0.entites_ids,
+                        entites: player.parent.entites.filter(e => input.mouse0.entites_ids.includes(e.id))
                     }
                     player.on_left_button_down(event)
                 }

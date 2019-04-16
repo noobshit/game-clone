@@ -62,6 +62,10 @@ class Ship {
         this.add_entity(new Explo(), {x: 5, y: 6})
     }
 
+    get world() {
+        return this.engine.world
+    }
+
     add_entity(entity, pos_grid) {
         let pos_game = {
             x: pos_grid.x * SMALL_BLOCK_SIZE + entity.width / 2,
@@ -77,7 +81,7 @@ class Ship {
     remove_entity(entity) {
         entity.on_remove()
         entity.parent = null
-        World.remove(this.engine.world, entity.body)
+        World.remove(this.world, entity.body)
         let index = this.entites.findIndex(e => e.id == entity.id)
         this.entites.splice(index, 1)
     }
@@ -98,6 +102,14 @@ class Entity {
         this.body = Bodies.rectangle(0, 0, width, height, options)
         this.id = this.generate_id()
         this.parent = null
+    }
+
+    get world() {
+        if (this.parent != null) {
+            return this.parent.world
+        } else {
+            return null
+        }
     }
 
     get_entity() {
@@ -167,37 +179,60 @@ class Player extends Entity {
     }
 
     on_left_button_down(event) {
-        let entites = this.parent.entites.filter(e => event.entites_ids.includes(e.id))
-        let entity = entites.find(e => e.left_button_down.can_execute(event))
-        if (entity) {
-            entity.left_button_down.execute(event)
+
+        if (this.grab_item.can_execute(event)) {
+            this.grab_item.execute(event)
+        } else {
+            let entity = event.entites.find(e => e.left_button_down.can_execute(event))
+            if (entity) {
+                entity.left_button_down.execute(event)
+            }
         }
     }
 
     on_remove() {
-        this.drop_item()
+        if (this.drop_item.can_execute()) {
+            this.drop_item.execute()
+        }
     }
 
-    grab_item(entry) {
-        this.item = entry
-        this.item.collisionFilter = this.item.body.collisionFilter
-        this.item.body.collisionFilter = COLLISION_TRANSPARENT
-        Body.setPosition(this.item.body, this.body.position)
-        let constraint = Constraint.create({
-            bodyA: this.body,
-            bodyB: this.item.body
-        })
-        this.item.constraint = constraint
-        World.add(this.parent.engine.world, constraint)
+    get grab_item() {
+        let player = this
+        return {
+            can_execute: function(event) {
+                return player.item == null 
+                && event.entites.some(e => e instanceof Box)
+            },
+            execute: function(event) {
+                let entry = event.entites.find(e => e instanceof Box)
+                player.item = entry
+                player.item.collisionFilter = player.item.body.collisionFilter
+                player.item.body.collisionFilter = COLLISION_TRANSPARENT
+                Body.setPosition(player.item.body, player.body.position)
+                let constraint = Constraint.create({
+                    bodyA: player.body,
+                    bodyB: player.item.body
+                })
+                player.item.constraint = constraint
+                World.add(player.world, constraint)
+            }    
+        }
     }
     
-    drop_item() {
-        if (this.item) {
-            this.item.body.collisionFilter = this.item.collisionFilter
-            delete this.item.collisionFilter
-            World.remove(this.parent.engine.world, this.item.constraint)
-            delete this.item.constraint
-            this.item = null
+    get drop_item() {
+        let player = this
+        return {
+            can_execute: function(event) {
+                return player.item != null
+            },
+            execute: function(event) {
+                player.item.body.collisionFilter = player.item.collisionFilter
+                delete player.item.collisionFilter
+                World.remove(player.world, player.item.constraint)
+                delete player.item.constraint
+                player.item = null
+            
+            }
         }
     }
 }
@@ -213,19 +248,6 @@ class Box extends Entity {
                 collisionFilter: COLLISION_MOBILE
             }
         )
-    }
-
-    get left_button_down() {
-        let entry = this
-        return {
-            can_execute: function(event) { 
-                return event.from.item == null
-            },
-            execute: function(event) {
-                event.from.send_debug_message('Clicked box xD')
-                event.from.grab_item(entry)
-            }
-        }
     }
 }
 
