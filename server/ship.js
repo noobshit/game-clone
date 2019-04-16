@@ -183,16 +183,19 @@ class Player extends Entity {
         Body.setInertia(this.body, Infinity)
     }
 
+    send_debug_message(msg) {
+        this.socket.emit('debug_answer', msg)
+    }
+
     on_left_button_down(event) {
         let entites = this.parent.entites.filter(e => event.entites_ids.includes(e.id))
         
         let factory = entites.find(e => e instanceof Factory)
         let explo = entites.find(e => e instanceof Explo)
         if (factory) {
-            console.log('Factory clicked')
+            this.send_debug_message('Factory clicked')
         } else if (explo) {
-            console.log(this.body)
-            Body.setPosition(explo.body, this.body.position)
+            this.send_debug_message(this.body.position)
         }
     }
 }

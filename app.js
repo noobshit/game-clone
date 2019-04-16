@@ -21,7 +21,7 @@ const events = game.events
 const bound = 500
 io.on('connection', (socket) => { 
     let {id} = socket
-    events.on_connection(id)
+    events.on_connection(id, socket)
 
     socket.on('debug', function(cmd){
         let data = eval(cmd)
@@ -43,7 +43,7 @@ function tick() {
     entites = entites.concat(players)
 
     sockets.forEach(socket => {
-        let player = game.players.get(socket.id, socket)
+        let player = game.players.get(socket.id)
         socket.emit('update', {
             entites: entites,
             player: player.get_entity()

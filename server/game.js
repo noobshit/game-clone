@@ -83,8 +83,8 @@ const events = {
         game.process_input(socket_id, data)
     },
 
-    on_connection: function(socket_id) {
-        game.add_player(socket_id)
+    on_connection: function(socket_id, socket) {
+        game.add_player(socket_id, socket)
     },
 
     on_disconnect: function(socket_id) {
