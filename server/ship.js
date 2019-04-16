@@ -149,6 +149,13 @@ class Entity {
         }
     }
 
+    get use() {
+        return {
+            can_execute: _ => false,
+            execute: _ => {} 
+        }
+    }
+
     on_remove() {
     }
 }
@@ -180,7 +187,10 @@ class Player extends Entity {
 
     on_left_button_down(event) {
 
-        if (this.grab_item.can_execute(event)) {
+        if (this.item && this.item.use.can_execute(event)) {
+            this.item.use.execute(event)
+        }
+        else if (this.grab_item.can_execute(event)) {
             this.grab_item.execute(event)
         } else {
             let entity = event.entites.find(e => e.left_button_down.can_execute(event))
@@ -251,11 +261,13 @@ class Box extends Entity {
     }
 }
 
+
 class Explo extends Box {
     constructor() {
         super('explo.png')
     }
 }
+
 
 class Metal extends Box {
     constructor() {
