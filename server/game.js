@@ -52,6 +52,10 @@ const game = {
                     player.translate({x: dx, y: dy})
                 }
 
+                if (input.press_q) {
+                    player.drop_item()
+                }
+
                 if (input.mouse0) {
                     let event = {
                         from: player, 

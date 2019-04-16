@@ -37,7 +37,8 @@ function build_input_packet() {
         move_left: keyboard.is_key_pressed['a'],
         move_right: keyboard.is_key_pressed['d'],
         move_up: keyboard.is_key_pressed['w'],
-        move_down: keyboard.is_key_pressed['s']
+        move_down: keyboard.is_key_pressed['s'],
+        press_q: keyboard.is_key_pressed['q'],
     })
 }
 
