@@ -55,6 +55,7 @@ var displayer = {
             
         } else {
             displayer.ctx.save()
+            displayer.ctx.fillStyle = '#00000088'
             displayer.ctx.translate(entity.x, entity.y)
             displayer.ctx.rotate(entity.angle)
             
