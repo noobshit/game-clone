@@ -43,7 +43,7 @@ function tick() {
     entites = entites.concat(players)
 
     sockets.forEach(socket => {
-        let player = game.players.get(socket.id)
+        let player = game.players.get(socket.id, socket)
         socket.emit('update', {
             entites: entites,
             player: player.get_entity()

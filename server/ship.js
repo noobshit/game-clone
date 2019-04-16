@@ -165,7 +165,7 @@ class Factory extends Entity {
 }
 
 class Player extends Entity {
-    constructor() {
+    constructor(socket) {
         super(
             0.8,
             1.6,
@@ -177,7 +177,8 @@ class Player extends Entity {
                 collisionFilter: COLLISION_PLAYER
             }
         )
-
+        
+        this.socket = socket
         this.speed = 5
         Body.setInertia(this.body, Infinity)
     }

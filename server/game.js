@@ -4,8 +4,8 @@ const {Ship, Player} = require('./ship.js')
 const players = new Map()
 
 const game = {
-    add_player: function(socket_id) {
-        let player = new Player()
+    add_player: function(socket_id, socket) {
+        let player = new Player(socket)
         this.ship.add_entity(player, {x: 3, y: 3})
         players.set(socket_id, player)
     },
