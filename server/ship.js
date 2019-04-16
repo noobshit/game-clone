@@ -61,6 +61,7 @@ class Ship {
         this.add_entity(new Explo(), {x: 1, y: 6})
         this.add_entity(new Explo(), {x: 5, y: 6})
         this.add_entity(new Wrench(), {x: 5, y: 5})
+        this.add_entity(new Shredder(), {x: 5, y: 4})
     }
 
     get world() {
@@ -276,6 +277,25 @@ class Wrench extends Box {
             execute: function(event) {
                 let building = event.entites.find(e => e instanceof Building)
                 building.parent.remove_entity(building)
+            }
+        }
+    }
+}
+
+class Shredder extends Box {
+    constructor() {
+        super('shredder.png')
+    }
+
+    get use() {
+        let shredder = this
+        return {
+            can_execute: function(event) {
+                return event.entites.some(e => e instanceof Box && e != shredder)
+            },
+            execute: function(event) {
+                let box = event.entites.find(e => e instanceof Box && e != shredder)
+                box.parent.remove_entity(box)
             }
         }
     }
