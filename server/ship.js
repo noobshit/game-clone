@@ -30,6 +30,7 @@ const COLLISION_PLAYER = {
     mask: MASK_PLAYER
 }
 
+
 class Ship {
     constructor(width, height) {
         this.entites = []
@@ -77,6 +78,7 @@ class Ship {
     }
 }
 
+
 class Entity {
     constructor(width, height, image_key, options={}) {
         width *= SMALL_BLOCK_SIZE
@@ -117,6 +119,57 @@ class Entity {
 
     translate(vector) {
         Body.translate(this.body, vector)
+    }
+}
+
+
+class Player extends Entity {
+    constructor(socket) {
+        super(
+            0.8,
+            1.6,
+            null,
+            {
+                friction: 0.5,
+                frictionStatic: 0.1,
+                restitution: 0.5,
+                collisionFilter: COLLISION_PLAYER
+            }
+        )
+        
+        this.socket = socket
+        this.speed = 5
+        Body.setInertia(this.body, Infinity)
+    }
+
+    send_debug_message(msg) {
+        this.socket.emit('debug_answer', msg)
+    }
+
+    on_left_button_down(event) {
+        let entites = this.parent.entites.filter(e => event.entites_ids.includes(e.id))
+        
+        let factory = entites.find(e => e instanceof Factory)
+        let explo = entites.find(e => e instanceof Explo)
+        if (factory) {
+            this.send_debug_message('Factory clicked')
+        } else if (explo) {
+            this.send_debug_message(this.body.position)
+        }
+    }
+}
+
+
+class Explo extends Entity {
+    constructor() {
+        super(
+            0.8,
+            0.8,
+            'explo.png',
+            {
+                collisionFilter: COLLISION_MOBILE,
+            }
+        )
     }
 }
 
@@ -164,53 +217,6 @@ class Factory extends Entity {
     }
 }
 
-class Player extends Entity {
-    constructor(socket) {
-        super(
-            0.8,
-            1.6,
-            null,
-            {
-                friction: 0.5,
-                frictionStatic: 0.1,
-                restitution: 0.5,
-                collisionFilter: COLLISION_PLAYER
-            }
-        )
-        
-        this.socket = socket
-        this.speed = 5
-        Body.setInertia(this.body, Infinity)
-    }
 
-    send_debug_message(msg) {
-        this.socket.emit('debug_answer', msg)
-    }
-
-    on_left_button_down(event) {
-        let entites = this.parent.entites.filter(e => event.entites_ids.includes(e.id))
-        
-        let factory = entites.find(e => e instanceof Factory)
-        let explo = entites.find(e => e instanceof Explo)
-        if (factory) {
-            this.send_debug_message('Factory clicked')
-        } else if (explo) {
-            this.send_debug_message(this.body.position)
-        }
-    }
-}
-
-class Explo extends Entity {
-    constructor() {
-        super(
-            0.8,
-            0.8,
-            'explo.png',
-            {
-                collisionFilter: COLLISION_MOBILE,
-            }
-        )
-    }
-}
 exports.Ship = Ship
 exports.Player = Player
