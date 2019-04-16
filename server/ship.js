@@ -120,6 +120,13 @@ class Entity {
     translate(vector) {
         Body.translate(this.body, vector)
     }
+
+    get left_button_down() {
+        return {
+            can_execute: _ => false,
+            execute: _ => {}
+        }
+    }
 }
 
 
@@ -148,13 +155,9 @@ class Player extends Entity {
 
     on_left_button_down(event) {
         let entites = this.parent.entites.filter(e => event.entites_ids.includes(e.id))
-        
-        let factory = entites.find(e => e instanceof Factory)
-        let explo = entites.find(e => e instanceof Explo)
-        if (factory) {
-            this.send_debug_message('Factory clicked')
-        } else if (explo) {
-            this.send_debug_message(this.body.position)
+        let entity = entites.find(e => e.left_button_down.can_execute(event))
+        if (entity) {
+            entity.left_button_down.execute(event)
         }
     }
 }
@@ -170,6 +173,17 @@ class Box extends Entity {
                 collisionFilter: COLLISION_MOBILE
             }
         )
+    }
+
+    get left_button_down() {
+        return {
+            can_execute: function(event) { 
+                return true
+            },
+            execute: function(event) {
+                event.from.send_debug_message('Clicked box xD')
+            }
+        }
     }
 }
 
