@@ -160,16 +160,28 @@ class Player extends Entity {
 }
 
 
-class Explo extends Entity {
-    constructor() {
+class Box extends Entity {
+    constructor(image_key) {
         super(
             0.8,
             0.8,
-            'explo.png',
+            image_key,
             {
-                collisionFilter: COLLISION_MOBILE,
+                collisionFilter: COLLISION_MOBILE
             }
         )
+    }
+}
+
+class Explo extends Box {
+    constructor() {
+        super('explo.png')
+    }
+}
+
+class Metal extends Box {
+    constructor() {
+        super('metal.png')
     }
 }
 
