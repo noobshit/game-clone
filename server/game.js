@@ -53,7 +53,12 @@ const game = {
                 }
 
                 if (input.mouse0) {
-                    player.on_left_button_down(input.mouse0)
+                    let event = {
+                        from: player, 
+                        game_pos: input.mouse0.game_pos,
+                        entites_ids: input.mouse0.entites_ids
+                    }
+                    player.on_left_button_down(event)
                 }
             }
 
