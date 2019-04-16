@@ -51,6 +51,10 @@ const game = {
                 if ( dx != 0 || dy != 0) {
                     player.translate({x: dx, y: dy})
                 }
+
+                if (input.mouse0) {
+                    player.on_left_button_down(input.mouse0)
+                }
             }
 
             game.input_buffer.set(key, [])
