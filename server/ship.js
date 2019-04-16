@@ -60,6 +60,7 @@ class Ship {
         this.add_entity(new Brick(), {x: 3, y: 4})
         this.add_entity(new Explo(), {x: 1, y: 6})
         this.add_entity(new Explo(), {x: 5, y: 6})
+        this.add_entity(new Wrench(), {x: 5, y: 5})
     }
 
     get world() {
@@ -262,6 +263,25 @@ class Box extends Entity {
 }
 
 
+class Wrench extends Box {
+    constructor() {
+        super('wrench.png')
+    }
+
+    get use() {
+        return {
+            can_execute: function(event) {
+                return event.entites.some(e => e instanceof Building)
+            },
+            execute: function(event) {
+                let building = event.entites.find(e => e instanceof Building)
+                building.parent.remove_entity(building)
+            }
+        }
+    }
+}
+
+
 class Explo extends Box {
     constructor() {
         super('explo.png')
@@ -276,7 +296,13 @@ class Metal extends Box {
 }
 
 
-class Brick extends Entity {
+class Building extends Entity {
+    constructor(width, height, image_key, options) {
+        super(width, height, image_key, options)
+    }
+}
+
+class Brick extends Building {
     constructor() {
         super(
             1,
@@ -290,7 +316,7 @@ class Brick extends Entity {
 }
 
 
-class Ladder extends Entity {
+class Ladder extends Building {
     constructor() {
         super(
             1, 
@@ -305,7 +331,7 @@ class Ladder extends Entity {
 }
 
 
-class Factory extends Entity {
+class Factory extends Building {
     constructor() {
         super(
             2,
