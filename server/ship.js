@@ -276,11 +276,12 @@ class Wrench extends Box {
             },
             execute: function(event) {
                 let building = event.entites.find(e => e instanceof Building)
-                building.parent.remove_entity(building)
+                event.parent.remove_entity(building)
             }
         }
     }
 }
+
 
 class Shredder extends Box {
     constructor() {
@@ -295,7 +296,7 @@ class Shredder extends Box {
             },
             execute: function(event) {
                 let box = event.entites.find(e => e instanceof Box && e != shredder)
-                box.parent.remove_entity(box)
+                event.parent.remove_entity(box)
             }
         }
     }

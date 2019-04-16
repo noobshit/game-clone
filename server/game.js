@@ -61,6 +61,7 @@ const game = {
                 if (input.mouse0) {
                     let event = {
                         from: player, 
+                        ship: player.parent,
                         game_pos: input.mouse0.game_pos,
                         entites_ids: input.mouse0.entites_ids,
                         entites: player.parent.entites.filter(e => input.mouse0.entites_ids.includes(e.id))
