@@ -293,6 +293,8 @@ class Wrench extends Box {
             },
             execute: function(event) {
                 let building = event.entites.find(e => e instanceof Building)
+                let building_package = new BulidingPackage(building.constructor)
+                event.ship.add_entity(building_package, building.pos_grid)
                 event.ship.remove_entity(building)
             }
         }
