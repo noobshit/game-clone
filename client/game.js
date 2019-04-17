@@ -6,7 +6,10 @@ function tick() {
     displayer.clear()
     displayer.center_camera_on_entity(state.player)
 
-    state.entites.forEach(displayer.draw_entity)
+    let background_entites = state.entites.filter(e => e.is_background)
+    let front_entites = state.entites.filter(e => !e.is_background)
+    background_entites.forEach(displayer.draw_entity)
+    front_entites.forEach(displayer.draw_entity)
     displayer.draw_cursor(state.cursor)
 
     let data = build_input_packet()

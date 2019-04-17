@@ -153,7 +153,8 @@ class Entity {
             width: this.width,
             height: this.height,
             angle: this.body.angle,
-            image_key: this.image_key
+            image_key: this.image_key,
+            is_background: [CATEGORY_WALL, CATEGORY_BACK].includes(this.body.collisionFilter.category)
         }
     }
 
