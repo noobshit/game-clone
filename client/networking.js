@@ -12,6 +12,10 @@ socket.on('update', (data) => {
     if (state.cursor && state.cursor.data) {
         add_data(state.cursor.data)
     }
+
+    if (state.cursor && state.cursor.target) {
+        add_data(state.cursor.target)
+    }
 })
 
 function debug(cmd) {

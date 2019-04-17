@@ -44,19 +44,34 @@ var displayer = {
             return
         }
 
+        displayer.canvas.style.cursor = 'default'
+        displayer.ctx.save()
         if (cursor.action == CURSOR.BUILD) {
             let building = cursor.data
             displayer.draw_entity(building)
-            displayer.ctx.save()
             if (cursor.can_use) {
                 displayer.ctx.fillStyle = '#00FF0055'
+                displayer.canvas.style.cursor = 'pointer'
             } else {
                 displayer.ctx.fillStyle = '#FF000055'
-        
+                displayer.canvas.style.cursor = 'not-allowed'        
             }
             displayer.ctx.fillRect(building.left, building.top, building.width, building.height)
-            displayer.ctx.restore()
-        } 
+        } else if (cursor.action == CURSOR.GRAB) {
+            let target = cursor.target
+            if (cursor.can_use) {
+                displayer.ctx.strokeStyle = '#00FF0055'
+                displayer.canvas.style.cursor = 'pointer'
+            } else {
+                displayer.ctx.strokeStyle = '#FF000055'
+                displayer.canvas.style.cursor = 'not-allowed'
+            }
+            displayer.ctx.lineWidth = 5
+            displayer.ctx.strokeRect(target.left, target.top, target.width, target.height)
+        } else {
+            displayer.canvas.style.cursor = 'default'
+        }
+        displayer.ctx.restore()
     },
     
     draw_entity: function(entity) {
@@ -109,4 +124,5 @@ displayer.init(document.querySelector("#canvas"))
 const CURSOR = {
     DEFAULT: 1,
     BUILD: 2,
+    GRAB: 3,
 }

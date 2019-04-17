@@ -192,7 +192,11 @@ class Entity {
     }
 
     get_cursor(event) {
-        return new Cursor(CURSOR.DEFAULT)
+        return new Cursor(
+            CURSOR.DEFAULT, {
+                target: this.use.target(event),
+                can_use: this.use.can_execute(event)
+            })
     }
 
     on_remove() {
@@ -225,8 +229,22 @@ class Player extends Entity {
     }
 
     update_cursor(event) {
-        if (this.item) {
+        if (this.item && this.item.use.can_execute(event)) {
             this.cursor = this.item.get_cursor(event)
+        } else if (this.grab_item.can_execute(event)) {
+            this.cursor = new Cursor(
+                CURSOR.GRAB, 
+                {
+                    can_use: true,
+                    target: this.grab_item.target(event).get_entity(),
+                })
+        } else if (event.entites.some(e => e.left_button_down.can_execute(event))) {
+            let entity = event.entites.find(e => e.left_button_down.can_execute(event))
+            this.cursor = entity.get_cursor()
+        } else if (this.item) {
+            this.cursor = this.item.get_cursor(event)
+        } else if (this.grab_item.target(event) != null) {
+            this.cursor = new Cursor(CURSOR.GRAB, {can_use: false})
         } else {
             this.cursor = new Cursor(CURSOR.DEFAULT)
         }
@@ -530,6 +548,7 @@ var Pos = {
 const CURSOR = {
     DEFAULT: 1,
     BUILD: 2,
+    GRAB: 3,
 }
 
 class Cursor {
@@ -540,6 +559,9 @@ class Cursor {
         this.data = null
 
         Object.assign(this, options)
+        if (this.target && this.target instanceof Entity) {
+            this.target = this.target.get_entity()
+        }
     }
 
 }
