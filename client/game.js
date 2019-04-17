@@ -6,6 +6,7 @@ function tick() {
     displayer.clear()
     displayer.center_camera_on_entity(state.player)
 
+    state.map.forEach(displayer.draw_entity)
     let background_entites = state.entites.filter(e => e.is_background)
     let front_entites = state.entites.filter(e => !e.is_background)
     background_entites.forEach(displayer.draw_entity)
@@ -48,6 +49,10 @@ function build_input_packet() {
         move_up: keyboard.is_key_pressed['w'],
         move_down: keyboard.is_key_pressed['s'],
         press_q: keyboard.is_key_pressed['q'],
+        arrow_left: keyboard.is_key_pressed['ArrowLeft'],
+        arrow_right: keyboard.is_key_pressed['ArrowRight'],
+        arrow_up: keyboard.is_key_pressed['ArrowUp'],
+        arrow_down: keyboard.is_key_pressed['ArrowDown'],
     })
 }
 

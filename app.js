@@ -37,7 +37,6 @@ function tick() {
     sockets = sockets.filter(socket => socket.connected)
 
     game.tick()
-    Engine.update(game.ship.engine)
     let players = [] //Array.from(game.players.values()).map(player => player.get_entity())
     let entites = game.ship.get_entites()
     entites = entites.concat(players)
@@ -48,6 +47,7 @@ function tick() {
             entites: entites,
             player: player.get_entity(),
             cursor: player.cursor,
+            map: game.get_map(),
         })
     })
 }

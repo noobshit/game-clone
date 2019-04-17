@@ -1,7 +1,43 @@
+
+const SMALL_BLOCK_SIZE = 32
+const BIG_BLOCK_SIZE = 8 * SMALL_BLOCK_SIZE
 const bound = 500
 
 const {Ship, Player, Pos} = require('./ship.js')
+const Matter = require('matter-js')
+const Body = Matter.Body
+const Bodies = Matter.Bodies
+const Engine = Matter.Engine
+const World = Matter.World
+const Constraint = Matter.Constraint
+const Query = Matter.Query
+const Detector = Matter.Detector
+const Composite = Matter.Composite
 const players = new Map()
+
+class GameMap {
+    constructor(width, height) {
+        this.fields = new Array(width)
+        this.blocks = []
+        for (let x = 0; x < width; x += 1) {
+            this.fields[x] = new Array(height)
+            for (let y = 0; y < height; y += 1) {
+                if (Math.random() < 0.2) {
+                    this.fields[x][y] = true
+                    this.blocks.push(
+                        {
+                            x: x * BIG_BLOCK_SIZE, 
+                            y: y * BIG_BLOCK_SIZE,
+                            width: BIG_BLOCK_SIZE,
+                            height: BIG_BLOCK_SIZE,
+                            angle: 0,
+                            image_key: 'brick.png'
+                        })
+                }
+            }
+        }
+    }
+}
 
 const game = {
     add_player: function(socket_id, socket) {
@@ -48,6 +84,24 @@ const game = {
                     dy += d
                 }
 
+                let ship_speed = 100
+                let ship = player.parent
+                if (input.arrow_left) {
+                    ship.translate({x: -ship_speed, y: 0})
+                }
+
+                if (input.arrow_right) {
+                    ship.translate({x: +ship_speed, y: 0})
+                }
+
+                if (input.arrow_up) {
+                    ship.translate({x: 0, y: -ship_speed})
+                }
+
+                if (input.arrow_down) {
+                    ship.translate({x: 0, y: +ship_speed})
+                }
+
                 if ( dx != 0 || dy != 0) {
                     player.translate({x: dx, y: dy})
                 }
@@ -80,11 +134,34 @@ const game = {
 
     tick: function() {
         game.process_input_buffer()
+        Engine.update(game.engine)
+        Engine.update(game.ship.engine)
+        console.log(game.ship.body.position)
     },
 
     init: function() {
         game.input_buffer = new Map() 
         game.ship = new Ship(12, 8)
+        game.engine = Engine.create()
+        game.world = game.engine.world
+        game.map = new GameMap(40, 40)
+        for (let block of game.map.blocks) {
+            let body = Bodies.rectangle(
+                block.x, 
+                block.y,
+                block.width,
+                block.height,
+                {
+                    isStatic: true
+                }
+            )
+            World.add(game.world, body)
+        }
+        World.add(game.world, game.ship.body)
+    },
+
+    get_map: function() {
+        return game.map.blocks
     },
 }
 game.init()

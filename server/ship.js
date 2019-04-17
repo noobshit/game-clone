@@ -56,6 +56,13 @@ class Ship {
             }
         }
 
+        this.body = Bodies.rectangle(
+            0,
+            0,
+            this.width * SMALL_BLOCK_SIZE,
+            this.height * SMALL_BLOCK_SIZE
+        )
+
         this.add_entity(new Factory(), {x: 7, y: 5})
         this.add_entity(new Ladder(), {x: 4, y: 4})
         this.add_entity(new Ladder(), {x: 4, y: 5})
@@ -69,6 +76,16 @@ class Ship {
         this.add_entity(new Shredder(), {x: 5, y: 4})
         this.add_entity(new Enlargment(), {x: 5, y: 3})
         this.add_entity(new BulidingPackage(Brick), {x: 5, y: 2})
+    }
+
+    get position() {
+        let pos = this.body.position
+        return {
+            x: pos.x,
+            y: pos.y,
+            left: pos.x - this.width * SMALL_BLOCK_SIZE / 2,
+            top: pos.y - this.height * SMALL_BLOCK_SIZE / 2
+        }
     }
 
     get bounds() {
@@ -110,6 +127,10 @@ class Ship {
     get_entites() {
         return this.entites.map(entity => entity.get_entity())
     }
+
+    translate(vector) {
+        Body.translate(this.body, vector)
+    }
 }
 
 
@@ -148,8 +169,8 @@ class Entity {
     get_entity() {
         return {
             id: this.id,
-            x: this.body.position.x,
-            y: this.body.position.y,
+            x: this.parent.position.left + this.body.position.x,
+            y: this.parent.position.top + this.body.position.y,
             width: this.width,
             height: this.height,
             angle: this.body.angle,

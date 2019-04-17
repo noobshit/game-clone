@@ -7,6 +7,7 @@ socket.on('update', (data) => {
     state.entites = data.entites
     state.player = data.player
     state.cursor = data.cursor
+    state.map = data.map
 
     state.entites.forEach(add_data)
     if (state.cursor && state.cursor.data) {
