@@ -1,4 +1,5 @@
 state = {
     entites: [],
     player: {},
+    cursor: {}
 }

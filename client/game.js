@@ -7,6 +7,7 @@ function tick() {
     displayer.center_camera_on_entity(state.player)
 
     state.entites.forEach(displayer.draw_entity)
+    displayer.draw_cursor(state.cursor)
 
     let data = build_input_packet()
     socket.emit('input', data)

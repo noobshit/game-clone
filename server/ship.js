@@ -180,6 +180,14 @@ class Entity {
         }
     }
 
+    get_cursor(event) {
+        if (this.use.can_execute(event)) {
+            return new Cursor(CURSOR.CAN_DEFAULT)
+        } else {
+            return new Cursor(CURSOR.CAN_NOT_DEFAULT)
+        }
+    }
+
     on_remove() {
     }
 }
@@ -207,6 +215,14 @@ class Player extends Entity {
 
     send_debug_message(msg) {
         this.socket.emit('debug_answer', msg)
+    }
+
+    update_cursor(event) {
+        if (this.item) {
+            this.cursor = this.item.get_cursor(event)
+        } else {
+            this.cursor = new Cursor(CURSOR.CAN_DEFAULT)
+        }
     }
 
     on_left_button_down(event) {
@@ -455,6 +471,15 @@ class BulidingPackage extends Box {
             }
         }
     }
+
+    get_cursor(event) {
+        let data = this.building.get_entity()
+        if (this.use.can_execute(event)) {
+            return new Cursor(CURSOR.CAN_BUILD, data)
+        } else {
+            return new Cursor(CURSOR.CAN_NOT_BUILD, data)
+        }
+    }
 }
 
 var Pos = {
@@ -473,6 +498,21 @@ var Pos = {
         }
         return snapped
     }
+}
+
+const CURSOR = {
+    CAN_DEFAULT: 1,
+    CAN_NOT_DEFAULT: 2,
+    CAN_BUILD: 3,
+    CAN_NOT_BUILD: 4,
+}
+
+class Cursor {
+    constructor(action, data=null) {
+        this.action = action
+        this.data = data
+    }
+
 }
 
 exports.Ship = Ship

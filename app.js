@@ -46,7 +46,8 @@ function tick() {
         let player = game.players.get(socket.id)
         socket.emit('update', {
             entites: entites,
-            player: player.get_entity()
+            player: player.get_entity(),
+            cursor: player.cursor,
         })
     })
 }

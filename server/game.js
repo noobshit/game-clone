@@ -70,6 +70,8 @@ const game = {
                 if (input.mouse0) {
                     player.on_left_button_down(event)
                 }
+
+                player.update_cursor(event)
             }
 
             game.input_buffer.set(key, [])
