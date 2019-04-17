@@ -71,6 +71,15 @@ class Ship {
         this.add_entity(new BulidingPackage(Brick), {x: 5, y: 2})
     }
 
+    get bounds() {
+        return {
+            left: 0,
+            right: 0 + this.width * SMALL_BLOCK_SIZE,
+            top: 0,
+            bottom: 0 + this.height * SMALL_BLOCK_SIZE,
+        }
+    }
+
     get world() {
         return this.engine.world
     }
@@ -455,8 +464,13 @@ class BulidingPackage extends Box {
             bodyB => Detector.canCollide(bodyA.collisionFilter, bodyB.collisionFilter)
         )
         let collisions = Query.collides(bodyA, can_collide_with)
-         
-        return collisions.length == 0
+        let is_not_colliding = collisions.length == 0
+        let bounds = this.parent.bounds
+        let pos_is_inside_ship = bounds.left < pos.x 
+            && bounds.right > pos.x
+            && bounds.top < pos.y
+            && bounds.bottom > pos.y
+        return is_not_colliding && pos_is_inside_ship
     }
 
     get use() {
@@ -493,8 +507,8 @@ var Pos = {
         let snapped = {
             x: pos.x,
             y: pos.y,
-            left: pos.x - pos.x % SMALL_BLOCK_SIZE,
-            top: pos.y - pos.y % SMALL_BLOCK_SIZE
+            left: pos.x - Math.abs(pos.x % SMALL_BLOCK_SIZE),
+            top: pos.y - Math.abs(pos.y % SMALL_BLOCK_SIZE)
         }
         return snapped
     }
