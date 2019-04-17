@@ -177,6 +177,7 @@ class Entity {
 
     get left_button_down() {
         return {
+            target: _ => null,
             can_execute: _ => false,
             execute: _ => {}
         }
@@ -184,6 +185,7 @@ class Entity {
 
     get use() {
         return {
+            target: _ => null,
             can_execute: _ => false,
             execute: _ => {} 
         }
@@ -258,12 +260,15 @@ class Player extends Entity {
     get grab_item() {
         let player = this
         return {
+            target: function(event) {
+                return event.entites.find(e => e instanceof Box)
+            },
             can_execute: function(event) {
                 return player.item == null 
                 && event.entites.some(e => e instanceof Box)
             },
             execute: function(event) {
-                let entry = event.entites.find(e => e instanceof Box)
+                let entry = this.target(event)
                 player.item = entry
                 entry.holded_by = player
                 player.item.collisionFilter = player.item.body.collisionFilter
@@ -320,11 +325,14 @@ class Wrench extends Box {
 
     get use() {
         return {
+            target: function(event) {
+                return event.entites.find(e => e instanceof Building)
+            },
             can_execute: function(event) {
                 return event.entites.some(e => e instanceof Building)
             },
             execute: function(event) {
-                let building = event.entites.find(e => e instanceof Building)
+                let building = this.target(event)
                 let building_package = new BulidingPackage(building.constructor)
                 event.ship.add_entity(building_package, building.pos_grid)
                 event.ship.remove_entity(building)
@@ -342,11 +350,14 @@ class Shredder extends Box {
     get use() {
         let shredder = this
         return {
+            target: function(event) {
+                return event.entites.find(e => e instanceof Box && e != shredder)
+            },
             can_execute: function(event) {
                 return event.entites.some(e => e instanceof Box && e != shredder)
             },
             execute: function(event) {
-                let box = event.entites.find(e => e instanceof Box && e != shredder)
+                let box = this.target(event)
                 event.ship.remove_entity(box)
             }
         }
@@ -362,6 +373,9 @@ class Enlargment extends Box {
     get use() {
         let enlargment = this
         return {
+            target: function(event){
+                return null
+            },  
             can_execute: function(event) {
                 return event.pos_grid.x >= 0 
                 && event.pos_grid.y >= 0
@@ -476,6 +490,9 @@ class BulidingPackage extends Box {
     get use() {
         let building_package = this
         return {
+            target: function(event) {
+                return null
+            },
             can_execute: function(event){
                 return building_package.can_build(Pos.to_snap(event.pos_game))
             },
