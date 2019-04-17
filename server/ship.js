@@ -4,6 +4,9 @@ const Bodies = Matter.Bodies
 const Engine = Matter.Engine
 const World = Matter.World
 const Constraint = Matter.Constraint
+const Query = Matter.Query
+const Detector = Matter.Detector
+const Composite = Matter.Composite
 
 const SMALL_BLOCK_SIZE = 32
 
@@ -65,6 +68,7 @@ class Ship {
         this.add_entity(new Wrench(), {x: 5, y: 5})
         this.add_entity(new Shredder(), {x: 5, y: 4})
         this.add_entity(new Enlargment(), {x: 5, y: 3})
+        this.add_entity(new BulidingPackage(Brick), {x: 5, y: 2})
     }
 
     get world() {
@@ -404,6 +408,35 @@ class Factory extends Building {
                 collisionFilter: COLLISION_BUILDING
             }
         )
+    }
+}
+
+class BulidingPackage extends Box {
+    constructor(building_class) {
+        let building = new building_class()
+        super(building.image_key)
+        this.building_class = building_class
+        this.building = building
+    }
+
+    can_build(pos) {
+        let bodies = Query.point(Composite.allBodies(this.world), pos)
+        .filter(body => Detector.canCollide(body.collisionFilter.filter, this.building.body.collisionFilter.filter))
+
+        return Query.collides(this.building.body, bodies).length == 0
+    }
+
+    get use() {
+        let building_package = this
+        return {
+            can_execute: function(event){
+                return building_package.can_build(event.pos_game)
+            },
+            execute: function(event) {
+                building_package.parent.add_entity(building_package.building, event.pos_grid)
+                building_package.parent.remove_entity(building_package)
+            }
+        }
     }
 }
 
