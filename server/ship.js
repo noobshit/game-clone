@@ -233,7 +233,6 @@ class Player extends Entity {
     }
 
     on_left_button_down(event) {
-
         if (this.item && this.item.use.can_execute(event)) {
             this.item.use.execute(event)
         }
@@ -502,8 +501,10 @@ class BulidingPackage extends Box {
     get_cursor(event) {
         return new Cursor(
             CURSOR.BUILD, 
-            this.use.can_execute(event), 
-            this.building.get_entity()
+            {
+                can_use: this.use.can_execute(event), 
+                data: this.building.get_entity()
+            }
         )
     }
 }
@@ -532,10 +533,13 @@ const CURSOR = {
 }
 
 class Cursor {
-    constructor(action, can_use=true, data=null) {
+    constructor(action, options) {
         this.action = action
-        this.can_use = can_use
-        this.data = data
+        this.target = null
+        this.can_use = null
+        this.data = null
+
+        Object.assign(this, options)
     }
 
 }
