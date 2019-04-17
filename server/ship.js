@@ -423,7 +423,7 @@ class BulidingPackage extends Box {
 
     can_build(pos) {
         let bodies = Query.point(Composite.allBodies(this.world), pos)
-        .filter(body => Detector.canCollide(body.collisionFilter.filter, this.building.body.collisionFilter.filter))
+        .filter(body => Detector.canCollide(body.collisionFilter, this.building.body.collisionFilter))
 
         return Query.collides(this.building.body, bodies).length == 0
     }
