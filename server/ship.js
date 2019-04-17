@@ -77,8 +77,8 @@ class Ship {
 
     add_entity(entity, pos_grid) {
         let pos_game = {
-            x: pos_grid.x * SMALL_BLOCK_SIZE + entity.width / 2,
-            y: pos_grid.y * SMALL_BLOCK_SIZE + entity.height / 2,
+            x: pos_grid.x * SMALL_BLOCK_SIZE + entity.offset.x,
+            y: pos_grid.y * SMALL_BLOCK_SIZE + entity.offset.y,
         }
 
         entity.parent = this
@@ -106,7 +106,7 @@ class Ship {
 
 class Entity {
     constructor(width, height, image_key, options={}) {
-        width *= SMALL_BLOCK_SIZE
+        width *= SMALL_BLOCK_SIZE 
         height *= SMALL_BLOCK_SIZE
         this.width = width
         this.height = height
@@ -127,6 +127,13 @@ class Entity {
 
     get pos_grid() {
         return Pos.to_grid(this.body.position)
+    }
+
+    get offset() {
+        return {
+            x: this.width / 2,
+            y: this.height / 2
+        }
     }
 
     get_entity() {
@@ -422,17 +429,25 @@ class BulidingPackage extends Box {
     }
 
     can_build(pos) {
-        let bodies = Query.point(Composite.allBodies(this.world), pos)
-        .filter(body => Detector.canCollide(body.collisionFilter, this.building.body.collisionFilter))
+        let bodyA = this.building.body
+        Body.setPosition(bodyA, {
+            x: pos.left + this.building.offset.x,
+            y: pos.top + this.building.offset.y
+        })
+        let bodies = Composite.allBodies(this.world)
+        let can_collide_with = bodies.filter(
+            bodyB => Detector.canCollide(bodyA.collisionFilter, bodyB.collisionFilter)
+        )
+        let collisions = Query.collides(bodyA, can_collide_with)
          
-        return bodies.length == 0
+        return collisions.length == 0
     }
 
     get use() {
         let building_package = this
         return {
             can_execute: function(event){
-                return building_package.can_build(event.pos_game)
+                return building_package.can_build(Pos.to_snap(event.pos_game))
             },
             execute: function(event) {
                 building_package.parent.add_entity(building_package.building, event.pos_grid)
@@ -448,7 +463,16 @@ var Pos = {
             x: Math.floor(pos.x / SMALL_BLOCK_SIZE),
             y: Math.floor(pos.y / SMALL_BLOCK_SIZE)
         }
-    } 
+    },
+    to_snap: function(pos) {
+        let snapped = {
+            x: pos.x,
+            y: pos.y,
+            left: pos.x - pos.x % SMALL_BLOCK_SIZE,
+            top: pos.y - pos.y % SMALL_BLOCK_SIZE
+        }
+        return snapped
+    }
 }
 
 exports.Ship = Ship
