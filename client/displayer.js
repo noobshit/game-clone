@@ -48,6 +48,7 @@ var displayer = {
         displayer.ctx.save()
         if (cursor.action == CURSOR.BUILD) {
             let building = cursor.data
+            displayer.ctx.globalAlpha = 0.65
             displayer.draw_entity(building)
             if (cursor.can_use) {
                 displayer.ctx.fillStyle = '#00FF0055'
