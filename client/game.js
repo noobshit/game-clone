@@ -32,6 +32,10 @@ function build_input_packet() {
             mouse.is_button_pressed.set(key, false)
         }
     }
+    input['mouse'] = {
+        entites_ids: mouse.entites_ids,
+        pos_game: mouse.game_pos
+    }
     
 
     return Object.assign(input, {

@@ -58,15 +58,16 @@ const game = {
                     }
                 }
 
+                let event = {
+                    from: player, 
+                    ship: player.parent,
+                    pos_game: input.mouse.pos_game,
+                    pos_grid: Pos.to_grid(input.mouse.pos_game),
+                    entites_ids: input.mouse.entites_ids,
+                    entites: player.parent.entites.filter(e => input.mouse.entites_ids.includes(e.id))
+                }
+
                 if (input.mouse0) {
-                    let event = {
-                        from: player, 
-                        ship: player.parent,
-                        pos_game: input.mouse0.game_pos,
-                        pos_grid: Pos.to_grid(input.mouse0.game_pos),
-                        entites_ids: input.mouse0.entites_ids,
-                        entites: player.parent.entites.filter(e => input.mouse0.entites_ids.includes(e.id))
-                    }
                     player.on_left_button_down(event)
                 }
             }

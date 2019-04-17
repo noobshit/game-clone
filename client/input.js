@@ -1,5 +1,6 @@
 var mouse = {
     is_button_pressed: new Map(),
+    entites_ids: [],
 
     game_pos: { 
         x: 0, 
@@ -25,6 +26,7 @@ var mouse = {
 
     on_move: function(e) {
         mouse.game_pos = mouse.get_game_pos(e)
+        mouse.entites_ids = mouse.get_entites_under_cursor().map(e => e.id)
     },
 
     on_wheel: function(e) {
@@ -36,11 +38,7 @@ var mouse = {
     },
 
     on_down: function(e) {
-        let entites_ids = mouse.get_entites_under_cursor().map(e => e.id)
-        mouse.is_button_pressed.set(e.button, {
-            game_pos: mouse.game_pos,
-            entites_ids: entites_ids
-        })
+        mouse.is_button_pressed.set(e.button, true)
         return false
     },
 
