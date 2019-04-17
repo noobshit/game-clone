@@ -192,11 +192,7 @@ class Entity {
     }
 
     get_cursor(event) {
-        if (this.use.can_execute(event)) {
-            return new Cursor(CURSOR.CAN_DEFAULT)
-        } else {
-            return new Cursor(CURSOR.CAN_NOT_DEFAULT)
-        }
+        return new Cursor(CURSOR.DEFAULT)
     }
 
     on_remove() {
@@ -232,7 +228,7 @@ class Player extends Entity {
         if (this.item) {
             this.cursor = this.item.get_cursor(event)
         } else {
-            this.cursor = new Cursor(CURSOR.CAN_DEFAULT)
+            this.cursor = new Cursor(CURSOR.DEFAULT)
         }
     }
 
@@ -504,12 +500,11 @@ class BulidingPackage extends Box {
     }
 
     get_cursor(event) {
-        let data = this.building.get_entity()
-        if (this.use.can_execute(event)) {
-            return new Cursor(CURSOR.CAN_BUILD, data)
-        } else {
-            return new Cursor(CURSOR.CAN_NOT_BUILD, data)
-        }
+        return new Cursor(
+            CURSOR.BUILD, 
+            this.use.can_execute(event), 
+            this.building.get_entity()
+        )
     }
 }
 
@@ -532,15 +527,14 @@ var Pos = {
 }
 
 const CURSOR = {
-    CAN_DEFAULT: 1,
-    CAN_NOT_DEFAULT: 2,
-    CAN_BUILD: 3,
-    CAN_NOT_BUILD: 4,
+    DEFAULT: 1,
+    BUILD: 2,
 }
 
 class Cursor {
-    constructor(action, data=null) {
+    constructor(action, can_use=true, data=null) {
         this.action = action
+        this.can_use = can_use
         this.data = data
     }
 
