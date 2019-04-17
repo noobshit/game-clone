@@ -29,6 +29,7 @@ function build_input_packet() {
     for (let [key, value] of mouse.is_button_pressed) {
         if (value) {
             input['mouse' + key] = value
+            mouse.is_button_pressed.set(key, false)
         }
     }
     
