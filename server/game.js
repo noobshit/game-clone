@@ -14,6 +14,7 @@ class GameMap {
     constructor(width, height) {
         this.engine = Engine.create()
         this.world = this.engine.world
+        this.world.gravity.y = 0
         this.entites = []
         for (let x = 0; x < width; x += 1) {
             for (let y = 0; y < height; y += 1) {
@@ -169,6 +170,9 @@ const game = {
         game.ship = new Ship(12, 8)
         game.map = new GameMap(40, 40)
         game.map.add_ship(game.ship)
+
+        game.ship_2 = new Ship(12, 8)
+        game.map.add_ship(game.ship_2)
     },
 
     get_map: function() {
