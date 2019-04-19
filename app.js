@@ -51,4 +51,4 @@ function tick() {
         })
     })
 }
-setInterval(tick, 1000/120)
+setInterval(tick, 1000/60)

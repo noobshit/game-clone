@@ -1,7 +1,6 @@
 
 const SMALL_BLOCK_SIZE = 32
 const BIG_BLOCK_SIZE = 8 * SMALL_BLOCK_SIZE
-const bound = 500
 
 const {Ship, Player, Pos} = require('./ship.js')
 const Matter = require('matter-js')
@@ -84,23 +83,29 @@ const game = {
                     dy += d
                 }
 
-                let ship_speed = 75
+                let ship_force = 0.001
+                let force = {x: 0, y: 0}
                 let ship = player.parent
                 if (input.arrow_left) {
-                    ship.translate({x: -ship_speed, y: 0})
+                    force.x -= ship_force
                 }
 
                 if (input.arrow_right) {
-                    ship.translate({x: +ship_speed, y: 0})
+                    force.x += ship_force
                 }
 
                 if (input.arrow_up) {
-                    ship.translate({x: 0, y: -ship_speed})
+                    force.y -= ship_force
                 }
 
                 if (input.arrow_down) {
-                    ship.translate({x: 0, y: +ship_speed})
+                    force.y += ship_force
                 }
+
+                force.x = force.x * ship.body.mass
+                force.y = force.y * ship.body.mass
+                
+                Body.applyForce(ship.body, ship.body.position, force)
 
                 if ( dx != 0 || dy != 0) {
                     player.translate({x: dx, y: dy})
