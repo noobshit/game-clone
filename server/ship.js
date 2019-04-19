@@ -167,10 +167,15 @@ class Entity {
     }
 
     get_entity() {
+        let offset = {x: 0, y: 0}
+        if (this.parent) {
+            offset.x = this.parent.position.left 
+            offset.y = this.parent.position.top
+        }
         return {
             id: this.id,
-            x: this.parent.position.left + this.body.position.x,
-            y: this.parent.position.top + this.body.position.y,
+            x: offset.x + this.body.position.x,
+            y:  offset.y + this.body.position.y,
             width: this.width,
             height: this.height,
             angle: this.body.angle,
@@ -591,3 +596,4 @@ class Cursor {
 exports.Ship = Ship
 exports.Player = Player
 exports.Pos = Pos
+exports.Entity = Entity

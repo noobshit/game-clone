@@ -2,39 +2,60 @@
 const SMALL_BLOCK_SIZE = 32
 const BIG_BLOCK_SIZE = 8 * SMALL_BLOCK_SIZE
 
-const {Ship, Player, Pos} = require('./ship.js')
+const {Ship, Player, Pos, Entity} = require('./ship.js')
 const Matter = require('matter-js')
 const Body = Matter.Body
 const Bodies = Matter.Bodies
 const Engine = Matter.Engine
 const World = Matter.World
-const Constraint = Matter.Constraint
-const Query = Matter.Query
-const Detector = Matter.Detector
-const Composite = Matter.Composite
 const players = new Map()
 
 class GameMap {
     constructor(width, height) {
-        this.fields = new Array(width)
-        this.blocks = []
+        this.engine = Engine.create()
+        this.world = this.engine.world
+        this.entites = []
         for (let x = 0; x < width; x += 1) {
-            this.fields[x] = new Array(height)
             for (let y = 0; y < height; y += 1) {
                 if (y == height - 1 || x == 0 || x == width - 1 || y == 0) {
-                    this.fields[x][y] = true
-                    this.blocks.push(
-                        {
-                            x: x * BIG_BLOCK_SIZE, 
-                            y: y * BIG_BLOCK_SIZE,
-                            width: BIG_BLOCK_SIZE,
-                            height: BIG_BLOCK_SIZE,
-                            angle: 0,
-                            image_key: 'brick.png'
-                        })
+                    this.add_block({x, y})
                 }
             }
         }
+    }
+    
+    add_block(pos_grid) {
+        this.add_entity(new Block(), {
+            x: pos_grid.x * 8 * SMALL_BLOCK_SIZE, 
+            y: pos_grid.y * 8 * SMALL_BLOCK_SIZE
+        })
+    }
+
+    add_entity(entity, pos) {
+        Body.setPosition(entity.body, pos)
+        World.add(this.world, entity.body)
+        this.entites.push(entity)
+    }
+
+    get_entites() {
+        return this.entites.map(e => e.get_entity())
+    }
+
+    add_ship(ship) {
+        World.add(this.world, ship.body)
+    }
+}
+
+class Block extends Entity {
+    constructor() {
+        super(
+            8, 
+            8,
+            'brick.png',
+            {
+                isStatic: true,
+            }
+        )
     }
 }
 
@@ -139,33 +160,19 @@ const game = {
 
     tick: function() {
         Engine.update(game.ship.engine)
-        Engine.update(game.engine)
+        Engine.update(game.map.engine)
         game.process_input_buffer()
     },
 
     init: function() {
         game.input_buffer = new Map() 
         game.ship = new Ship(12, 8)
-        game.engine = Engine.create()
-        game.world = game.engine.world
         game.map = new GameMap(40, 40)
-        for (let block of game.map.blocks) {
-            let body = Bodies.rectangle(
-                block.x, 
-                block.y,
-                block.width,
-                block.height,
-                {
-                    isStatic: true
-                }
-            )
-            World.add(game.world, body)
-        }
-        World.add(game.world, game.ship.body)
+        game.map.add_ship(game.ship)
     },
 
     get_map: function() {
-        return game.map.blocks
+        return game.map.get_entites()
     },
 }
 game.init()
