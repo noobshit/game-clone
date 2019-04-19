@@ -60,7 +60,10 @@ class Ship {
             500,
             500,
             this.width * SMALL_BLOCK_SIZE,
-            this.height * SMALL_BLOCK_SIZE
+            this.height * SMALL_BLOCK_SIZE,
+            {
+                inertia: Infinity
+            }
         )
 
         this.add_entity(new Factory(), {x: 7, y: 5})
@@ -169,8 +172,8 @@ class Entity {
     get_entity() {
         let offset = {x: 0, y: 0}
         if (this.parent) {
-            offset.x = this.parent.position.left 
-            offset.y = this.parent.position.top
+            offset.x = this.parent.position.left
+            offset.y = this.parent.position.top 
         }
         return {
             id: this.id,
