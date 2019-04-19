@@ -57,8 +57,8 @@ class Ship {
         }
 
         this.body = Bodies.rectangle(
-            0,
-            0,
+            500,
+            500,
             this.width * SMALL_BLOCK_SIZE,
             this.height * SMALL_BLOCK_SIZE
         )

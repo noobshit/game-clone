@@ -22,7 +22,7 @@ class GameMap {
         for (let x = 0; x < width; x += 1) {
             this.fields[x] = new Array(height)
             for (let y = 0; y < height; y += 1) {
-                if (Math.random() < 0.2) {
+                if (y == height - 1 || x == 0 || x == width - 1 || y == 0) {
                     this.fields[x][y] = true
                     this.blocks.push(
                         {
@@ -84,7 +84,7 @@ const game = {
                     dy += d
                 }
 
-                let ship_speed = 100
+                let ship_speed = 75
                 let ship = player.parent
                 if (input.arrow_left) {
                     ship.translate({x: -ship_speed, y: 0})
@@ -133,10 +133,9 @@ const game = {
     },
 
     tick: function() {
-        game.process_input_buffer()
-        Engine.update(game.engine)
         Engine.update(game.ship.engine)
-        console.log(game.ship.body.position)
+        Engine.update(game.engine)
+        game.process_input_buffer()
     },
 
     init: function() {
