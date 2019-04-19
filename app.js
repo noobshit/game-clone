@@ -39,6 +39,7 @@ function tick() {
     game.tick()
     let players = [] //Array.from(game.players.values()).map(player => player.get_entity())
     let entites = game.ship.get_entites()
+    entites = entites.concat(game.ship_2.get_entites())
     entites = entites.concat(players)
 
     sockets.forEach(socket => {
