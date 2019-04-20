@@ -3,7 +3,7 @@ const Matter = require('matter-js')
 const Body = Matter.Body
 const Bodies = Matter.Bodies
 
-const Cursor = require('./cursor.js')
+const Cursor = require('../shared/cursor.js')
 const Pos = require('./pos.js')
 
 class Entity {

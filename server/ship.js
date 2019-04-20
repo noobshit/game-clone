@@ -9,7 +9,7 @@ const Detector = Matter.Detector
 const Composite = Matter.Composite
 
 const Entity = require('./entity.js')
-const Cursor = require('./cursor.js')
+const Cursor = require('../shared/cursor.js')
 const Pos = require('./pos.js')
 const Box = require('./box.js')
 const collision = require('./collision.js')
