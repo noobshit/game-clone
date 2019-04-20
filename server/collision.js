@@ -1,34 +1,38 @@
 
-const CATEGORY_TRANSPARENT = 0x00
-const CATEGORY_WALL = 0x01
-const CATEGORY_BACK = 0x02
-const CATEGORY_MOBILE = 0x04
-const CATEGORY_PLAYER = 0x08
+const category = {
+    transparent: 0x00,
+    wall: 0x01,
+    back: 0x02,
+    mobile: 0x04,
+    player: 0x08
+}
 
-const MASK_BUILDING = CATEGORY_WALL | CATEGORY_BACK
-const MASK_MOBILE = CATEGORY_WALL | CATEGORY_MOBILE | CATEGORY_PLAYER
-const MASK_PLAYER = CATEGORY_WALL | CATEGORY_MOBILE
-const MASK_TRANSPARENT = 0x00
+const mask = {
+    building: category.wall | category.back,
+    mobile: category.wall | category.mobile | category.player,
+    player: category.wall | category.mobile,
+    transparent: 0x00
+} 
 
 const filter = {
     mobile: {
-        category: CATEGORY_MOBILE,
-        mask: MASK_MOBILE
+        category: category.mobile,
+        mask: mask.mobile
     },
 
     building: {
-        category: CATEGORY_BACK,
-        mask: MASK_BUILDING
+        category: category.back,
+        mask: mask.building
     },
 
     player: {
-        category: CATEGORY_PLAYER,
-        mask: MASK_PLAYER
+        category: category.player,
+        mask: mask.player
     },
 
     transparent: {
-        category: CATEGORY_TRANSPARENT,
-        mask: MASK_TRANSPARENT
+        category: category.transparent,
+        mask: mask.transparent
     },
 }
 
