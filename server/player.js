@@ -1,5 +1,6 @@
 const Box = require('./box.js')
 const {Cursor, CURSOR} = require('./cursor.js')
+const collision = require('./collision.js')
 const Entity = require('./entity.js')
 const Matter = require('matter-js')
 const Body = Matter.Body
@@ -11,37 +12,6 @@ const Query = Matter.Query
 const Detector = Matter.Detector
 const Composite = Matter.Composite
 
-const CATEGORY_TRANSPARENT = 0x00
-const CATEGORY_WALL = 0x01
-const CATEGORY_BACK = 0x02
-const CATEGORY_MOBILE = 0x04
-const CATEGORY_PLAYER = 0x08
-
-const MASK_BUILDING = CATEGORY_WALL | CATEGORY_BACK
-const MASK_MOBILE = CATEGORY_WALL | CATEGORY_MOBILE | CATEGORY_PLAYER
-const MASK_PLAYER = CATEGORY_WALL | CATEGORY_MOBILE
-const MASK_TRANSPARENT = 0x00
-
-const COLLISION_MOBILE = {
-    category: CATEGORY_MOBILE,
-    mask: MASK_MOBILE
-}
-
-const COLLISION_BUILDING = {
-    category: CATEGORY_BACK,
-    mask: MASK_BUILDING
-}
-
-const COLLISION_PLAYER = {
-    category: CATEGORY_PLAYER,
-    mask: MASK_PLAYER
-}
-
-const COLLISION_TRANSPARENT = {
-    category: CATEGORY_TRANSPARENT,
-    mask: MASK_TRANSPARENT
-}
-
 class Player extends Entity {
     constructor(socket) {
         super(
@@ -52,7 +22,7 @@ class Player extends Entity {
                 friction: 0.5,
                 frictionStatic: 0.1,
                 restitution: 0.5,
-                collisionFilter: COLLISION_PLAYER
+                collisionFilter: collision.filter.player
             }
         )
         
@@ -123,7 +93,7 @@ class Player extends Entity {
                 player.item = entry
                 entry.holded_by = player
                 player.item.collisionFilter = player.item.body.collisionFilter
-                player.item.body.collisionFilter = COLLISION_TRANSPARENT
+                player.item.body.collisionFilter = collision.filter.transparent
                 Body.setPosition(player.item.body, player.body.position)
                 let constraint = Constraint.create({
                     bodyA: player.body,

@@ -3,12 +3,6 @@ const Matter = require('matter-js')
 const Body = Matter.Body
 const Bodies = Matter.Bodies
 
-const CATEGORY_TRANSPARENT = 0x00
-const CATEGORY_WALL = 0x01
-const CATEGORY_BACK = 0x02
-const CATEGORY_MOBILE = 0x04
-const CATEGORY_PLAYER = 0x08
-
 const {CURSOR, Cursor} = require('./cursor.js')
 const Pos = require('./pos.js')
 
@@ -23,6 +17,7 @@ class Entity {
         this.id = this.generate_id()
         this.parent = null
         this.holded_by = null
+        this.is_background = false
     }
 
     get world() {
@@ -58,7 +53,7 @@ class Entity {
             height: this.height,
             angle: this.body.angle,
             image_key: this.image_key,
-            is_background: [CATEGORY_WALL, CATEGORY_BACK].includes(this.body.collisionFilter.category)
+            is_background: this.is_background
         }
     }
 
