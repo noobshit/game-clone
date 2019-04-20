@@ -2,7 +2,10 @@
 const SMALL_BLOCK_SIZE = 32
 const BIG_BLOCK_SIZE = 8 * SMALL_BLOCK_SIZE
 
-const {Ship, Player, Pos, Entity} = require('./ship.js')
+const {Ship} = require('./ship.js')
+const Player = require('./player.js')
+const Entity = require('./entity.js')
+
 const Matter = require('matter-js')
 const Body = Matter.Body
 const Bodies = Matter.Bodies

@@ -11,6 +11,8 @@ const Composite = Matter.Composite
 const Entity = require('./entity.js')
 const {CURSOR, Cursor} = require('./cursor.js')
 const Pos = require('./pos.js')
+const Box = require('./box.js')
+
 const SMALL_BLOCK_SIZE = 32
 
 const CATEGORY_TRANSPARENT = 0x00
@@ -140,131 +142,8 @@ class Ship {
 }
 
 
-class Player extends Entity {
-    constructor(socket) {
-        super(
-            0.8,
-            1.6,
-            null,
-            {
-                friction: 0.5,
-                frictionStatic: 0.1,
-                restitution: 0.5,
-                collisionFilter: COLLISION_PLAYER
-            }
-        )
-        
-        this.item = null
-        this.socket = socket
-        this.speed = 5
-        Body.setInertia(this.body, Infinity)
-    }
-
-    send_debug_message(msg) {
-        this.socket.emit('debug_answer', msg)
-    }
-
-    update_cursor(event) {
-        if (this.item && this.item.use.can_execute(event)) {
-            this.cursor = this.item.get_cursor(event)
-        } else if (this.grab_item.can_execute(event)) {
-            this.cursor = new Cursor(
-                CURSOR.GRAB, 
-                {
-                    can_use: true,
-                    target: this.grab_item.target(event).get_entity(),
-                })
-        } else if (event.entites.some(e => e.left_button_down.can_execute(event))) {
-            let entity = event.entites.find(e => e.left_button_down.can_execute(event))
-            this.cursor = entity.get_cursor()
-        } else if (this.item) {
-            this.cursor = this.item.get_cursor(event)
-        } else if (this.grab_item.target(event) != null) {
-            this.cursor = new Cursor(CURSOR.GRAB, {can_use: false})
-        } else {
-            this.cursor = new Cursor(CURSOR.DEFAULT)
-        }
-    }
-
-    on_left_button_down(event) {
-        if (this.item && this.item.use.can_execute(event)) {
-            this.item.use.execute(event)
-        }
-        else if (this.grab_item.can_execute(event)) {
-            this.grab_item.execute(event)
-        } else {
-            let entity = event.entites.find(e => e.left_button_down.can_execute(event))
-            if (entity) {
-                entity.left_button_down.execute(event)
-            }
-        }
-    }
-
-    on_remove() {
-        if (this.drop_item.can_execute()) {
-            this.drop_item.execute()
-        }
-    }
-
-    get grab_item() {
-        let player = this
-        return {
-            target: function(event) {
-                return event.entites.find(e => e instanceof Box)
-            },
-            can_execute: function(event) {
-                return player.item == null 
-                && event.entites.some(e => e instanceof Box)
-            },
-            execute: function(event) {
-                let entry = this.target(event)
-                player.item = entry
-                entry.holded_by = player
-                player.item.collisionFilter = player.item.body.collisionFilter
-                player.item.body.collisionFilter = COLLISION_TRANSPARENT
-                Body.setPosition(player.item.body, player.body.position)
-                let constraint = Constraint.create({
-                    bodyA: player.body,
-                    bodyB: player.item.body
-                })
-                player.item.constraint = constraint
-                World.add(player.world, constraint)
-            }    
-        }
-    }
-    
-    get drop_item() {
-        let player = this
-        return {
-            can_execute: function(event) {
-                return player.item != null
-            },
-            execute: function(event) {
-                player.item.holded_by = null
-                player.item.body.collisionFilter = player.item.collisionFilter
-                delete player.item.collisionFilter
-                World.remove(player.world, player.item.constraint)
-                delete player.item.constraint
-                player.item = null
-            
-            }
-        }
-    }
-}
 
 
-class Box extends Entity {
-    constructor(image_key) {
-        super(
-            0.8,
-            0.8,
-            image_key,
-            {
-                collisionFilter: COLLISION_MOBILE
-            }
-        )
-    }
-}
 
 
 class Wrench extends Box {
@@ -476,6 +355,5 @@ class BulidingPackage extends Box {
 }
 
 exports.Ship = Ship
-exports.Player = Player
 exports.Pos = Pos
 exports.Entity = Entity
