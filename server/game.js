@@ -8,19 +8,19 @@ const Engine = Matter.Engine
 const players = new Map()
 
 const game = {
-    add_player: function(socket_id, socket) {
+    add_player(socket_id, socket) {
         let player = new Player(socket)
         this.ship.add_entity(player, {x: 3, y: 3})
         players.set(socket_id, player)
     },
 
-    remove_player: function(socket_id) {
+    remove_player(socket_id) {
         let entity = players.get(socket_id)
         game.ship.remove_entity(entity)
         players.delete(socket_id)    
     },
 
-    process_input: function(socket_id, input) {
+    process_input(socket_id, input) {
         if (game.input_buffer.has(socket_id)) {
             game.input_buffer.get(socket_id).push(input)
         } else {
@@ -28,7 +28,7 @@ const game = {
         }
     },
 
-    process_input_buffer: function() {
+    process_input_buffer() {
         for ([key, value] of game.input_buffer) {
             for (let input of value) {
                 const player = players.get(key)
@@ -110,13 +110,13 @@ const game = {
         }
     },
 
-    tick: function() {
+    tick() {
         Engine.update(game.ship.engine)
         Engine.update(game.map.engine)
         game.process_input_buffer()
     },
 
-    init: function() {
+    init() {
         game.input_buffer = new Map() 
         game.ship = new Ship(12, 8)
         game.map = new GameMap(40, 40)
@@ -126,7 +126,7 @@ const game = {
         game.map.add_ship(game.ship_2)
     },
 
-    get_map: function() {
+    get_map() {
         return game.map.get_entites()
     },
 }
@@ -134,15 +134,15 @@ game.init()
 
 
 const events = {
-    on_input: function(socket_id, data) {
+    on_input(socket_id, data) {
         game.process_input(socket_id, data)
     },
 
-    on_connection: function(socket_id, socket) {
+    on_connection(socket_id, socket) {
         game.add_player(socket_id, socket)
     },
 
-    on_disconnect: function(socket_id) {
+    on_disconnect(socket_id) {
         game.remove_player(socket_id)
     },
 }
