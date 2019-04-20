@@ -7,6 +7,7 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/client/index.html')
 })
 app.use('/client', express.static(__dirname + '/client'))
+app.use('/shared', express.static(__dirname + '/shared'))
 
 const server = require('http').createServer(app);
 let port = 2000

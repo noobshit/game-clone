@@ -46,7 +46,7 @@ var displayer = {
 
         displayer.canvas.style.cursor = 'default'
         displayer.ctx.save()
-        if (cursor.action == CURSOR.BUILD) {
+        if (cursor.action == Cursor.type.BUILD) {
             let building = cursor.data
             displayer.ctx.globalAlpha = 0.65
             displayer.draw_entity(building)
@@ -58,7 +58,7 @@ var displayer = {
                 displayer.canvas.style.cursor = 'not-allowed'        
             }
             displayer.ctx.fillRect(building.left, building.top, building.width, building.height)
-        } else if (cursor.action == CURSOR.GRAB) {
+        } else if (cursor.action == Cursor.type.GRAB) {
             let target = cursor.target
             if (cursor.can_use) {
                 displayer.ctx.strokeStyle = '#00FF0055'
@@ -121,9 +121,3 @@ var displayer = {
 
 }
 displayer.init(document.querySelector("#canvas"))
-
-const CURSOR = {
-    DEFAULT: 1,
-    BUILD: 2,
-    GRAB: 3,
-}

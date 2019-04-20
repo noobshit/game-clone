@@ -20,4 +20,6 @@ class Cursor {
 
 }
 
-module.exports = Cursor
+if (typeof module !== 'undefined') {
+    module.exports = Cursor
+} 
