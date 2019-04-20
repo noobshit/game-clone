@@ -114,13 +114,13 @@ class Wrench extends Box {
 
     get use() {
         return {
-            target: function(event) {
+            target(event) {
                 return event.entites.find(e => e instanceof Building)
             },
-            can_execute: function(event) {
+            can_execute(event) {
                 return event.entites.some(e => e instanceof Building)
             },
-            execute: function(event) {
+            execute(event) {
                 let building = this.target(event)
                 let building_package = new BulidingPackage(building.constructor)
                 event.ship.add_entity(building_package, building.pos_grid)
@@ -139,13 +139,13 @@ class Shredder extends Box {
     get use() {
         let shredder = this
         return {
-            target: function(event) {
+            target(event) {
                 return event.entites.find(e => e instanceof Box && e != shredder)
             },
-            can_execute: function(event) {
+            can_execute(event) {
                 return event.entites.some(e => e instanceof Box && e != shredder)
             },
-            execute: function(event) {
+            execute(event) {
                 let box = this.target(event)
                 event.ship.remove_entity(box)
             }
@@ -162,16 +162,16 @@ class Enlargment extends Box {
     get use() {
         let enlargment = this
         return {
-            target: function(event){
+            target(event){
                 return null
             },  
-            can_execute: function(event) {
+            can_execute(event) {
                 return event.pos_grid.x >= 0 
                 && event.pos_grid.y >= 0
                 && event.pos_grid.x < event.ship.width
                 && event.pos_grid.y < event.ship.height
             },
-            execute: function(event) {
+            execute(event) {
                 let entites_to_move = event.ship.entites.filter(
                     e => e.pos_grid.x > event.pos_grid.x
                 )                
@@ -302,13 +302,13 @@ class BulidingPackage extends Box {
     get use() {
         let building_package = this
         return {
-            target: function(event) {
+            target(event) {
                 return null
             },
-            can_execute: function(event){
+            can_execute(event){
                 return building_package.can_build(Pos.to_snap(event.pos_game))
             },
-            execute: function(event) {
+            execute(event) {
                 building_package.parent.add_entity(building_package.building, event.pos_grid)
                 building_package.building = null
                 building_package.parent.remove_entity(building_package)
