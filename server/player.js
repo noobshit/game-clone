@@ -1,5 +1,5 @@
 const Box = require('./box.js')
-const {Cursor, CURSOR} = require('./cursor.js')
+const Cursor = require('./cursor.js')
 const collision = require('./collision.js')
 const Entity = require('./entity.js')
 const Matter = require('matter-js')
@@ -36,7 +36,7 @@ class Player extends Entity {
             this.cursor = this.item.get_cursor(event)
         } else if (this.grab_item.can_execute(event)) {
             this.cursor = new Cursor(
-                CURSOR.GRAB, 
+                Cursor.type.GRAB, 
                 {
                     can_use: true,
                     target: this.grab_item.target(event).get_entity(),
@@ -47,9 +47,9 @@ class Player extends Entity {
         } else if (this.item) {
             this.cursor = this.item.get_cursor(event)
         } else if (this.grab_item.target(event) != null) {
-            this.cursor = new Cursor(CURSOR.GRAB, {can_use: false})
+            this.cursor = new Cursor(Cursor.type.GRAB, {can_use: false})
         } else {
-            this.cursor = new Cursor(CURSOR.DEFAULT)
+            this.cursor = new Cursor(Cursor.type.DEFAULT)
         }
     }
 

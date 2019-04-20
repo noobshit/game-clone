@@ -1,4 +1,4 @@
-const CURSOR = {
+const types = {
     DEFAULT: 1,
     BUILD: 2,
     GRAB: 3,
@@ -14,7 +14,10 @@ class Cursor {
         Object.assign(this, options)
     }
 
+    static get type() {
+        return types
+    }
+
 }
 
-module.exports.Cursor = Cursor
-module.exports.CURSOR = CURSOR
+module.exports = Cursor

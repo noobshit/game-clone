@@ -3,7 +3,7 @@ const Matter = require('matter-js')
 const Body = Matter.Body
 const Bodies = Matter.Bodies
 
-const {CURSOR, Cursor} = require('./cursor.js')
+const Cursor = require('./cursor.js')
 const Pos = require('./pos.js')
 
 class Entity {
@@ -97,7 +97,7 @@ class Entity {
             target = target.get_entity()
         }
         return new Cursor(
-            CURSOR.DEFAULT, {
+            Cursor.type.DEFAULT, {
                 target,
                 can_use: this.use.can_execute(event)
             })

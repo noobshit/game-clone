@@ -9,7 +9,7 @@ const Detector = Matter.Detector
 const Composite = Matter.Composite
 
 const Entity = require('./entity.js')
-const {CURSOR, Cursor} = require('./cursor.js')
+const Cursor = require('./cursor.js')
 const Pos = require('./pos.js')
 const Box = require('./box.js')
 const collision = require('./collision.js')
@@ -316,7 +316,7 @@ class BulidingPackage extends Box {
 
     get_cursor(event) {
         return new Cursor(
-            CURSOR.BUILD, 
+            Cursor.type.BUILD, 
             {
                 can_use: this.use.can_execute(event), 
                 data: this.building.get_entity()
