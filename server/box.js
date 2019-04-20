@@ -8,7 +8,7 @@ class Box extends Entity {
             0.8,
             image_key,
             {
-                collisionFilter: collison.filter.mobile
+                collisionFilter: collison.filter.MOBILE
             }
         )
     }

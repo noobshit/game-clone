@@ -4,13 +4,8 @@ const collision = require('./collision.js')
 const Entity = require('./entity.js')
 const Matter = require('matter-js')
 const Body = Matter.Body
-const Bodies = Matter.Bodies
-const Engine = Matter.Engine
 const World = Matter.World
 const Constraint = Matter.Constraint
-const Query = Matter.Query
-const Detector = Matter.Detector
-const Composite = Matter.Composite
 
 class Player extends Entity {
     constructor(socket) {
@@ -22,7 +17,7 @@ class Player extends Entity {
                 friction: 0.5,
                 frictionStatic: 0.1,
                 restitution: 0.5,
-                collisionFilter: collision.filter.player
+                collisionFilter: collision.filter.PLAYER
             }
         )
         
@@ -93,7 +88,7 @@ class Player extends Entity {
                 player.item = entry
                 entry.holded_by = player
                 player.item.collisionFilter = player.item.body.collisionFilter
-                player.item.body.collisionFilter = collision.filter.transparent
+                player.item.body.collisionFilter = collision.filter.TRANSPARENT
                 Body.setPosition(player.item.body, player.body.position)
                 let constraint = Constraint.create({
                     bodyA: player.body,

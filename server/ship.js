@@ -237,7 +237,7 @@ class Ladder extends Building {
             'ladder.png',
             {
                 isStatic: true,
-                collisionFilter: collision.filter.building
+                collisionFilter: collision.filter.BUILDING
             }
         )
     }
@@ -252,7 +252,7 @@ class Factory extends Building {
             'factory.png',
             {
                 isStatic: true,
-                collisionFilter: collision.filter.building
+                collisionFilter: collision.filter.BUILDING
             }
         )
     }
