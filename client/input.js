@@ -7,11 +7,11 @@ var mouse = {
         y: 0
     },
 
-    get_entites_under_cursor: function() {
+    get_entites_under_cursor() {
         return state.entites.filter(entity => pos.is_inside_entity(mouse.game_pos, entity))
     },
 
-    get_game_pos: function(e) {
+    get_game_pos(e) {
         let screenX = e.offsetX
         let screenY = e.offsetY
     
@@ -24,12 +24,12 @@ var mouse = {
         return pos
     },
 
-    on_move: function(e) {
+    on_move(e) {
         mouse.game_pos = mouse.get_game_pos(e)
         mouse.entites_ids = mouse.get_entites_under_cursor().map(e => e.id)
     },
 
-    on_wheel: function(e) {
+    on_wheel(e) {
         if (e.deltaY < 0) {
             displayer.zoom_in()
         } else {
@@ -37,16 +37,16 @@ var mouse = {
         }
     },
 
-    on_down: function(e) {
+    on_down(e) {
         mouse.is_button_pressed.set(e.button, true)
         return false
     },
 
-    on_up: function(e) {
+    on_up(e) {
         mouse.is_button_pressed.set(e.button, false)
     },
 
-    init: function() {
+    init() {
         window.onmousemove = mouse.on_move
         window.onmousedown = mouse.on_down
         window.onmouseup = mouse.on_up
@@ -59,7 +59,7 @@ mouse.init()
 var keyboard = {
     is_key_pressed: {},
 
-    init: function() {
+    init() {
         window.onkeyup = e => keyboard.is_key_pressed[e.key] = false
         window.onkeydown = e => keyboard.is_key_pressed[e.key] = true
     },
@@ -69,7 +69,7 @@ keyboard.init()
 
 
 var pos = {
-    is_inside_entity: function(game_pos, entity) {
+    is_inside_entity(game_pos, entity) {
         let dx = game_pos.x - entity.x
         let dy = game_pos.y - entity.y
         // distance between the point and the center of the rectangle

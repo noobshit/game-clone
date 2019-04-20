@@ -76,14 +76,14 @@ class Player extends Entity {
     get grab_item() {
         let player = this
         return {
-            target: function(event) {
+            target(event) {
                 return event.entites.find(e => e instanceof Box)
             },
-            can_execute: function(event) {
+            can_execute(event) {
                 return player.item == null 
                 && event.entites.some(e => e instanceof Box)
             },
-            execute: function(event) {
+            execute(event) {
                 let entry = this.target(event)
                 player.item = entry
                 entry.holded_by = player
@@ -103,10 +103,10 @@ class Player extends Entity {
     get drop_item() {
         let player = this
         return {
-            can_execute: function(event) {
+            can_execute(event) {
                 return player.item != null
             },
-            execute: function(event) {
+            execute(event) {
                 player.item.holded_by = null
                 player.item.body.collisionFilter = player.item.collisionFilter
                 delete player.item.collisionFilter

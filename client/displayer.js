@@ -1,5 +1,5 @@
 var displayer = {
-    init: function(canvas) {
+    init(canvas) {
         displayer.canvas = canvas
         displayer.ctx = canvas.getContext("2d")
         displayer.scale = 1
@@ -25,12 +25,12 @@ var displayer = {
         }
     },
 
-    clear: function() {
+    clear() {
         displayer.ctx.setTransform(1, 0, 0, 1, 0, 0)
         displayer.ctx.clearRect(0, 0, displayer.canvas.width, displayer.canvas.height)
     },
     
-    center_camera_on_entity: function(entity) {
+    center_camera_on_entity(entity) {
         displayer.ctx.scale(displayer.scale, displayer.scale)
         displayer.ctx.translate(-entity.x, -entity.y)
         displayer.ctx.translate(
@@ -39,7 +39,7 @@ var displayer = {
         )
     },
 
-    draw_cursor: function(cursor) {
+    draw_cursor(cursor) {
         if (!cursor) {
             return
         }
@@ -75,7 +75,7 @@ var displayer = {
         displayer.ctx.restore()
     },
     
-    draw_entity: function(entity) {
+    draw_entity(entity) {
         if (entity.image_key) {
             displayer.ctx.save()
             displayer.ctx.translate(entity.x, entity.y)
@@ -110,11 +110,11 @@ var displayer = {
         }
     },
 
-    zoom_in: function() {
+    zoom_in() {
         displayer.scale *= 1.09
     },
     
-    zoom_out: function() {
+    zoom_out() {
         displayer.scale *= 0.9
         displayer.scale = Math.max(0.03, displayer.scale)
     },
