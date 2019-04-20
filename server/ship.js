@@ -108,10 +108,6 @@ class Ship {
 }
 
 
-
-
-
-
 class Wrench extends Box {
     constructor() {
         super('wrench.png')
