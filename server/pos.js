@@ -1,13 +1,13 @@
 const SMALL_BLOCK_SIZE = 32
 
 Pos = {
-    to_grid: function(pos) {
+    to_grid(pos) {
         return {
             x: Math.floor(pos.x / SMALL_BLOCK_SIZE),
             y: Math.floor(pos.y / SMALL_BLOCK_SIZE)
         }
     },
-    to_snap: function(pos) {
+    to_snap(pos) {
         let snapped = {
             x: pos.x,
             y: pos.y,

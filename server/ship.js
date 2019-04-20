@@ -3,7 +3,6 @@ const Body = Matter.Body
 const Bodies = Matter.Bodies
 const Engine = Matter.Engine
 const World = Matter.World
-const Constraint = Matter.Constraint
 const Query = Matter.Query
 const Detector = Matter.Detector
 const Composite = Matter.Composite
