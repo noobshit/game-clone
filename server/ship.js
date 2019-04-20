@@ -91,12 +91,6 @@ class Ship {
     }
 
     remove_entity(entity) {
-        if (entity.holded_by != null) {
-            const player = entity.holded_by
-            if (player.drop_item.can_execute()) {
-                player.drop_item.execute()
-            }
-        }
         entity.on_remove()
         entity.parent = null
         World.remove(this.world, entity.body)

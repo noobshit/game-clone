@@ -104,6 +104,12 @@ class Entity {
     }
 
     on_remove() {
+        if (this.holded_by != null) {
+            const player = this.holded_by
+            if (player.drop_item.can_execute()) {
+                player.drop_item.execute()
+            }
+        }
     }
 }
 
