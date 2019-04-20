@@ -7,13 +7,18 @@ var mouse = {
         y: 0
     },
 
+    screen_pos: {
+        x: 0,
+        y: 0
+    },
+
     get_entites_under_cursor() {
         return state.entites.filter(entity => pos.is_inside_entity(mouse.game_pos, entity))
     },
 
-    get_game_pos(e) {
-        let screenX = e.offsetX
-        let screenY = e.offsetY
+    get_game_pos() {
+        let screenX = mouse.screen_pos.x
+        let screenY = mouse.screen_pos.y
     
         var matrix = displayer.ctx.getTransform();
         let inverted = matrix.invertSelf()
@@ -24,9 +29,16 @@ var mouse = {
         return pos
     },
 
-    on_move(e) {
-        mouse.game_pos = mouse.get_game_pos(e)
+    update() {
+        mouse.game_pos = mouse.get_game_pos()
         mouse.entites_ids = mouse.get_entites_under_cursor().map(e => e.id)
+    },
+
+    on_move(e) {
+        mouse.screen_pos = {
+            x: e.offsetX,
+            y: e.offsetY
+        }
     },
 
     on_wheel(e) {

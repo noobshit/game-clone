@@ -30,6 +30,7 @@ function check_input() {
 
 
 function build_input_packet() {
+    mouse.update()
     let input = {}
     for (let [key, value] of mouse.is_button_pressed) {
         if (value) {
