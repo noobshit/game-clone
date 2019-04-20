@@ -176,9 +176,19 @@ class Enlargment extends Box {
                 let entites_to_move = event.ship.entites.filter(
                     e => e.pos_grid.x > event.pos_grid.x
                 )                
-                entites_to_move.forEach(e => e.translate({x: SMALL_BLOCK_SIZE, y: 0}))
-                event.ship.add_entity(new Brick(), {x: event.pos_grid.x + 1, y: 0})
-                event.ship.add_entity(new Brick(), {x: event.pos_grid.x + 1, y: event.ship.height - 1})
+                entites_to_move.forEach(e => e.translate({
+                    x: SMALL_BLOCK_SIZE, 
+                    y: 0
+                }))
+                event.ship.add_entity(new Brick(), {
+                    x: event.pos_grid.x + 1, 
+                    y: 0
+                })
+                
+                event.ship.add_entity(new Brick(), {
+                    x: event.pos_grid.x + 1, 
+                    y: event.ship.height - 1
+                })
                 event.ship.remove_entity(enlargment)
             }
         }
