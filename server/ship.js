@@ -416,6 +416,17 @@ class BulidingPackage extends Box {
         this.building = building
     }
 
+    set parent(value) {
+        this._parent = value
+        if (this.building) {
+            this.building.parent = value
+        }
+    }
+
+    get parent() {
+        return this._parent
+    }
+
     can_build(pos) {
         let bodyA = this.building.body
         Body.setPosition(bodyA, {
@@ -447,6 +458,7 @@ class BulidingPackage extends Box {
             },
             execute: function(event) {
                 building_package.parent.add_entity(building_package.building, event.pos_grid)
+                building_package.building = null
                 building_package.parent.remove_entity(building_package)
             }
         }

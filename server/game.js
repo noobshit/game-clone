@@ -139,11 +139,15 @@ const game = {
                     }
                 }
 
+                mouse_pos_inside_ship = {
+                    x: input.mouse.pos_game.x - ship.position.left,
+                    y: input.mouse.pos_game.y - ship.position.top
+                }
                 let event = {
                     from: player, 
                     ship: player.parent,
-                    pos_game: input.mouse.pos_game,
-                    pos_grid: Pos.to_grid(input.mouse.pos_game),
+                    pos_game: mouse_pos_inside_ship,
+                    pos_grid: Pos.to_grid(mouse_pos_inside_ship),
                     entites_ids: input.mouse.entites_ids,
                     entites: player.parent.entites.filter(e => input.mouse.entites_ids.includes(e.id))
                 }
