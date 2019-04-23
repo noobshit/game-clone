@@ -14,7 +14,8 @@ var displayer = {
             'metal.png',
             'repair.png',
             'shredder.png',
-            'wrench.png'
+            'wrench.png',
+            'turret_barrel.png'
         ]
         displayer.images = new Map()
 

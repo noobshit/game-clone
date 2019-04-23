@@ -51,6 +51,8 @@ class Player extends Entity {
         } else {
             this.cursor = new Cursor(Cursor.type.DEFAULT)
         }
+
+        this.parent.update_turret_angle(event.pos_game)
     }
 
     on_left_button_down(event) {

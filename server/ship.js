@@ -6,6 +6,7 @@ const World = Matter.World
 const Query = Matter.Query
 const Detector = Matter.Detector
 const Composite = Matter.Composite
+const Vector = Matter.Vector
 
 const Entity = require('./entity.js')
 const Cursor = require('../shared/cursor.js')
@@ -52,6 +53,7 @@ class Ship {
         this.add_entity(new Shredder(), {x: 5, y: 4})
         this.add_entity(new Enlargment(), {x: 5, y: 3})
         this.add_entity(new BulidingPackage(Brick), {x: 5, y: 2})
+        this.add_entity(new Turret(), {x: 0, y: 0})
     }
 
     get position() {
@@ -103,6 +105,11 @@ class Ship {
 
     translate(vector) {
         Body.translate(this.body, vector)
+    }
+
+    update_turret_angle(position) {
+        let turrets = this.entites.filter(e => e instanceof Turret) 
+        turrets.forEach(e => e.follow_point(position))
     }
 }
 
@@ -326,5 +333,23 @@ class BulidingPackage extends Box {
         )
     }
 }
+
+class Turret extends Building {
+    constructor() {
+        super(
+            3, 
+            0.5,
+            'turret_barrel.png',
+            {
+                isStatic: true,
+                collisionFilter: collision.filter.BUILDING
+            }
+        )
+    }
+
+    follow_point(point) {
+        let angle = Vector.angle(this.body.position, point)
+        Body.setAngle(this.body, angle)
+    }
 
 exports.Ship = Ship
