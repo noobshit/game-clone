@@ -24,6 +24,7 @@ class Player extends Entity {
         this.item = null
         this.socket = socket
         this.speed = 5
+        this.using_building = null
         Body.setInertia(this.body, Infinity)
     }
 
@@ -106,16 +107,20 @@ class Player extends Entity {
         let player = this
         return {
             can_execute(event) {
-                return player.item != null
+                return player.item != null || player.using_building
             },
             execute(event) {
-                player.item.holded_by = null
-                player.item.body.collisionFilter = player.item.collisionFilter
-                delete player.item.collisionFilter
-                World.remove(player.world, player.item.constraint)
-                delete player.item.constraint
-                player.item = null
-            
+                if (player.item != null) {
+                    player.item.holded_by = null
+                    player.item.body.collisionFilter = player.item.collisionFilter
+                    delete player.item.collisionFilter
+                    World.remove(player.world, player.item.constraint)
+                    delete player.item.constraint
+                    player.item = null
+                } else if (player.using_building) {
+                    player.using_building.used_by = null
+                    player.using_building = null
+                }
             }
         }
     }

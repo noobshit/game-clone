@@ -54,6 +54,7 @@ class Ship {
         this.add_entity(new Enlargment(), {x: 5, y: 3})
         this.add_entity(new BulidingPackage(Brick), {x: 5, y: 2})
         this.add_entity(new Turret(), {x: 0, y: 0})
+        this.add_entity(new Helm(), {x: 9, y: 5})
     }
 
     get position() {
@@ -234,6 +235,51 @@ class Brick extends Building {
         )
 
         this.is_background = true
+    }
+}
+
+
+class Helm extends Building {
+    constructor() {
+        super(
+            2,
+            2,
+            'helm.png', 
+            {
+                isStatic: true,
+            }   
+        )
+
+        this.is_background = true
+        this.used_by = null
+    }
+
+    set used_by(value) {
+        this._used_by = value
+        if (this.parent) {
+            this.parent.controlled_by = value
+        }
+    }
+
+    get used_by() {
+        return this._used_by
+    }
+
+    get left_button_down() {
+        let helm = this
+        return {
+            target(event) {
+                return null
+            },
+            can_execute(event) {
+                return !helm.used_by && !event.ship.controlled_by
+            },
+            execute(event) {
+                helm.used_by = event.from
+                event.ship.controlled_by = event.from
+                event.from.using_building = helm
+            }
+        }
     }
 }
 
