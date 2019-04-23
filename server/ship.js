@@ -351,5 +351,6 @@ class Turret extends Building {
         let angle = Vector.angle(this.body.position, point)
         Body.setAngle(this.body, angle)
     }
+}
 
 exports.Ship = Ship
