@@ -5,6 +5,7 @@ const GameMap = require('./gameMap.js')
 const Matter = require('matter-js')
 const Body = Matter.Body
 const Engine = Matter.Engine
+const Vector = Matter.Vector
 const players = new Map()
 
 const game = {
@@ -36,48 +37,33 @@ const game = {
                     continue
                 }
                 const d = player.speed 
-                let dx = 0
-                let dy = 0
+                let move_vector = {
+                    x: 0,
+                    y: 0
+                }
 
                 if (input.move_left) {
-                    dx -= d
+                    move_vector.x -= 1
                 } 
                 if (input.move_right) {
-                    dx += d
+                    move_vector.x += 1
                 }
                 if (input.move_up) {
-                    dy -= d
+                    move_vector.y -= 1
                 }
                 if (input.move_down) {
-                    dy += d
+                    move_vector.y += 1
                 }
 
-                let ship_force = 0.001
-                let force = {x: 0, y: 0}
+                if (!player.using_building) {
+                    player.translate(Vector.mult(move_vector, d))
+                } 
+
                 let ship = player.parent
-                if (input.arrow_left) {
-                    force.x -= ship_force
-                }
+                if (ship.controlled_by == player) {
 
-                if (input.arrow_right) {
-                    force.x += ship_force
-                }
-
-                if (input.arrow_up) {
-                    force.y -= ship_force
-                }
-
-                if (input.arrow_down) {
-                    force.y += ship_force
-                }
-
-                force.x = force.x * ship.body.mass
-                force.y = force.y * ship.body.mass
-                
-                Body.applyForce(ship.body, ship.body.position, force)
-
-                if ( dx != 0 || dy != 0) {
-                    player.translate({x: dx, y: dy})
+                    let ship_force = Vector.mult(move_vector, 0.001 * ship.body.mass)
+                    Body.applyForce(ship.body, ship.body.position, ship_force)
                 }
 
                 if (input.press_q) {
