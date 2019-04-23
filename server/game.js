@@ -36,8 +36,22 @@ const game = {
                 if (!player) {
                     continue
                 }
-                const d = player.speed 
-                let move_vector = {
+
+                const ship = player.parent
+                const mouse_pos_inside_ship = {
+                    x: input.mouse.pos_game.x - ship.position.left,
+                    y: input.mouse.pos_game.y - ship.position.top
+                }
+                const event = {
+                    from: player, 
+                    ship: player.parent,
+                    pos_game: mouse_pos_inside_ship,
+                    pos_grid: Pos.to_grid(mouse_pos_inside_ship),
+                    entites_ids: input.mouse.entites_ids,
+                    entites: player.parent.entites.filter(e => input.mouse.entites_ids.includes(e.id))
+                }
+
+                const move_vector = {
                     x: 0,
                     y: 0
                 }
@@ -56,33 +70,19 @@ const game = {
                 }
 
                 if (!player.using_building) {
-                    player.translate(Vector.mult(move_vector, d))
+                    player.translate(Vector.mult(move_vector, player.speed ))
                 } 
 
-                let ship = player.parent
                 if (ship.controlled_by == player) {
-
-                    let ship_force = Vector.mult(move_vector, 0.001 * ship.body.mass)
+                    const ship_force = Vector.mult(move_vector, 0.001 * ship.body.mass)
                     Body.applyForce(ship.body, ship.body.position, ship_force)
+                    ship.update_turret_angle(event.pos_game)
                 }
 
                 if (input.press_q) {
                     if (player.drop_item.can_execute()) {
                         player.drop_item.execute()
                     }
-                }
-
-                mouse_pos_inside_ship = {
-                    x: input.mouse.pos_game.x - ship.position.left,
-                    y: input.mouse.pos_game.y - ship.position.top
-                }
-                let event = {
-                    from: player, 
-                    ship: player.parent,
-                    pos_game: mouse_pos_inside_ship,
-                    pos_grid: Pos.to_grid(mouse_pos_inside_ship),
-                    entites_ids: input.mouse.entites_ids,
-                    entites: player.parent.entites.filter(e => input.mouse.entites_ids.includes(e.id))
                 }
 
                 if (input.mouse0) {
