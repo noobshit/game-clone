@@ -221,6 +221,27 @@ class Building extends Entity {
     constructor(width, height, image_key, options) {
         super(width, height, image_key, options)
     }
+
+    can_build(pos) {
+        let bodyA = this.body
+        Body.setPosition(bodyA, {
+            x: pos.left + this.offset.x,
+            y: pos.top + this.offset.y
+        })
+        let bodies = Composite.allBodies(this.world)
+        let can_collide_with = bodies.filter(
+            bodyB => Detector.canCollide(bodyA.collisionFilter, bodyB.collisionFilter)
+        )
+        let collisions = Query.collides(bodyA, can_collide_with)
+        let is_not_colliding = collisions.length == 0
+        let bounds = this.parent.bounds
+        let pos_is_inside_ship = bounds.left < pos.x 
+            && bounds.right > pos.x
+            && bounds.top < pos.y
+            && bounds.bottom > pos.y
+        return is_not_colliding && pos_is_inside_ship
+    }
+
 }
 
 class Brick extends Building {
@@ -332,26 +353,6 @@ class BulidingPackage extends Box {
         return this._parent
     }
 
-    can_build(pos) {
-        let bodyA = this.building.body
-        Body.setPosition(bodyA, {
-            x: pos.left + this.building.offset.x,
-            y: pos.top + this.building.offset.y
-        })
-        let bodies = Composite.allBodies(this.world)
-        let can_collide_with = bodies.filter(
-            bodyB => Detector.canCollide(bodyA.collisionFilter, bodyB.collisionFilter)
-        )
-        let collisions = Query.collides(bodyA, can_collide_with)
-        let is_not_colliding = collisions.length == 0
-        let bounds = this.parent.bounds
-        let pos_is_inside_ship = bounds.left < pos.x 
-            && bounds.right > pos.x
-            && bounds.top < pos.y
-            && bounds.bottom > pos.y
-        return is_not_colliding && pos_is_inside_ship
-    }
-
     get use() {
         let building_package = this
         return {
@@ -359,7 +360,7 @@ class BulidingPackage extends Box {
                 return null
             },
             can_execute(event){
-                return building_package.can_build(Pos.to_snap(event.pos_game))
+                return building_package.building.can_build(Pos.to_snap(event.pos_game))
             },
             execute(event) {
                 building_package.parent.add_entity(building_package.building, event.pos_grid)
