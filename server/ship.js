@@ -80,6 +80,13 @@ class Ship {
         return this.engine.world
     }
 
+
+    add_entity_base(entity) {
+        entity.parent = this
+        this.entites.push(entity)
+        World.add(this.engine.world, entity.body)        
+    }
+
     add_entity(entity, pos_grid) {
         let pos_game = {
             x: pos_grid.x * SMALL_BLOCK_SIZE + entity.offset.x,
@@ -243,6 +250,11 @@ class Building extends Entity {
     }
 
 
+    build(pos_grid) {
+        this.parent.add_entity(this, pos_grid)
+    }
+
+
     get bounds() {
         return {
             left: this.body.bounds.min.x,
@@ -373,7 +385,7 @@ class BulidingPackage extends Box {
                 return building_package.building.can_build(Pos.to_snap(event.pos_game))
             },
             execute(event) {
-                building_package.parent.add_entity(building_package.building, event.pos_grid)
+                building_package.building.build(event.pos_grid)        
                 building_package.building = null
                 building_package.parent.remove_entity(building_package)
             }
@@ -403,7 +415,19 @@ class Turret extends Building {
             }
         )
 
-        this.is_vertical_wall = false
+        this.barrel = new Barrel()
+    }
+
+    get parent() {
+        return this._parent
+    }
+    
+    set parent(value) {
+        this._parent = value
+
+        if (this.barrel) {
+            this.barrel.parent = value
+        }
     }
 
     follow_point(point) {
@@ -413,39 +437,103 @@ class Turret extends Building {
 
     can_build(pos) {
         const ship_bounds = this.parent.bounds
-        const is_vertical_wall = pos.left == ship_bounds.left 
-            || pos.right == ship_bounds.right 
-        const is_horizontal_wall = pos.top == ship_bounds.top 
-            || pos.bottom == ship_bounds.bottom 
+        const is_left_wall = pos.left == ship_bounds.left 
+        const is_right_wall = pos.right == ship_bounds.right 
+        const is_vertical_wall = is_left_wall || is_right_wall
+        const is_top_wall = pos.top == ship_bounds.top 
+        const is_bottom_wall = pos.bottom == ship_bounds.bottom 
+        const is_horizontal_wall = is_top_wall || is_bottom_wall
 
-        let offset = {
-            x: this.offset.x,
-            y: this.offset.y
-        }
-        if (is_vertical_wall) {
-            offset.x = this.offset.y 
-            offset.y = this.offset.x
+        const body = this.body
+        const barrel = this.barrel.body
+        if (is_top_wall) {
+            const angle = 0
+            Body.setAngle(body, angle)
+            Body.setPosition(body, {
+                x: pos.left + this.offset.x,
+                y: pos.top + this.offset.y
+            })
+
+            Body.setAngle(barrel, 0 - Math.PI / 2)
+            Body.setPosition(barrel, {
+                x: pos.left + this.offset.x,
+                y: pos.top + this.offset.y - this.offset.x,
+            })
+        } else if (is_right_wall) {
+            const angle = 1 * Math.PI / 2
+            Body.setAngle(body, angle)
+            Body.setPosition(body, {
+                x: pos.left + this.offset.y,
+                y: pos.top + this.offset.x
+            })
+
+            Body.setAngle(barrel, angle - Math.PI / 2)
+            Body.setPosition(barrel, {
+                x: pos.left + this.offset.y + this.offset.x,
+                y: pos.top  + this.offset.x,
+            })
+        } else if (is_bottom_wall) {
+            Body.setAngle(body, 2 * Math.PI / 2)
+            Body.setPosition(body, {
+                x: pos.left + this.offset.x,
+                y: pos.top + this.offset.y
+            })
+            
+            Body.setAngle(barrel, 1 * Math.PI / 2)
+            Body.setPosition(barrel, {
+                x: pos.left + this.offset.x,
+                y: pos.top + this.offset.y + this.offset.x,
+            })
+        } else if (is_left_wall) {
+            Body.setAngle(body, 3 * Math.PI / 2)
+            Body.setPosition(body, {
+                x: pos.left + this.offset.y,
+                y: pos.top + this.offset.x
+            })
+
+            Body.setAngle(barrel, 2 * Math.PI / 2)
+            Body.setPosition(barrel, {
+                x: pos.left + this.offset.y - this.offset.x,
+                y: pos.top + this.offset.x,
+            })
+        } else {
+            Body.setAngle(body, 0)
+            Body.setPosition(body, {
+                x: pos.left + this.offset.x,
+                y: pos.top + this.offset.y
+            })
+
+            Body.setAngle(barrel, 0)
+            Body.setPosition(barrel, {
+                x: pos.left + this.offset.x,
+                y: pos.top + this.offset.y,
+            })
         }
 
-        let bodyA = this.body
-        Body.setPosition(bodyA, {
-            x: pos.left + offset.x,
-            y: pos.top + offset.y
-        })
         const is_corner = is_vertical_wall && is_horizontal_wall
-        
         if (is_corner || !(is_vertical_wall || is_horizontal_wall)) {
             return false
         }
 
-        if (is_vertical_wall) {
-            Body.setAngle(bodyA, Math.PI / 2)
-        } else {
-            Body.setAngle(bodyA, 0)
-        }
-
         return true
-        
+    }
+
+    build(pos_grid) {
+        this.parent.add_entity_base(this)
+        this.parent.add_entity_base(this.barrel)
+    }
+}
+
+class Barrel extends Building {
+    constructor() {
+        super(
+            3, 
+            0.5,
+            'turret_barrel.png',
+            {
+                isStatic: true
+            }
+        )
     }
 }
 

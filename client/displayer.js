@@ -58,7 +58,15 @@ var displayer = {
                 displayer.ctx.fillStyle = '#FF000055'
                 displayer.canvas.style.cursor = 'not-allowed'        
             }
-            displayer.ctx.fillRect(building.left, building.top, building.width, building.height)
+            displayer.ctx.save()
+            let offset =  {
+                x: building.width / 2,
+                y: building.height / 2
+            }
+            displayer.ctx.translate(building.x, building.y)
+            displayer.ctx.rotate(building.angle)
+            displayer.ctx.fillRect(-offset.x, -offset.y, building.width, building.height)
+            displayer.ctx.restore()
         } else if (cursor.action == Cursor.type.GRAB) {
             let target = cursor.target
             if (cursor.can_use) {
