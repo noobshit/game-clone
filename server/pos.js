@@ -12,7 +12,9 @@ Pos = {
             x: pos.x,
             y: pos.y,
             left: pos.x - Math.abs(pos.x % SMALL_BLOCK_SIZE),
-            top: pos.y - Math.abs(pos.y % SMALL_BLOCK_SIZE)
+            right: pos.x - Math.abs(pos.x % SMALL_BLOCK_SIZE) + SMALL_BLOCK_SIZE,
+            top: pos.y - Math.abs(pos.y % SMALL_BLOCK_SIZE),
+            bottom: pos.y - Math.abs(pos.y % SMALL_BLOCK_SIZE) + SMALL_BLOCK_SIZE,
         }
         return snapped
     }

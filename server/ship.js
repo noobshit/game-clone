@@ -52,7 +52,7 @@ class Ship {
         this.add_entity(new Wrench(), {x: 5, y: 5})
         this.add_entity(new Shredder(), {x: 5, y: 4})
         this.add_entity(new Enlargment(), {x: 5, y: 3})
-        this.add_entity(new BulidingPackage(Brick), {x: 5, y: 2})
+        this.add_entity(new BulidingPackage(Turret), {x: 5, y: 2})
         this.add_entity(new Turret(), {x: 0, y: 0})
         this.add_entity(new Helm(), {x: 9, y: 5})
     }
@@ -242,6 +242,16 @@ class Building extends Entity {
         return is_not_colliding && pos_is_inside_ship
     }
 
+
+    get bounds() {
+        return {
+            left: this.body.bounds.min.x,
+            right: this.body.bounds.max.x,
+            top: this.body.bounds.min.y,
+            bottom: this.body.bounds.max.y,
+        }
+    }
+
 }
 
 class Brick extends Building {
@@ -385,18 +395,57 @@ class Turret extends Building {
     constructor() {
         super(
             3, 
-            0.5,
-            'turret_barrel.png',
+            1,
+            'brick.png',
             {
                 isStatic: true,
                 collisionFilter: collision.filter.BUILDING
             }
         )
+
+        this.is_vertical_wall = false
     }
 
     follow_point(point) {
         let angle = Vector.angle(this.body.position, point)
         Body.setAngle(this.body, angle)
+    }
+
+    can_build(pos) {
+        const ship_bounds = this.parent.bounds
+        const is_vertical_wall = pos.left == ship_bounds.left 
+            || pos.right == ship_bounds.right 
+        const is_horizontal_wall = pos.top == ship_bounds.top 
+            || pos.bottom == ship_bounds.bottom 
+
+        let offset = {
+            x: this.offset.x,
+            y: this.offset.y
+        }
+        if (is_vertical_wall) {
+            offset.x = this.offset.y 
+            offset.y = this.offset.x
+        }
+
+        let bodyA = this.body
+        Body.setPosition(bodyA, {
+            x: pos.left + offset.x,
+            y: pos.top + offset.y
+        })
+        const is_corner = is_vertical_wall && is_horizontal_wall
+        
+        if (is_corner || !(is_vertical_wall || is_horizontal_wall)) {
+            return false
+        }
+
+        if (is_vertical_wall) {
+            Body.setAngle(bodyA, Math.PI / 2)
+        } else {
+            Body.setAngle(bodyA, 0)
+        }
+
+        return true
+        
     }
 }
 
