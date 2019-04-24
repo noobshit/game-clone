@@ -432,7 +432,7 @@ class Turret extends Building {
 
     follow_point(point) {
         let angle = Vector.angle(this.body.position, point)
-        Body.setAngle(this.body, angle)
+        Body.setAngle(this.barrel.body, angle)
     }
 
     can_build(pos) {
