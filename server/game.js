@@ -68,6 +68,12 @@ const game = {
                 if (input.move_down) {
                     move_vector.y += 1
                 }
+                if (input.jump) {
+                    Body.setVelocity(player.body, {
+                        x: player.body.velocity.x,
+                        y: -5
+                    })
+                }
 
                 if (!player.using_building) {
                     player.translate(Vector.mult(move_vector, player.speed ))
