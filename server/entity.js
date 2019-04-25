@@ -28,6 +28,15 @@ class Entity {
         }
     }
 
+    get bounds() {
+        return {
+            left: 0,
+            right: 0 + this.width * SMALL_BLOCK_SIZE,
+            top: 0,
+            bottom: 0 + this.height * SMALL_BLOCK_SIZE,
+        }
+    }
+
     get position() {
         let pos = this.body.position
         return {

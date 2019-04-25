@@ -1,15 +1,13 @@
 const Matter = require('matter-js')
 const Body = Matter.Body
-const Bodies = Matter.Bodies
 const Engine = Matter.Engine
 const World = Matter.World
 const Vector = Matter.Vector
 
 const Entity = require('./entity.js')
+const Pos = require('./pos.js')
 const {BuildingPackage, Wrench, Shredder, Explo, Enlargment} = require('./box.js')
 const {Brick, Ladder, Factory, Turret, Helm} = require('./building.js')
-
-const SMALL_BLOCK_SIZE = 32
 
 class Ship extends Entity {
     constructor(width, height) {
@@ -53,15 +51,6 @@ class Ship extends Entity {
         this.add_entity(new Helm(), {x: 9, y: 5})
     }
 
-    get bounds() {
-        return {
-            left: 0,
-            right: 0 + this.width * SMALL_BLOCK_SIZE,
-            top: 0,
-            bottom: 0 + this.height * SMALL_BLOCK_SIZE,
-        }
-    }
-
     get world() {
         return this.engine.world
     }
@@ -74,13 +63,8 @@ class Ship extends Entity {
     }
 
     add_entity(entity, pos_grid) {
-        let pos_game = {
-            x: pos_grid.x * SMALL_BLOCK_SIZE + entity.offset.x,
-            y: pos_grid.y * SMALL_BLOCK_SIZE + entity.offset.y,
-        }
-
         entity.parent = this
-        Body.setPosition(entity.body, pos_game)
+        Body.setPosition(entity.body, Pos.grid_to_game(pos_grid, entity))
         this.entites.push(entity)
         World.add(this.engine.world, entity.body)
     }

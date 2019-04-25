@@ -17,7 +17,14 @@ Pos = {
             bottom: pos.y - Math.abs(pos.y % SMALL_BLOCK_SIZE) + SMALL_BLOCK_SIZE,
         }
         return snapped
+    },
+    grid_to_game(pos_grid, entity) {
+        return {
+            x: pos_grid.x * SMALL_BLOCK_SIZE + entity.offset.x,
+            y: pos_grid.y * SMALL_BLOCK_SIZE + entity.offset.y,
+        }
     }
 }
+
 
 module.exports = Pos
