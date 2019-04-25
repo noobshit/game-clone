@@ -36,7 +36,7 @@ class Ship extends Entity {
                 }
             }
         }
-        
+
         this.add_entity(new Factory(), {x: 7, y: 5})
         this.add_entity(new Ladder(), {x: 4, y: 4})
         this.add_entity(new Ladder(), {x: 4, y: 5})
@@ -51,16 +51,6 @@ class Ship extends Entity {
         this.add_entity(new Enlargment(), {x: 5, y: 3})
         this.add_entity(new BuildingPackage(Turret), {x: 5, y: 2})
         this.add_entity(new Helm(), {x: 9, y: 5})
-    }
-
-    get position() {
-        let pos = this.body.position
-        return {
-            x: pos.x,
-            y: pos.y,
-            left: pos.x - this.width * SMALL_BLOCK_SIZE / 2,
-            top: pos.y - this.height * SMALL_BLOCK_SIZE / 2
-        }
     }
 
     get bounds() {

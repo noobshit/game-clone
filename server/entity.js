@@ -28,6 +28,16 @@ class Entity {
         }
     }
 
+    get position() {
+        let pos = this.body.position
+        return {
+            x: pos.x,
+            y: pos.y,
+            left: pos.x - this.width * SMALL_BLOCK_SIZE / 2,
+            top: pos.y - this.height * SMALL_BLOCK_SIZE / 2
+        }
+    }
+    
     get pos_grid() {
         return Pos.to_grid(this.body.position)
     }
@@ -50,15 +60,10 @@ class Entity {
     }
 
     get_entity() {
-        let offset = {x: 0, y: 0}
-        if (this.parent) {
-            offset.x = this.parent.position.left
-            offset.y = this.parent.position.top 
-        }
         return {
             id: this.id,
-            x: offset.x + this.body.position.x,
-            y:  offset.y + this.body.position.y,
+            x: this.pos_world.x,
+            y:  this.pos_world.y,
             width: this.width,
             height: this.height,
             angle: this.body.angle,
