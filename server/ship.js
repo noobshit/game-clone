@@ -11,13 +11,24 @@ const {Brick, Ladder, Factory, Turret, Helm} = require('./building.js')
 
 const SMALL_BLOCK_SIZE = 32
 
-class Ship {
+class Ship extends Entity {
     constructor(width, height) {
+        super(
+            width,
+            height,
+            '',
+            {
+                inertia: Infinity
+            }
+        )
+        Body.setPosition(this.body, {x: 500, y: 500})
+
         this.map = null
         this.width = width
         this.height = height
         this.entites = []
         this.engine = Engine.create()
+        
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
                 if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
@@ -25,17 +36,7 @@ class Ship {
                 }
             }
         }
-
-        this.body = Bodies.rectangle(
-            500,
-            500,
-            this.width * SMALL_BLOCK_SIZE,
-            this.height * SMALL_BLOCK_SIZE,
-            {
-                inertia: Infinity
-            }
-        )
-
+        
         this.add_entity(new Factory(), {x: 7, y: 5})
         this.add_entity(new Ladder(), {x: 4, y: 4})
         this.add_entity(new Ladder(), {x: 4, y: 5})
@@ -104,10 +105,6 @@ class Ship {
 
     get_entites() {
         return this.entites.map(entity => entity.get_entity())
-    }
-
-    translate(vector) {
-        Body.translate(this.body, vector)
     }
 
     update_turret_angle(position) {
