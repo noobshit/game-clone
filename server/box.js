@@ -1,8 +1,8 @@
 const Entity = require('./entity.js')
 const collison = require('./collision.js')
 const Cursor = require('../shared/cursor.js')
-const {Building} = require('./building.js')
-console.log(Building)
+const {Building, Brick} = require('./building.js')
+const SMALL_BLOCK_SIZE = 32
 
 class Box extends Entity {
     constructor(image_key) {
