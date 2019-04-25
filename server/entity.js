@@ -32,6 +32,16 @@ class Entity {
         return Pos.to_grid(this.body.position)
     }
 
+    get pos_world() {
+        if (this.parent) {
+            return {
+                x: this.body.position.x + this.parent.position.left,
+                y: this.body.position.y + this.parent.position.top 
+            }
+        } else {
+            return this.body.position
+        }
+    }
     get offset() {
         return {
             x: this.width / 2,
@@ -110,6 +120,10 @@ class Entity {
                 player.drop_item.execute()
             }
         }
+    }
+
+    on_tick() {
+        
     }
 }
 

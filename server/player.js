@@ -55,7 +55,10 @@ class Player extends Entity {
     }
 
     on_left_button_down(event) {
-        if (this.item && this.item.use.can_execute(event)) {
+        if (this.parent.controlled_by == this) {
+            this.parent.fire(event)
+        }
+        else if (this.item && this.item.use.can_execute(event)) {
             this.item.use.execute(event)
         }
         else if (this.grab_item.can_execute(event)) {

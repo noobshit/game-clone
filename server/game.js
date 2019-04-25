@@ -97,6 +97,8 @@ const game = {
     },
 
     tick() {
+        game.ship.on_tick()
+        game.map.on_tick()
         Engine.update(game.ship.engine)
         Engine.update(game.map.engine)
         game.process_input_buffer()

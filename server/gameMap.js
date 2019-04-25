@@ -34,6 +34,14 @@ class GameMap {
         Body.setPosition(entity.body, pos)
         World.add(this.world, entity.body)
         this.entites.push(entity)
+        entity.map = this
+    }
+
+    remove_entity(entity) {
+        entity.on_remove()
+        World.remove(this.world, entity.body)
+        let index = this.entites.findIndex(e => e.id == entity.id)
+        this.entites.splice(index, 1)
     }
 
     get_entites() {
@@ -42,6 +50,11 @@ class GameMap {
 
     add_ship(ship) {
         World.add(this.world, ship.body)
+        ship.map = this
+    }
+
+    on_tick() {
+        this.entites.forEach(e => e.on_tick())
     }
 }
 

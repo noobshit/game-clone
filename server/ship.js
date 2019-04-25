@@ -18,6 +18,7 @@ const SMALL_BLOCK_SIZE = 32
 
 class Ship {
     constructor(width, height) {
+        this.map = null
         this.width = width
         this.height = height
         this.entites = []
@@ -53,7 +54,6 @@ class Ship {
         this.add_entity(new Shredder(), {x: 5, y: 4})
         this.add_entity(new Enlargment(), {x: 5, y: 3})
         this.add_entity(new BulidingPackage(Turret), {x: 5, y: 2})
-        this.add_entity(new Turret(), {x: 0, y: 0})
         this.add_entity(new Helm(), {x: 9, y: 5})
     }
 
@@ -118,6 +118,46 @@ class Ship {
     update_turret_angle(position) {
         let turrets = this.entites.filter(e => e instanceof Turret) 
         turrets.forEach(e => e.follow_point(position))
+    }
+
+    fire(event) {
+        const turret = this.entites.find(e => e instanceof Turret)
+        if (turret) {
+            const bullet = new Bullet(1500) 
+            const vect = Vector.rotate({x: 100, y: 0}, turret.angle)
+            const pos = Vector.add(vect, turret.pos_world)
+            const velocity = Vector.div(vect, 5)
+            Body.setVelocity(bullet.body, velocity)
+            this.map.add_entity(bullet, pos)
+        }
+    }
+
+    on_tick() {
+        this.entites.forEach(e => e.on_tick())
+    }
+    
+}
+
+class Bullet extends Entity {
+    constructor(lifetime) {
+        super(
+            1,
+            1,
+            'wrench.png'
+        )
+
+        this.lifetime = lifetime
+        this.created = (new Date()).getTime()
+    }
+
+    get has_expired() {
+        return this.created + this.lifetime < (new Date()).getTime()
+    }
+
+    on_tick() {
+        if (this.has_expired && this.map) {
+            this.map.remove_entity(this)
+        }
     }
 }
 
@@ -416,6 +456,7 @@ class Turret extends Building {
         )
 
         this.barrel = new Barrel()
+        this.angle = 0
     }
 
     get parent() {
@@ -431,8 +472,8 @@ class Turret extends Building {
     }
 
     follow_point(point) {
-        let angle = Vector.angle(this.body.position, point)
-        Body.setAngle(this.barrel.body, angle)
+        this.angle = Vector.angle(this.body.position, point)
+        Body.setAngle(this.barrel.body, this.angle)
     }
 
     can_build(pos) {
