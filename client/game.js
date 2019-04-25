@@ -49,6 +49,7 @@ function build_input_packet() {
         move_right: keyboard.is_key_pressed['d'],
         move_up: keyboard.is_key_pressed['w'],
         move_down: keyboard.is_key_pressed['s'],
+        jump: keyboard.is_key_pressed[' '],
         press_q: keyboard.is_key_pressed['q'],
         arrow_left: keyboard.is_key_pressed['ArrowLeft'],
         arrow_right: keyboard.is_key_pressed['ArrowRight'],
