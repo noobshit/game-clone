@@ -123,7 +123,11 @@ class Entity {
     }
 
     on_tick() {
-        
+
+    }
+
+    on_collision_start(event) {
+        console.log(this.image_key)
     }
 }
 

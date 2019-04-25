@@ -2,7 +2,7 @@
 const Entity = require('./entity.js')
 const Matter = require('matter-js')
 const Body = Matter.Body
-const Bodies = Matter.Bodies
+const Events = Matter.Events
 const Engine = Matter.Engine
 const World = Matter.World
 
@@ -11,6 +11,7 @@ const SMALL_BLOCK_SIZE = 32
 class GameMap {
     constructor(width, height) {
         this.engine = Engine.create()
+        Events.on(this.engine, 'collisionStart', (e) => this.on_collision_start(e))
         this.world = this.engine.world
         this.world.gravity.y = 0
         this.entites = []
@@ -24,6 +25,26 @@ class GameMap {
 
         this.add_entity(new Bot(), {x: 1000, y: 1000})
     }
+
+    get_entity_from_body(body) {
+        return this.entites.find(e => e.body == body)
+    }
+
+    on_collision_start(event) {
+        for (let pair of event.pairs) {
+            const entityA = this.get_entity_from_body(pair.bodyA)
+            const entityB = this.get_entity_from_body(pair.bodyB)
+
+            if (entityA) {
+                entityA.on_collision_start(pair)
+            } 
+
+            if (entityB) {
+                entityB.on_collision_start(pair)
+            }
+            
+        }
+    }
     
     add_block(pos_grid) {
         this.add_entity(new Block(), {
@@ -33,10 +54,10 @@ class GameMap {
     }
 
     add_entity(entity, pos) {
-        Body.setPosition(entity.body, pos)
-        World.add(this.world, entity.body)
         this.entites.push(entity)
         entity.map = this
+        Body.setPosition(entity.body, pos)
+        World.add(this.world, entity.body)
     }
 
     remove_entity(entity) {
