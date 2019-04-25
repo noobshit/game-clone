@@ -579,3 +579,4 @@ class Barrel extends Building {
 }
 
 exports.Ship = Ship
+exports.Bullet = Bullet

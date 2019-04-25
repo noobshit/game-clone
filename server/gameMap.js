@@ -21,6 +21,8 @@ class GameMap {
                 }
             }
         }
+
+        this.add_entity(new Bot(), {x: 1000, y: 1000})
     }
     
     add_block(pos_grid) {
@@ -71,4 +73,26 @@ class Block extends Entity {
     }
 }
 
+const {Bullet} = require('./ship.js')
+class Bot extends Entity {
+    constructor() {
+        super(
+            8, 
+            8,
+            'shredder.png'
+        )
+    }
+
+    on_tick() {
+        if (Math.random() < 1 / 20) {
+            const bullet = new Bullet(1500)
+            const pos = {
+                x: Math.random() * 2000,
+                y: Math.random() * 2000
+            }
+
+            this.map.add_entity(bullet, pos)
+        }
+    }
+}
 module.exports = GameMap
