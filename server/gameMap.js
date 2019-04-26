@@ -109,7 +109,7 @@ class Bot extends Entity {
         super(
             8, 
             8,
-            'shredder.png'
+            'bot.png'
         )
         this.hp_max = 1000
         this.hp = this.hp_max
