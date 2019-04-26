@@ -11,11 +11,11 @@ socket.on('update', (data) => {
 
     state.entites.forEach(add_data)
     if (state.cursor && state.cursor.data) {
-        add_data(state.cursor.data)
+        state.cursor.data.forEach(add_data)
     }
 
     if (state.cursor && state.cursor.target) {
-        add_data(state.cursor.target)
+        state.cursor.target.forEach(add_data)
     }
 })
 
