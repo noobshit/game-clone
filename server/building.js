@@ -258,8 +258,8 @@ class Turret extends Building {
     }
 
     build(pos_grid) {
-        this.parent.add_entity_base(this)
-        this.parent.add_entity_base(this.barrel)
+        this.parent.add_entity(this)
+        this.parent.add_entity(this.barrel)
     }
 }
 

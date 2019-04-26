@@ -21,8 +21,6 @@ class Ship extends Entity {
         )
         Body.setPosition(this.body, {x: 500, y: 500})
 
-        this.width = width
-        this.height = height
         this.entites = []
         this.engine = Engine.create()
         
@@ -54,17 +52,15 @@ class Ship extends Entity {
         return this.engine.world
     }
 
-    add_entity_base(entity) {
+    add_entity(entity) {
         entity.parent = this
         this.entites.push(entity)
         World.add(this.engine.world, entity.body)        
     }
 
     add_entity_to_grid(entity, pos_grid) {
-        entity.parent = this
+        this.add_entity(entity)
         Body.setPosition(entity.body, Pos.grid_to_game(pos_grid, entity))
-        this.entites.push(entity)
-        World.add(this.engine.world, entity.body)
     }
 
     remove_entity(entity) {

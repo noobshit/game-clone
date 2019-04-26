@@ -44,9 +44,9 @@ class Entity {
     get bounds() {
         return {
             left: 0,
-            right: 0 + this.width * SMALL_BLOCK_SIZE,
+            right: 0 + this.width,
             top: 0,
-            bottom: 0 + this.height * SMALL_BLOCK_SIZE,
+            bottom: 0 + this.height,
         }
     }
 
@@ -55,8 +55,8 @@ class Entity {
         return {
             x: pos.x,
             y: pos.y,
-            left: pos.x - this.width * SMALL_BLOCK_SIZE / 2,
-            top: pos.y - this.height * SMALL_BLOCK_SIZE / 2
+            left: pos.x - this.width / 2,
+            top: pos.y - this.height / 2
         }
     }
     
