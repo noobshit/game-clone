@@ -155,7 +155,7 @@ class Loot extends Entity {
 
     on_collision_start(event) {
         if (event.collided_with instanceof Ship) {
-            event.collided_with.add_entity_to_grid(this.item, {x: 2, y: 2})
+            event.collided_with.add_loot(this.item)
             this.map.remove_entity(this)
         }
     }

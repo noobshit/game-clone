@@ -141,6 +141,28 @@ class Factory extends Building {
 }
 
 
+class Hatch extends Building {
+    constructor() {
+        super(
+            1,
+            1,
+            'hatch.png',
+            {
+                isStatic: true,
+                collisionFilter: collision.filter.BUILDING
+            }
+        )
+    }
+
+    on_tick() {
+        const item_to_add = this.parent.hatch_queue.shift()
+        if (item_to_add) {
+            this.parent.add_entity_to_grid(item_to_add, this.pos_grid)
+        }
+    }
+}
+
+
 class Turret extends Building {
     constructor() {
         super(
@@ -282,3 +304,4 @@ module.exports.Factory = Factory
 module.exports.Helm = Helm
 module.exports.Ladder = Ladder
 module.exports.Building = Building
+module.exports.Hatch = Hatch

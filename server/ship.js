@@ -7,7 +7,7 @@ const Vector = Matter.Vector
 const Entity = require('./entity.js')
 const Pos = require('./pos.js')
 const {BuildingPackage, Wrench, Shredder, Explo, Enlargment} = require('./box.js')
-const {Brick, Ladder, Factory, Turret, Helm} = require('./building.js')
+const {Brick, Ladder, Factory, Turret, Helm, Hatch} = require('./building.js')
 
 class Ship extends Entity {
     constructor(width, height) {
@@ -25,6 +25,7 @@ class Ship extends Entity {
         this.engine = Engine.create()
         this.hp_max = 1000
         this.hp = this.hp_max
+        this.hatch_queue = []
         
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
@@ -33,7 +34,8 @@ class Ship extends Entity {
                 }
             }
         }
-
+    
+        this.add_entity_to_grid(new Hatch(), {x: 1, y: 1})
         this.add_entity_to_grid(new Factory(), {x: 7, y: 5})
         this.add_entity_to_grid(new Ladder(), {x: 4, y: 4})
         this.add_entity_to_grid(new Ladder(), {x: 4, y: 5})
@@ -52,6 +54,10 @@ class Ship extends Entity {
 
     get world() {
         return this.engine.world
+    }
+
+    add_loot(item) {
+        this.hatch_queue.push(item)
     }
 
     add_entity(entity) {
