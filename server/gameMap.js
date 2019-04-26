@@ -72,8 +72,7 @@ class GameMap {
     }
 
     add_ship(ship) {
-        World.add(this.world, ship.body)
-        ship.map = this
+        this.add_entity(ship, {x: 500, y: 500})
     }
 
     on_tick() {

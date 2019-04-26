@@ -34,15 +34,11 @@ function tick() {
     sockets = sockets.filter(socket => socket.connected)
 
     game.tick()
-    let players = [] 
-    let entites = game.ship.get_display_data()
-    entites = entites.concat(game.ship_2.get_display_data())
-    entites = entites.concat(players)
 
     sockets.forEach(socket => {
         let player = game.players.get(socket.id)
         socket.emit('update', {
-            entites: entites,
+            entites: player.parent.get_display_data(),
             player: player.get_display_data(),
             cursor: player.cursor,
             map: game.get_map(),
