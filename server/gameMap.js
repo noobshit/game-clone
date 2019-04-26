@@ -67,8 +67,8 @@ class GameMap {
         this.entites.splice(index, 1)
     }
 
-    get_entites() {
-        return this.entites.map(e => e.get_entity())
+    get_display_data() {
+        return this.entites.map(e => e.get_display_data()).flat()
     }
 
     add_ship(ship) {

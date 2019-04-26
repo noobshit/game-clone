@@ -165,7 +165,7 @@ class BuildingPackage extends Box {
             Cursor.type.BUILD, 
             {
                 can_use: this.use.can_execute(event), 
-                data: this.building.get_entity()
+                data: this.building.get_display_data()
             }
         )
     }

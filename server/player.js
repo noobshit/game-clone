@@ -40,7 +40,7 @@ class Player extends Entity {
                 Cursor.type.GRAB, 
                 {
                     can_use: true,
-                    target: this.grab_item.target(event).get_entity(),
+                    target: this.grab_item.target(event).get_display_data(),
                 })
         } else if (event.entites.some(e => e.left_button_down.can_execute(event))) {
             let entity = event.entites.find(e => e.left_button_down.can_execute(event))

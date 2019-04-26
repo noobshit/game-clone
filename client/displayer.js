@@ -48,7 +48,7 @@ var displayer = {
         displayer.canvas.style.cursor = 'default'
         displayer.ctx.save()
         if (cursor.action == Cursor.type.BUILD) {
-            let building = cursor.data
+            let building = cursor.data[0]
             displayer.ctx.globalAlpha = 0.65
             displayer.draw_entity(building)
             if (cursor.can_use) {
@@ -68,7 +68,7 @@ var displayer = {
             displayer.ctx.fillRect(-offset.x, -offset.y, building.width, building.height)
             displayer.ctx.restore()
         } else if (cursor.action == Cursor.type.GRAB) {
-            let target = cursor.target
+            let target = cursor.target[0]
             if (cursor.can_use) {
                 displayer.ctx.strokeStyle = '#00FF0055'
                 displayer.canvas.style.cursor = 'pointer'

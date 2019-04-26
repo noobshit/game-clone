@@ -82,8 +82,8 @@ class Entity {
         }
     }
 
-    get_entity() {
-        return {
+    get_display_data() {
+        return [{
             id: this.id,
             x: this.pos_world.x,
             y:  this.pos_world.y,
@@ -92,7 +92,7 @@ class Entity {
             angle: this.body.angle,
             image_key: this.image_key,
             is_background: this.is_background
-        }
+        }]
     }
 
     generate_id() {
@@ -132,7 +132,7 @@ class Entity {
     get_cursor(event) {
         let target = this.use.target(event)
         if (target && target instanceof Entity) {
-            target = target.get_entity()
+            target = target.get_display_data()
         }
         return new Cursor(
             Cursor.type.DEFAULT, {

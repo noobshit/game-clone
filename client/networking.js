@@ -5,8 +5,8 @@ socket.on('debug_answer', function(data) {
 
 socket.on('update', (data) => {
     state.entites = data.entites
-    state.player = data.player
-    state.cursor = data.cursor
+    state.player = data.player[0]
+    state.cursor = data.cursor 
     state.map = data.map
 
     state.entites.forEach(add_data)

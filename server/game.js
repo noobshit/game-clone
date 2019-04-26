@@ -121,7 +121,7 @@ const game = {
     },
 
     get_map() {
-        return game.map.get_entites()
+        return game.map.get_display_data()
     },
 }
 game.init()

@@ -71,8 +71,8 @@ class Ship extends Entity {
         this.entites.splice(index, 1)
     }
 
-    get_entites() {
-        return this.entites.map(entity => entity.get_entity())
+    get_display_data() {
+        return this.entites.map(entity => entity.get_display_data()).flat()
     }
 
     update_turret_angle(position) {
