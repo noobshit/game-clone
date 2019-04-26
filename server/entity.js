@@ -155,7 +155,6 @@ class Entity {
     }
 
     on_collision_start(event) {
-        console.log(this.image_key)
     }
 }
 

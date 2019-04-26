@@ -22,8 +22,6 @@ class GameMap {
                 }
             }
         }
-
-        this.add_entity(new Bot(), {x: 1000, y: 1000})
     }
 
     get_entity_from_body(body) {
@@ -36,11 +34,15 @@ class GameMap {
             const entityB = this.get_entity_from_body(pair.bodyB)
 
             if (entityA) {
-                entityA.on_collision_start(pair)
+                entityA.on_collision_start({
+                        collided_with: entityB 
+                    })
             } 
 
             if (entityB) {
-                entityB.on_collision_start(pair)
+                entityB.on_collision_start({
+                    collided_with: entityA 
+                })
             }
             
         }

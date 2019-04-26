@@ -88,7 +88,7 @@ class Ship extends Entity {
             const pos = Vector.add(vect, turret.pos_world)
             const velocity = Vector.div(vect, 5)
             Body.setVelocity(bullet.body, velocity)
-            this.map.add_entity_to_grid(bullet, pos)
+            this.map.add_entity(bullet, pos)
         }
     }
 
@@ -118,6 +118,11 @@ class Bullet extends Entity {
         if (this.has_expired && this.map) {
             this.map.remove_entity(this)
         }
+    }
+
+    on_collision_start(event) {
+        console.log(event.collided_with instanceof Ship)
+        this.map.remove_entity(this)
     }
 }
 
