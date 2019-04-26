@@ -21,7 +21,6 @@ class Ship extends Entity {
         )
         Body.setPosition(this.body, {x: 500, y: 500})
 
-        this.map = null
         this.width = width
         this.height = height
         this.entites = []
@@ -30,31 +29,30 @@ class Ship extends Entity {
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
                 if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
-                    this.add_entity(new Brick(), {x, y})
+                    this.add_entity_to_grid(new Brick(), {x, y})
                 }
             }
         }
 
-        this.add_entity(new Factory(), {x: 7, y: 5})
-        this.add_entity(new Ladder(), {x: 4, y: 4})
-        this.add_entity(new Ladder(), {x: 4, y: 5})
-        this.add_entity(new Ladder(), {x: 4, y: 6})
-        this.add_entity(new Brick(), {x: 1, y: 4})
-        this.add_entity(new Brick(), {x: 2, y: 4})
-        this.add_entity(new Brick(), {x: 3, y: 4})
-        this.add_entity(new Explo(), {x: 1, y: 6})
-        this.add_entity(new Explo(), {x: 5, y: 6})
-        this.add_entity(new Wrench(), {x: 5, y: 5})
-        this.add_entity(new Shredder(), {x: 5, y: 4})
-        this.add_entity(new Enlargment(), {x: 5, y: 3})
-        this.add_entity(new BuildingPackage(Turret), {x: 5, y: 2})
-        this.add_entity(new Helm(), {x: 9, y: 5})
+        this.add_entity_to_grid(new Factory(), {x: 7, y: 5})
+        this.add_entity_to_grid(new Ladder(), {x: 4, y: 4})
+        this.add_entity_to_grid(new Ladder(), {x: 4, y: 5})
+        this.add_entity_to_grid(new Ladder(), {x: 4, y: 6})
+        this.add_entity_to_grid(new Brick(), {x: 1, y: 4})
+        this.add_entity_to_grid(new Brick(), {x: 2, y: 4})
+        this.add_entity_to_grid(new Brick(), {x: 3, y: 4})
+        this.add_entity_to_grid(new Explo(), {x: 1, y: 6})
+        this.add_entity_to_grid(new Explo(), {x: 5, y: 6})
+        this.add_entity_to_grid(new Wrench(), {x: 5, y: 5})
+        this.add_entity_to_grid(new Shredder(), {x: 5, y: 4})
+        this.add_entity_to_grid(new Enlargment(), {x: 5, y: 3})
+        this.add_entity_to_grid(new BuildingPackage(Turret), {x: 5, y: 2})
+        this.add_entity_to_grid(new Helm(), {x: 9, y: 5})
     }
 
     get world() {
         return this.engine.world
     }
-
 
     add_entity_base(entity) {
         entity.parent = this
@@ -62,7 +60,7 @@ class Ship extends Entity {
         World.add(this.engine.world, entity.body)        
     }
 
-    add_entity(entity, pos_grid) {
+    add_entity_to_grid(entity, pos_grid) {
         entity.parent = this
         Body.setPosition(entity.body, Pos.grid_to_game(pos_grid, entity))
         this.entites.push(entity)
@@ -94,7 +92,7 @@ class Ship extends Entity {
             const pos = Vector.add(vect, turret.pos_world)
             const velocity = Vector.div(vect, 5)
             Body.setVelocity(bullet.body, velocity)
-            this.map.add_entity(bullet, pos)
+            this.map.add_entity_to_grid(bullet, pos)
         }
     }
 

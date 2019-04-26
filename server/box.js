@@ -34,7 +34,7 @@ class Wrench extends Box {
             execute(event) {
                 let building = this.target(event)
                 let building_package = new BuildingPackage(building.constructor)
-                event.ship.add_entity(building_package, building.pos_grid)
+                event.ship.add_entity_to_grid(building_package, building.pos_grid)
                 event.ship.remove_entity(building)
             }
         }
@@ -90,12 +90,12 @@ class Enlargment extends Box {
                     x: SMALL_BLOCK_SIZE, 
                     y: 0
                 }))
-                event.ship.add_entity(new Brick(), {
+                event.ship.add_entity_to_grid(new Brick(), {
                     x: event.pos_grid.x + 1, 
                     y: 0
                 })
                 
-                event.ship.add_entity(new Brick(), {
+                event.ship.add_entity_to_grid(new Brick(), {
                     x: event.pos_grid.x + 1, 
                     y: event.ship.height - 1
                 })

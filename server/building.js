@@ -35,7 +35,7 @@ class Building extends Entity {
 
 
     build(pos_grid) {
-        this.parent.add_entity(this, pos_grid)
+        this.parent.add_entity_to_grid(this, pos_grid)
     }
 
 

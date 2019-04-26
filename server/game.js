@@ -11,7 +11,7 @@ const players = new Map()
 const game = {
     add_player(socket_id, socket) {
         let player = new Player(socket)
-        this.ship.add_entity(player, {x: 3, y: 3})
+        this.ship.add_entity_to_grid(player, {x: 3, y: 3})
         players.set(socket_id, player)
     },
 

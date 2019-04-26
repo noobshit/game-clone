@@ -18,6 +18,7 @@ class Entity {
         this.parent = null
         this.holded_by = null
         this.is_background = false
+        this.map = null
     }
 
     get world() {
@@ -26,6 +27,18 @@ class Entity {
         } else {
             return null
         }
+    }
+
+    get map() {
+        if (this.parent != null) {
+            return this.parent.map
+        } else {
+            return this._map
+        }
+    }
+
+    set map(value) {
+        this._map = value    
     }
 
     get bounds() {
@@ -61,6 +74,7 @@ class Entity {
             return this.body.position
         }
     }
+    
     get offset() {
         return {
             x: this.width / 2,
