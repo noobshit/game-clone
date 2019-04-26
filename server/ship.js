@@ -23,6 +23,8 @@ class Ship extends Entity {
 
         this.entites = []
         this.engine = Engine.create()
+        this.hp_max = 1000
+        this.hp = this.hp_max
         
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
@@ -95,6 +97,17 @@ class Ship extends Entity {
     on_tick() {
         this.entites.forEach(e => e.on_tick())
     }
+
+    on_death() {
+        this.respawn()
+    }
+
+    respawn() {
+        this.hp = this.hp_max
+        const x = Math.random() * 3000
+        const y = Math.random() * 3000
+        Body.setPosition(this.body, {x, y})
+    }
     
 }
 
@@ -108,6 +121,7 @@ class Bullet extends Entity {
 
         this.lifetime = lifetime
         this.created = (new Date()).getTime()
+        this.damage = 100
     }
 
     get has_expired() {
@@ -121,7 +135,9 @@ class Bullet extends Entity {
     }
 
     on_collision_start(event) {
-        console.log(event.collided_with instanceof Ship)
+        if (event.collided_with.hp > 0) {
+            event.collided_with.on_damage(this.damage)
+        } 
         this.map.remove_entity(this)
     }
 }

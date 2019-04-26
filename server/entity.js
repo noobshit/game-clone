@@ -19,6 +19,8 @@ class Entity {
         this.holded_by = null
         this.is_background = false
         this.map = null
+        this.hp_max = 0
+        this.hp = this.hp_max
     }
 
     get world() {
@@ -155,6 +157,16 @@ class Entity {
     }
 
     on_collision_start(event) {
+    }
+
+    on_damage(amount) {
+        this.hp -= amount
+        if (this.hp <= 0) {
+            this.on_death()
+        }
+    }
+
+    on_death() {
     }
 }
 

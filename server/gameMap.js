@@ -1,6 +1,8 @@
 
 const Entity = require('./entity.js')
 const Matter = require('matter-js')
+const {Ship} = require('./ship.js')
+const {Metal, Explo} = require('./box.js')
 const Body = Matter.Body
 const Events = Matter.Events
 const Engine = Matter.Engine
@@ -22,6 +24,12 @@ class GameMap {
                 }
             }
         }
+
+        this.add_entity(new Bot(), {x: 2000, y: 1000})
+        this.add_entity(new Bot(), {x: 3000, y: 1000})
+        this.add_entity(new Bot(), {x: 1000, y: 1000})
+        this.add_entity(new Loot(new Explo()), {x: 1000, y: 500})
+        this.add_entity(new Loot(new Metal()), {x: 1000, y: 700})
     }
 
     get_entity_from_body(body) {
@@ -103,6 +111,8 @@ class Bot extends Entity {
             8,
             'shredder.png'
         )
+        this.hp_max = 1000
+        this.hp = this.hp_max
     }
 
     on_tick() {
@@ -114,6 +124,39 @@ class Bot extends Entity {
             }
 
             this.map.add_entity(bullet, pos)
+        }
+    }
+
+    on_death() {        
+        const length = Math.floor(Math.random() * 5) + 1
+        for (let i = 0; i < length; i++) {
+            let index = Math.floor(Math.random() * 2)
+            const item = new [Metal, Explo][index]
+            this.map.add_entity(new Loot(item), this.pos_world)
+        }
+        
+        this.hp = this.hp_max
+        const x = Math.random() * 3000
+        const y = Math.random() * 3000
+        Body.setPosition(this.body, {x, y})
+    }
+}
+
+class Loot extends Entity {
+    constructor(item) {
+        super(
+            3,
+            3,
+            'loot.png'
+        )
+
+        this.item = item
+    }
+
+    on_collision_start(event) {
+        if (event.collided_with instanceof Ship) {
+            event.collided_with.add_entity_to_grid(this.item, {x: 2, y: 2})
+            this.map.remove_entity(this)
         }
     }
 }
