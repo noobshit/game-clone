@@ -1,7 +1,7 @@
 
 const Entity = require('./entity.js')
 const Matter = require('matter-js')
-const {Ship, Bullet} = require('./ship.js')
+const {Ship, create_bullet, create_world} = require('./ship.js')
 const {Metal, Explo} = require('./box.js')
 const Body = Matter.Body
 const Events = Matter.Events
@@ -10,57 +10,26 @@ const World = Matter.World
 
 const SMALL_BLOCK_SIZE = 32
 
-const GameMap = (width, height) => {
-    const game_map = {
+const create_game_map = (width, height) => {
+    const state = {
         width,
         height,
-        engine: Engine.create(),
         entites: [],
-        
+
         get world() {
             return this.engine.world
         },
         
-        get_entity_from_body(body) {
-            return this.entites.find(e => e.body == body)
-        },
-
-        on_collision_start(event) {
-            for (let pair of event.pairs) {
-                const entityA = this.get_entity_from_body(pair.bodyA)
-                const entityB = this.get_entity_from_body(pair.bodyB)
-    
-                if (entityA && entityB) {
-                    entityA.on_collision_start({
-                        collided_with: entityB 
-                    })
-                    entityB.on_collision_start({
-                        collided_with: entityA 
-                    })
-                } 
-                
-            }
-        },
-        
         add_block(pos_grid) {
-            this.add_entity(Block(), {
+            this.add_entity_to_pos(Block(), {
                 x: pos_grid.x * 8 * SMALL_BLOCK_SIZE, 
                 y: pos_grid.y * 8 * SMALL_BLOCK_SIZE
             })
         },
     
-        add_entity(entity, pos) {
-            this.entites.push(entity)
-            entity.map = this
+        add_entity_to_pos(entity, pos) {
             Body.setPosition(entity.body, pos)
-            World.add(this.world, entity.body)
-        },
-    
-        remove_entity(entity) {
-            entity.on_remove()
-            World.remove(this.world, entity.body)
-            let index = this.entites.findIndex(e => e.id == entity.id)
-            this.entites.splice(index, 1)
+            this.add_entity(entity)
         },
     
         get_display_data() {
@@ -68,13 +37,18 @@ const GameMap = (width, height) => {
         },
     
         add_ship(ship) {
-            this.add_entity(ship, {x: 500, y: 500})
+            this.add_entity_to_pos(ship, {x: 500, y: 500})
         },
     
         on_tick() {
             this.entites.forEach(e => e.on_tick())
         },
     }
+
+    const game_map = Object.assign(
+        state,
+        create_world()
+    )
 
     for (let x = 0; x < width; x += 1) {
         for (let y = 0; y < height; y += 1) {
@@ -83,13 +57,13 @@ const GameMap = (width, height) => {
             }
         }
     }
-    Events.on(game_map.engine, 'collisionStart', (e) => game_map.on_collision_start(e))
+
     game_map.world.gravity.y = 0
-    game_map.add_entity(Bot(), {x: 2000, y: 1000})
-    game_map.add_entity(Bot(), {x: 3000, y: 1000})
-    game_map.add_entity(Bot(), {x: 1000, y: 1000})
-    game_map.add_entity(Loot(new Explo()), {x: 1000, y: 500})
-    game_map.add_entity(Loot(new Metal()), {x: 1000, y: 700})
+    game_map.add_entity_to_pos(Bot(), {x: 2000, y: 1000})
+    game_map.add_entity_to_pos(Bot(), {x: 3000, y: 1000})
+    game_map.add_entity_to_pos(Bot(), {x: 1000, y: 1000})
+    game_map.add_entity_to_pos(Loot(new Explo()), {x: 1000, y: 500})
+    game_map.add_entity_to_pos(Loot(new Metal()), {x: 1000, y: 700})
 
     return game_map
 }
@@ -113,13 +87,13 @@ const Bot = () => {
         
         on_tick() {
             if (Math.random() < 1 / 20) {
-                const bullet = new Bullet(1500)
+                const bullet = create_bullet(1500)
                 const pos = {
                     x: Math.random() * 2000,
                     y: Math.random() * 2000
                 }
     
-                this.map.add_entity(bullet, pos)
+                this.parent.add_entity_to_pos(bullet, pos)
             }
         },
 
@@ -128,7 +102,7 @@ const Bot = () => {
             for (let i = 0; i < length; i++) {
                 let index = Math.floor(Math.random() * 2)
                 const item = new [Metal, Explo][index]
-                this.map.add_entity(Loot(item), this.pos_world)
+                this.parent.add_entity_to_pos(Loot(item), this.pos_world)
             }
             
             this.hp = this.hp_max
@@ -149,9 +123,9 @@ const Loot = (item) => {
     const loot = {
         item,
         on_collision_start(event) {
-            if (event.collided_with instanceof Ship) {
+            if (event.collided_with == Ship) {
                 event.collided_with.add_loot(this.item)
-                this.map.remove_entity(this)
+                this.parent.remove_entity(this)
             }
         }
     }
@@ -162,4 +136,4 @@ const Loot = (item) => {
     )
 }
 
-module.exports = GameMap
+module.exports = create_game_map

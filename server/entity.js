@@ -25,6 +25,10 @@ class Entity {
     }
 
     get world() {
+        return this.get_world()
+    }
+
+    get_world() {
         if (this.parent != null) {
             return this.parent.world
         } else {
@@ -68,7 +72,7 @@ class Entity {
     }
 
     get pos_world() {
-        if (this.parent) {
+        if (this.parent && this.parent.position) {
             return {
                 x: this.body.position.x + this.parent.position.left,
                 y: this.body.position.y + this.parent.position.top 

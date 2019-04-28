@@ -10,165 +10,184 @@ const Pos = require('./pos.js')
 const {BuildingPackage, Wrench, Shredder, Explo, Enlargment} = require('./box.js')
 const {Brick, Ladder, Factory, Turret, Helm, Hatch} = require('./building.js')
 
-class Ship extends Entity {
-    constructor(width, height) {
-        super(
-            width,
-            height,
-            '',
-            {
-                inertia: Infinity
-            }
-        )
-        Body.setPosition(this.body, {x: 500, y: 500})
-
-        this.entites = []
-        this.engine = Engine.create()
-        Events.on(this.engine, 'collisionStart', (e) => this.handle_collision(e))
-        this.hp_max = 1000
-        this.hp = this.hp_max
-        this.hatch_queue = []
+const create_world = () => {
+    const world = {
+        engine: Engine.create(),
+        entites: [],
         
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
-                if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
-                    this.add_entity_to_grid(new Brick(), {x, y})
-                }
-            }
-        }
+        get_world() {
+            return this.engine.world
+        },
+
+        add_entity(entity) {
+            entity.parent = this
+            this.entites.push(entity)
+            World.add(this.engine.world, entity.body)        
+        },
     
-        this.add_entity_to_grid(new Hatch(), {x: 1, y: 1})
-        this.add_entity_to_grid(new Factory(), {x: 7, y: 5})
-        this.add_entity_to_grid(new Ladder(), {x: 4, y: 4})
-        this.add_entity_to_grid(new Ladder(), {x: 4, y: 5})
-        this.add_entity_to_grid(new Ladder(), {x: 4, y: 6})
-        this.add_entity_to_grid(new Brick(), {x: 1, y: 4})
-        this.add_entity_to_grid(new Brick(), {x: 2, y: 4})
-        this.add_entity_to_grid(new Brick(), {x: 3, y: 4})
-        this.add_entity_to_grid(new Explo(), {x: 1, y: 6})
-        this.add_entity_to_grid(new Explo(), {x: 5, y: 6})
-        this.add_entity_to_grid(new Wrench(), {x: 5, y: 5})
-        this.add_entity_to_grid(new Shredder(), {x: 5, y: 4})
-        this.add_entity_to_grid(new Enlargment(), {x: 5, y: 3})
-        this.add_entity_to_grid(new BuildingPackage(Turret), {x: 5, y: 2})
-        this.add_entity_to_grid(new Helm(), {x: 9, y: 5})
-    }
+        remove_entity(entity) {
+            entity.on_remove()
+            entity.parent = null
+            World.remove(this.world, entity.body)
+            let index = this.entites.findIndex(e => e.id == entity.id)
+            this.entites.splice(index, 1)
+        },
 
-    get world() {
-        return this.engine.world
-    }
-
-    add_loot(item) {
-        this.hatch_queue.push(item)
-    }
-
-    add_entity(entity) {
-        entity.parent = this
-        this.entites.push(entity)
-        World.add(this.engine.world, entity.body)        
-    }
-
-    add_entity_to_grid(entity, pos_grid) {
-        this.add_entity(entity)
-        Body.setPosition(entity.body, Pos.grid_to_game(pos_grid, entity))
-    }
-
-    remove_entity(entity) {
-        entity.on_remove()
-        entity.parent = null
-        World.remove(this.world, entity.body)
-        let index = this.entites.findIndex(e => e.id == entity.id)
-        this.entites.splice(index, 1)
-    }
-
-    get_display_data() {
-        return this.entites.map(entity => entity.get_display_data()).flat()
-    }
-
-    update_turret_angle(position) {
-        let turrets = this.entites.filter(e => e instanceof Turret) 
-        turrets.forEach(e => e.follow_point(position))
-    }
-
-    fire(event) {
-        const turret = this.entites.find(e => e instanceof Turret)
-        if (turret) {
-            const bullet = new Bullet(1500) 
-            const vect = Vector.rotate({x: 100, y: 0}, turret.angle)
-            const pos = Vector.add(vect, turret.pos_world)
-            const velocity = Vector.div(vect, 5)
-            Body.setVelocity(bullet.body, velocity)
-            this.map.add_entity(bullet, pos)
-        }
-    }
-
-    on_tick() {
-        this.entites.forEach(e => e.on_tick())
-    }
-
-    on_death() {
-        this.respawn()
-    }
-
-    respawn() {
-        this.hp = this.hp_max
-        const x = Math.random() * 3000
-        const y = Math.random() * 3000
-        Body.setPosition(this.body, {x, y})
-    }
-
-    handle_collision(event) {
-        for (let pair of event.pairs) {
-            const entityA = pair.bodyA.entity
-            const entityB = pair.bodyB.entity
-
-            if (entityA) {
-                entityA.on_collision_start({
+        handle_collisions(event) {
+            for (let pair of event.pairs) {
+                const entityA = this.get_entity_from_body(pair.bodyA)
+                const entityB = this.get_entity_from_body(pair.bodyB)
+    
+                if (entityA && entityB) {
+                    entityA.on_collision_start({
                         collided_with: entityB 
                     })
-            } 
-
-            if (entityB) {
-                entityB.on_collision_start({
-                    collided_with: entityA 
-                })
+                    entityB.on_collision_start({
+                        collided_with: entityA 
+                    })
+                } 
+                
             }
-            
-        }
+        },
+
+        get_entity_from_body(body) {
+            return this.entites.find(e => e.body == body)
+        },
     }
-    
+    Events.on(world.engine, 'collisionStart', (e) => world.handle_collisions(e))
+    return world
 }
 
-class Bullet extends Entity {
-    constructor(lifetime) {
-        super(
+const create_ship = (width, height) => {
+    const entity = new Entity(
+        width,
+        height,
+        '',
+        {
+            inertia: Infinity
+        }
+    )
+        
+    const state = {
+        hp_max: 1000,
+        hp: 1000,
+        hatch_queue: [],
+    
+        add_loot(item) {
+            this.hatch_queue.push(item)
+        },
+
+        add_entity_to_grid(entity, pos_grid) {
+            this.add_entity(entity)
+            Body.setPosition(entity.body, Pos.grid_to_game(pos_grid, entity))
+        },
+    
+        get_display_data() {
+            return this.entites.map(entity => entity.get_display_data()).flat()
+        },
+    
+        update_turret_angle(position) {
+            let turrets = this.entites.filter(e => e instanceof Turret) 
+            turrets.forEach(e => e.follow_point(position))
+        },
+    
+        fire(event) {
+            const turret = this.entites.find(e => e instanceof Turret)
+            if (turret) {
+                const bullet = create_bullet(1500) 
+                const vect = Vector.rotate({x: 100, y: 0}, turret.angle)
+                const pos = Vector.add(vect, turret.pos_world)
+                const velocity = Vector.div(vect, 5)
+                Body.setVelocity(bullet.body, velocity)
+                this.parent.add_entity_to_pos(bullet, pos)
+            }
+        },
+    
+        on_tick() {
+            this.entites.forEach(e => e.on_tick())
+        },
+    
+        on_death() {
+            this.respawn()
+        },
+    
+        respawn() {
+            this.hp = this.hp_max
+            const x = Math.random() * 3000
+            const y = Math.random() * 3000
+            Body.setPosition(this.body, {x, y})
+        },
+    }
+
+    const ship =  Object.assign(
+        entity,
+        create_world(),
+        state
+    )
+        
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
+                ship.add_entity_to_grid(new Brick(), {x, y})
+            }
+        }
+    }
+
+    ship.add_entity_to_grid(new Hatch(), {x: 1, y: 1})
+    ship.add_entity_to_grid(new Factory(), {x: 7, y: 5})
+    ship.add_entity_to_grid(new Ladder(), {x: 4, y: 4})
+    ship.add_entity_to_grid(new Ladder(), {x: 4, y: 5})
+    ship.add_entity_to_grid(new Ladder(), {x: 4, y: 6})
+    ship.add_entity_to_grid(new Brick(), {x: 1, y: 4})
+    ship.add_entity_to_grid(new Brick(), {x: 2, y: 4})
+    ship.add_entity_to_grid(new Brick(), {x: 3, y: 4})
+    ship.add_entity_to_grid(new Explo(), {x: 1, y: 6})
+    ship.add_entity_to_grid(new Explo(), {x: 5, y: 6})
+    ship.add_entity_to_grid(new Wrench(), {x: 5, y: 5})
+    ship.add_entity_to_grid(new Shredder(), {x: 5, y: 4})
+    ship.add_entity_to_grid(new Enlargment(), {x: 5, y: 3})
+    ship.add_entity_to_grid(new BuildingPackage(Turret), {x: 5, y: 2})
+    ship.add_entity_to_grid(new Helm(), {x: 9, y: 5})
+
+    return ship
+}
+
+const create_bullet = (lifetime=1500) => {
+    const entity = new Entity(
             1,
             1,
             'wrench.png'
-        )
+    )
 
-        this.lifetime = lifetime
-        this.created = (new Date()).getTime()
-        this.damage = 100
+    const state = {
+        lifetime,
+        created: Date.now(),
+        damage: 100,
+
+        on_tick() {
+            const has_expired = this.created + this.lifetime < Date.now()
+            if (has_expired && this.parent) {
+                this.parent.remove_entity(this)
+            }
+        },
+    
+        on_collision_start(event) {
+            if (event.collided_with.hp > 0) {
+                event.collided_with.on_damage(this.damage)
+            } 
+            this.parent.remove_entity(this)
+        },
     }
 
-    get has_expired() {
-        return this.created + this.lifetime < (new Date()).getTime()
-    }
-
-    on_tick() {
-        if (this.has_expired && this.map) {
-            this.map.remove_entity(this)
-        }
-    }
-
-    on_collision_start(event) {
-        if (event.collided_with.hp > 0) {
-            event.collided_with.on_damage(this.damage)
-        } 
-        this.map.remove_entity(this)
-    }
+    return Object.assign(
+        entity, 
+        state
+    )
+    
 }
 
-exports.Ship = Ship
-exports.Bullet = Bullet
+module.exports = {
+    create_ship,
+    create_bullet,
+    create_world
+}

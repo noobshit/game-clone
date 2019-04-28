@@ -1,6 +1,6 @@
-const {Ship} = require('./ship.js')
+const {create_ship} = require('./ship.js')
 const Player = require('./player.js')
-const GameMap = require('./gameMap.js')
+const create_game_map = require('./gameMap.js')
 
 const Matter = require('matter-js')
 const Body = Matter.Body
@@ -112,11 +112,11 @@ const game = {
 
     init() {
         game.input_buffer = new Map() 
-        game.ship = new Ship(12, 8)
-        game.map = GameMap(40, 40)
+        game.ship = create_ship(12, 8)
+        game.map = create_game_map(40, 40)
         game.map.add_ship(game.ship)
 
-        game.ship_2 = new Ship(12, 8)
+        game.ship_2 = create_ship(12, 8)
         game.map.add_ship(game.ship_2)
     },
 
