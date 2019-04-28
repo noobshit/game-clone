@@ -113,7 +113,7 @@ const game = {
     init() {
         game.input_buffer = new Map() 
         game.ship = new Ship(12, 8)
-        game.map = new GameMap(40, 40)
+        game.map = GameMap(40, 40)
         game.map.add_ship(game.ship)
 
         game.ship_2 = new Ship(12, 8)

@@ -158,10 +158,6 @@ class Entity {
     }
 
     on_collision_start(event) {
-        if (this && event.collided_with) {
-            const [typeA, typeB] = [this.constructor, event.collided_with.constructor]
-            console.log(typeA, typeB)
-        }
     }
 
     on_damage(amount) {
@@ -172,6 +168,7 @@ class Entity {
     }
 
     on_death() {
+        console.log('on_death')
     }
 }
 
