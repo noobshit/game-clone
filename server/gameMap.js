@@ -1,16 +1,15 @@
 
+module.exports = create_game_map
+
 const Entity = require('./entity.js')
 const Matter = require('matter-js')
 const {Ship, create_bullet, create_world} = require('./ship.js')
 const {Metal, Explo} = require('./box.js')
 const Body = Matter.Body
-const Events = Matter.Events
-const Engine = Matter.Engine
-const World = Matter.World
 
 const SMALL_BLOCK_SIZE = 32
 
-const create_game_map = (width, height) => {
+function create_game_map(width, height) {
     const state = {
         width,
         height,
@@ -68,7 +67,7 @@ const create_game_map = (width, height) => {
     return game_map
 }
 
-const create_block = () => {
+function create_block() {
     return new Entity (
         8, 
         8,
@@ -79,7 +78,7 @@ const create_block = () => {
     )
 }
 
-const create_bot = () => {
+function create_bot() {
     const entity = new Entity(8, 8, 'bot.png')
     const bot = {
         hp_max: 1000,
@@ -118,7 +117,7 @@ const create_bot = () => {
     )
 }
 
-const create_loot = (item) => {
+function create_loot(item) {
     const entity = new Entity(3, 3, 'loot.png')
     const loot = {
         item,
@@ -135,5 +134,3 @@ const create_loot = (item) => {
         loot
     )
 }
-
-module.exports = create_game_map

@@ -1,3 +1,9 @@
+module.exports = {
+    create_ship,
+    create_bullet,
+    create_world
+}
+
 const Matter = require('matter-js')
 const Body = Matter.Body
 const Engine = Matter.Engine
@@ -10,7 +16,7 @@ const Pos = require('./pos.js')
 const {BuildingPackage, Wrench, Shredder, Explo, Enlargment} = require('./box.js')
 const {Brick, Ladder, Factory, Turret, Helm, Hatch} = require('./building.js')
 
-const create_world = () => {
+function create_world() {
     const world = {
         engine: Engine.create(),
         entites: [],
@@ -58,7 +64,7 @@ const create_world = () => {
     return world
 }
 
-const create_ship = (width, height) => {
+function create_ship(width, height) {
     const entity = new Entity(
         width,
         height,
@@ -152,7 +158,7 @@ const create_ship = (width, height) => {
     return ship
 }
 
-const create_bullet = (lifetime=1500) => {
+function create_bullet(lifetime=1500) {
     const entity = new Entity(
             1,
             1,
@@ -184,10 +190,4 @@ const create_bullet = (lifetime=1500) => {
         state
     )
     
-}
-
-module.exports = {
-    create_ship,
-    create_bullet,
-    create_world
 }
