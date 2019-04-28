@@ -28,8 +28,8 @@ class GameMap {
         this.add_entity(new Bot(), {x: 2000, y: 1000})
         this.add_entity(new Bot(), {x: 3000, y: 1000})
         this.add_entity(new Bot(), {x: 1000, y: 1000})
-        this.add_entity(new Loot(new Explo()), {x: 1000, y: 500})
-        this.add_entity(new Loot(new Metal()), {x: 1000, y: 700})
+        this.add_entity(Loot(new Explo()), {x: 1000, y: 500})
+        this.add_entity(Loot(new Metal()), {x: 1000, y: 700})
     }
 
     get_entity_from_body(body) {
@@ -132,7 +132,7 @@ class Bot extends Entity {
         for (let i = 0; i < length; i++) {
             let index = Math.floor(Math.random() * 2)
             const item = new [Metal, Explo][index]
-            this.map.add_entity(new Loot(item), this.pos_world)
+            this.map.add_entity(Loot(item), this.pos_world)
         }
         
         this.hp = this.hp_max
@@ -142,22 +142,22 @@ class Bot extends Entity {
     }
 }
 
-class Loot extends Entity {
-    constructor(item) {
-        super(
-            3,
-            3,
-            'loot.png'
-        )
-
-        this.item = item
-    }
-
-    on_collision_start(event) {
-        if (event.collided_with instanceof Ship) {
-            event.collided_with.add_loot(this.item)
-            this.map.remove_entity(this)
+const Loot = (item) => {
+    const entity = new Entity(3, 3, 'loot.png')
+    const loot = {
+        item,
+        on_collision_start(event) {
+            if (event.collided_with instanceof Ship) {
+                event.collided_with.add_loot(this.item)
+                this.map.remove_entity(this)
+            }
         }
     }
+
+    return Object.assign(
+        entity,
+        loot
+    )
 }
+
 module.exports = GameMap
