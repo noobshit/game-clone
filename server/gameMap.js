@@ -21,7 +21,7 @@ const create_game_map = (width, height) => {
         },
         
         add_block(pos_grid) {
-            this.add_entity_to_pos(Block(), {
+            this.add_entity_to_pos(create_block(), {
                 x: pos_grid.x * 8 * SMALL_BLOCK_SIZE, 
                 y: pos_grid.y * 8 * SMALL_BLOCK_SIZE
             })
@@ -59,16 +59,16 @@ const create_game_map = (width, height) => {
     }
 
     game_map.world.gravity.y = 0
-    game_map.add_entity_to_pos(Bot(), {x: 2000, y: 1000})
-    game_map.add_entity_to_pos(Bot(), {x: 3000, y: 1000})
-    game_map.add_entity_to_pos(Bot(), {x: 1000, y: 1000})
-    game_map.add_entity_to_pos(Loot(new Explo()), {x: 1000, y: 500})
-    game_map.add_entity_to_pos(Loot(new Metal()), {x: 1000, y: 700})
+    game_map.add_entity_to_pos(create_bot(), {x: 2000, y: 1000})
+    game_map.add_entity_to_pos(create_bot(), {x: 3000, y: 1000})
+    game_map.add_entity_to_pos(create_bot(), {x: 1000, y: 1000})
+    game_map.add_entity_to_pos(create_loot(new Explo()), {x: 1000, y: 500})
+    game_map.add_entity_to_pos(create_loot(new Metal()), {x: 1000, y: 700})
 
     return game_map
 }
 
-const Block = () => {
+const create_block = () => {
     return new Entity (
         8, 
         8,
@@ -79,7 +79,7 @@ const Block = () => {
     )
 }
 
-const Bot = () => {
+const create_bot = () => {
     const entity = new Entity(8, 8, 'bot.png')
     const bot = {
         hp_max: 1000,
@@ -102,7 +102,7 @@ const Bot = () => {
             for (let i = 0; i < length; i++) {
                 let index = Math.floor(Math.random() * 2)
                 const item = new [Metal, Explo][index]
-                this.parent.add_entity_to_pos(Loot(item), this.pos_world)
+                this.parent.add_entity_to_pos(create_loot(item), this.pos_world)
             }
             
             this.hp = this.hp_max
@@ -118,7 +118,7 @@ const Bot = () => {
     )
 }
 
-const Loot = (item) => {
+const create_loot = (item) => {
     const entity = new Entity(3, 3, 'loot.png')
     const loot = {
         item,
