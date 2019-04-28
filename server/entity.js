@@ -14,6 +14,7 @@ class Entity {
         this.height = height
         this.image_key = image_key
         this.body = Bodies.rectangle(0, 0, width, height, options)
+        this.body.entity = this
         this.id = this.generate_id()
         this.parent = null
         this.holded_by = null
@@ -157,6 +158,10 @@ class Entity {
     }
 
     on_collision_start(event) {
+        if (this && event.collided_with) {
+            const [typeA, typeB] = [this.constructor, event.collided_with.constructor]
+            console.log(typeA, typeB)
+        }
     }
 
     on_damage(amount) {

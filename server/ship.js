@@ -3,6 +3,7 @@ const Body = Matter.Body
 const Engine = Matter.Engine
 const World = Matter.World
 const Vector = Matter.Vector
+const Events = Matter.Events
 
 const Entity = require('./entity.js')
 const Pos = require('./pos.js')
@@ -23,6 +24,7 @@ class Ship extends Entity {
 
         this.entites = []
         this.engine = Engine.create()
+        Events.on(this.engine, 'collisionStart', (e) => this.handle_collision(e))
         this.hp_max = 1000
         this.hp = this.hp_max
         this.hatch_queue = []
@@ -113,6 +115,26 @@ class Ship extends Entity {
         const x = Math.random() * 3000
         const y = Math.random() * 3000
         Body.setPosition(this.body, {x, y})
+    }
+
+    handle_collision(event) {
+        for (let pair of event.pairs) {
+            const entityA = pair.bodyA.entity
+            const entityB = pair.bodyB.entity
+
+            if (entityA) {
+                entityA.on_collision_start({
+                        collided_with: entityB 
+                    })
+            } 
+
+            if (entityB) {
+                entityB.on_collision_start({
+                    collided_with: entityA 
+                })
+            }
+            
+        }
     }
     
 }
