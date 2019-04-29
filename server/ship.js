@@ -32,7 +32,7 @@ function create_world() {
         },
     
         remove_entity(entity) {
-            entity.on_remove()
+            entity.on_remove({player: entity})
             entity.parent = null
             World.remove(this.world, entity.body)
             let index = this.entites.findIndex(e => e.id == entity.id)

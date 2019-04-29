@@ -148,11 +148,11 @@ class Entity {
             })
     }
 
-    on_remove() {
+    on_remove(event) {
         if (this.holded_by != null) {
             const player = this.holded_by
-            if (player.drop_item.can_execute()) {
-                player.drop_item.execute()
+            if (player.drop_item.can_execute(event)) {
+                player.drop_item.execute(event)
             }
         }
     }

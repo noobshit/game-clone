@@ -1,3 +1,5 @@
+module.exports = create_player
+
 const {Box} = require('./box.js')
 const Cursor = require('../shared/cursor.js')
 const collision = require('./collision.js')
@@ -7,87 +9,84 @@ const Body = Matter.Body
 const World = Matter.World
 const Constraint = Matter.Constraint
 
-class Player extends Entity {
-    constructor(socket) {
-        super(
-            0.8,
-            1.6,
-            null,
-            {
-                friction: 0.5,
-                frictionStatic: 0.1,
-                restitution: 0.5,
-                collisionFilter: collision.filter.PLAYER
+function create_player(socket) {
+    const entity = new Entity(
+        0.8,
+        1.6,
+        null,
+        {
+            friction: 0.5,
+            frictionStatic: 0.1,
+            restitution: 0.5,
+            collisionFilter: collision.filter.PLAYER
+        }
+    )
+
+    const state = {
+        socket,
+        item: null,
+        using_building: null,
+        speed: 5,
+    
+        send_debug_message(msg) {
+            this.socket.emit('debug_answer', msg)
+        },
+    
+        update_cursor(event) {
+            if (this.item && this.item.use.can_execute(event)) {
+                this.cursor = this.item.get_cursor(event)
+            } else if (this.grab_item.can_execute(event)) {
+                this.cursor = new Cursor(
+                    Cursor.type.GRAB, 
+                    {
+                        can_use: true,
+                        target: this.grab_item.target(event).get_display_data(),
+                    })
+            } else if (event.entites.some(e => e.left_button_down.can_execute(event))) {
+                let entity = event.entites.find(e => e.left_button_down.can_execute(event))
+                this.cursor = entity.get_cursor()
+            } else if (this.item) {
+                this.cursor = this.item.get_cursor(event)
+            } else if (this.grab_item.target(event) != null) {
+                this.cursor = new Cursor(Cursor.type.GRAB, {can_use: false})
+            } else {
+                this.cursor = new Cursor(Cursor.type.DEFAULT)
             }
-        )
-        
-        this.item = null
-        this.socket = socket
-        this.speed = 5
-        this.using_building = null
-        Body.setInertia(this.body, Infinity)
-    }
-
-    send_debug_message(msg) {
-        this.socket.emit('debug_answer', msg)
-    }
-
-    update_cursor(event) {
-        if (this.item && this.item.use.can_execute(event)) {
-            this.cursor = this.item.get_cursor(event)
-        } else if (this.grab_item.can_execute(event)) {
-            this.cursor = new Cursor(
-                Cursor.type.GRAB, 
-                {
-                    can_use: true,
-                    target: this.grab_item.target(event).get_display_data(),
-                })
-        } else if (event.entites.some(e => e.left_button_down.can_execute(event))) {
-            let entity = event.entites.find(e => e.left_button_down.can_execute(event))
-            this.cursor = entity.get_cursor()
-        } else if (this.item) {
-            this.cursor = this.item.get_cursor(event)
-        } else if (this.grab_item.target(event) != null) {
-            this.cursor = new Cursor(Cursor.type.GRAB, {can_use: false})
-        } else {
-            this.cursor = new Cursor(Cursor.type.DEFAULT)
-        }
-    }
-
-    on_left_button_down(event) {
-        if (this.parent.controlled_by == this) {
-            this.parent.fire(event)
-        }
-        else if (this.item && this.item.use.can_execute(event)) {
-            this.item.use.execute(event)
-        }
-        else if (this.grab_item.can_execute(event)) {
-            this.grab_item.execute(event)
-        } else {
-            let entity = event.entites.find(e => e.left_button_down.can_execute(event))
-            if (entity) {
-                entity.left_button_down.execute(event)
+        },
+    
+        on_left_button_down(event) {
+            if (this.parent.controlled_by == this) {
+                this.parent.fire(event)
             }
-        }
-    }
-
-    on_remove() {
-        if (this.drop_item.can_execute()) {
-            this.drop_item.execute()
-        }
-    }
-
-    get grab_item() {
-        let player = this
-        return {
-            target(event) {
-                return event.entites.find(e => e instanceof Box)
+            else if (this.item && this.item.use.can_execute(event)) {
+                this.item.use.execute(event)
+            }
+            else if (this.grab_item.can_execute(event)) {
+                this.grab_item.execute(event)
+            } else {
+                let entity = event.entites.find(e => e.left_button_down.can_execute(event))
+                if (entity) {
+                    entity.left_button_down.execute(event)
+                }
+            }
+        },
+    
+        on_remove(event) {
+            if (this.drop_item.can_execute(event)) {
+                this.drop_item.execute(event)
+            }
+        },
+    
+        grab_item: {
+            target({entites}) {
+                return entites.find(e => e instanceof Box)
             },
-            can_execute(event) {
+            can_execute({player, entites}) {
                 return player.item == null 
-                && event.entites.some(e => e instanceof Box)
+                && entites.some(e => e instanceof Box)
             },
             execute(event) {
+                const {player} = event
                 let entry = this.target(event)
                 player.item = entry
                 entry.holded_by = player
@@ -101,16 +100,13 @@ class Player extends Entity {
                 player.item.constraint = constraint
                 World.add(player.world, constraint)
             }    
-        }
-    }
-    
-    get drop_item() {
-        let player = this
-        return {
-            can_execute(event) {
+        },
+        
+        drop_item: {
+            can_execute({player}) {
                 return player.item != null || player.using_building
             },
-            execute(event) {
+            execute({player}) {
                 if (player.using_building) {
                     player.using_building.used_by = null
                     player.using_building = null
@@ -124,8 +120,14 @@ class Player extends Entity {
                     player.item = null
                 } 
             }
-        }
+        
+        },
     }
-}
 
-module.exports = Player
+    Body.setInertia(entity.body, Infinity)
+
+    return Object.assign(
+        entity,
+        state
+    )
+}

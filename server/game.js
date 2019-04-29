@@ -1,5 +1,5 @@
 const {create_ship} = require('./ship.js')
-const Player = require('./player.js')
+const create_player = require('./player.js')
 const create_game_map = require('./gameMap.js')
 
 const Matter = require('matter-js')
@@ -10,7 +10,7 @@ const players = new Map()
 
 const game = {
     add_player(socket_id, socket) {
-        let player = new Player(socket)
+        let player = create_player(socket)
         this.ship.add_entity_to_grid(player, {x: 3, y: 3})
         players.set(socket_id, player)
     },
@@ -43,6 +43,7 @@ const game = {
                     y: input.mouse.pos_game.y - ship.position.top
                 }
                 const event = {
+                    player,
                     from: player, 
                     ship: player.parent,
                     pos_game: mouse_pos_inside_ship,
@@ -86,8 +87,8 @@ const game = {
                 }
 
                 if (input.press_q) {
-                    if (player.drop_item.can_execute()) {
-                        player.drop_item.execute()
+                    if (player.drop_item.can_execute(event)) {
+                        player.drop_item.execute(event)
                     }
                 }
 
