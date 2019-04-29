@@ -108,7 +108,9 @@ function create_player(socket) {
             },
             execute({player}) {
                 if (player.using_building) {
-                    player.using_building.used_by = null
+                    console.log('wut')
+                    console.log(player.using_building.image_key)
+                    player.using_building.set_used_by(null)
                     player.using_building = null
                 }
                 else if (player.item != null) {

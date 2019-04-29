@@ -126,7 +126,7 @@ class Metal extends Box {
 
 class BuildingPackage extends Box {
     constructor(building_class) {
-        let building = new building_class()
+        let building = building_class()
         super(building.image_key)
         this.building_class = building_class
         this.building = building

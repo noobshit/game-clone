@@ -14,7 +14,14 @@ const Events = Matter.Events
 const Entity = require('./entity.js')
 const Pos = require('./pos.js')
 const {BuildingPackage, Wrench, Shredder, Explo, Enlargment} = require('./box.js')
-const {Brick, Ladder, Factory, Turret, Helm, Hatch} = require('./building.js')
+const {
+    create_brick, 
+    create_ladder, 
+    create_factory, 
+    create_turret, 
+    create_helm, 
+    create_hatch
+} = require('./building.js')
 
 function create_world() {
     const world = {
@@ -93,12 +100,12 @@ function create_ship(width, height) {
         },
     
         update_turret_angle(position) {
-            let turrets = this.entites.filter(e => e instanceof Turret) 
+            let turrets = this.entites.filter(e => e.type === 'turret') 
             turrets.forEach(e => e.follow_point(position))
         },
     
         fire(event) {
-            const turret = this.entites.find(e => e instanceof Turret)
+            const turret = this.entites.find(e => e.type === 'turret')
             if (turret) {
                 const bullet = create_bullet(1500) 
                 const vect = Vector.rotate({x: 100, y: 0}, turret.angle)
@@ -134,26 +141,27 @@ function create_ship(width, height) {
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
             if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
-                ship.add_entity_to_grid(new Brick(), {x, y})
+                ship.add_entity_to_grid(create_brick(), {x, y})
             }
         }
     }
 
-    ship.add_entity_to_grid(new Hatch(), {x: 1, y: 1})
-    ship.add_entity_to_grid(new Factory(), {x: 7, y: 5})
-    ship.add_entity_to_grid(new Ladder(), {x: 4, y: 4})
-    ship.add_entity_to_grid(new Ladder(), {x: 4, y: 5})
-    ship.add_entity_to_grid(new Ladder(), {x: 4, y: 6})
-    ship.add_entity_to_grid(new Brick(), {x: 1, y: 4})
-    ship.add_entity_to_grid(new Brick(), {x: 2, y: 4})
-    ship.add_entity_to_grid(new Brick(), {x: 3, y: 4})
+    ship.add_entity_to_grid(create_hatch(), {x: 1, y: 1})
+    ship.add_entity_to_grid(create_factory(), {x: 7, y: 5})
+    ship.add_entity_to_grid(create_ladder(), {x: 4, y: 4})
+    ship.add_entity_to_grid(create_ladder(), {x: 4, y: 5})
+    ship.add_entity_to_grid(create_ladder(), {x: 4, y: 6})
+    ship.add_entity_to_grid(create_brick(), {x: 1, y: 4})
+    ship.add_entity_to_grid(create_brick(), {x: 2, y: 4})
+    ship.add_entity_to_grid(create_brick(), {x: 3, y: 4})
+    ship.add_entity_to_grid(create_helm(), {x: 9, y: 5})
+    ship.add_entity_to_grid(new BuildingPackage(create_helm), {x: 9, y: 5})
     ship.add_entity_to_grid(new Explo(), {x: 1, y: 6})
     ship.add_entity_to_grid(new Explo(), {x: 5, y: 6})
     ship.add_entity_to_grid(new Wrench(), {x: 5, y: 5})
     ship.add_entity_to_grid(new Shredder(), {x: 5, y: 4})
     ship.add_entity_to_grid(new Enlargment(), {x: 5, y: 3})
-    ship.add_entity_to_grid(new BuildingPackage(Turret), {x: 5, y: 2})
-    ship.add_entity_to_grid(new Helm(), {x: 9, y: 5})
+    ship.add_entity_to_grid(new BuildingPackage(create_turret), {x: 5, y: 2})
 
     return ship
 }

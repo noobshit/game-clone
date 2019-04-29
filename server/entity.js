@@ -22,6 +22,13 @@ class Entity {
         this.map = null
         this.hp_max = 0
         this.hp = this.hp_max
+        this.type = 'entity'
+
+        this.left_button_down = {
+            target: _ => null,
+            can_execute: _ => false,
+            execute: _ => {}
+        }
     }
 
     get world() {
@@ -49,11 +56,12 @@ class Entity {
     }
 
     get bounds() {
+        const {x, y} = this.position
         return {
-            left: 0,
-            right: 0 + this.width,
-            top: 0,
-            bottom: 0 + this.height,
+            left: this.body.bounds.min.x,
+            right: this.body.bounds.max.x,
+            top: this.body.bounds.min.y,
+            bottom: this.body.bounds.max.y,
         }
     }
 
@@ -118,14 +126,6 @@ class Entity {
 
     translate(vector) {
         Body.translate(this.body, vector)
-    }
-
-    get left_button_down() {
-        return {
-            target: _ => null,
-            can_execute: _ => false,
-            execute: _ => {}
-        }
     }
 
     get use() {
