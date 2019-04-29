@@ -15,12 +15,14 @@ const Detector = Matter.Detector
 const Composite = Matter.Composite
 const Vector = Matter.Vector
 const collision = require('./collision.js')
-const Entity = require('./entity.js')
+const create_entity = require('./entity.js')
 
 
 function create_building(width, height, image_key, options) {
-    const entity = new Entity(width, height, image_key, options)
+    const entity = create_entity(width, height, image_key, options)
     const behaviour = (state) => ({
+        is_building: true,
+
         can_build(pos) {
             let bodyA = state.body
             Body.setPosition(bodyA, {
@@ -64,8 +66,16 @@ function create_brick() {
             isStatic: true,
         }   
     )
-    building.is_background = true
-    return building
+    
+    const state = {
+        is_background: true,
+        factory_function: create_brick
+    }
+    
+    return Object.assign(
+        building,
+        state
+    )
 }
 
 
@@ -84,6 +94,7 @@ function create_helm() {
         {
             is_background: true,
             used_by: null,
+            factory_function: create_helm,
         }
     )
 
@@ -122,7 +133,7 @@ function create_helm() {
 
 
 function create_ladder() {
-    return create_building(
+    const building = create_building(
         1, 
         1,
         'ladder.png',
@@ -131,11 +142,20 @@ function create_ladder() {
             collisionFilter: collision.filter.BUILDING
         }
     )
+
+    const state = {
+        factory_function: create_ladder,
+    }
+
+    return Object.assign(
+        building,
+        state
+    )
 }
 
 
 function create_factory() {
-    return create_building(
+    const building = create_building(
         2,
         2,
         'factory.png',
@@ -143,6 +163,15 @@ function create_factory() {
             isStatic: true,
             collisionFilter: collision.filter.BUILDING
         }
+    )
+
+    const state = {
+        factory_function: create_factory
+    }
+
+    return Object.assign(
+        building,
+        state
     )
 }
 
@@ -159,6 +188,8 @@ function create_hatch() {
     )
     
     const state = {
+        factory_function: create_hatch,
+
         on_tick() {
             const item_to_add = this.parent.hatch_queue.shift()
             if (item_to_add) {
@@ -186,6 +217,7 @@ function create_turret() {
     )
 
     const state = {
+        factory_function: create_turret,
         type: 'turret',
         barrel: create_barrel(),
         angle: 0,

@@ -1,10 +1,10 @@
 
 module.exports = create_game_map
 
-const Entity = require('./entity.js')
+const create_entity = require('./entity.js')
 const Matter = require('matter-js')
 const {Ship, create_bullet, create_world} = require('./ship.js')
-const {Metal, Explo} = require('./box.js')
+const {create_metal, create_explo} = require('./box.js')
 const Body = Matter.Body
 
 const SMALL_BLOCK_SIZE = 32
@@ -61,14 +61,14 @@ function create_game_map(width, height) {
     game_map.add_entity_to_pos(create_bot(), {x: 2000, y: 1000})
     game_map.add_entity_to_pos(create_bot(), {x: 3000, y: 1000})
     game_map.add_entity_to_pos(create_bot(), {x: 1000, y: 1000})
-    game_map.add_entity_to_pos(create_loot(new Explo()), {x: 1000, y: 500})
-    game_map.add_entity_to_pos(create_loot(new Metal()), {x: 1000, y: 700})
+    game_map.add_entity_to_pos(create_loot(create_explo()), {x: 1000, y: 500})
+    game_map.add_entity_to_pos(create_loot(create_metal()), {x: 1000, y: 700})
 
     return game_map
 }
 
 function create_block() {
-    return new Entity (
+    return create_entity(
         8, 
         8,
         'brick.png',
@@ -79,7 +79,7 @@ function create_block() {
 }
 
 function create_bot() {
-    const entity = new Entity(8, 8, 'bot.png')
+    const entity = create_entity(8, 8, 'bot.png')
     const bot = {
         hp_max: 1000,
         hp: 1000,
@@ -100,7 +100,7 @@ function create_bot() {
             const length = Math.floor(Math.random() * 5) + 1
             for (let i = 0; i < length; i++) {
                 let index = Math.floor(Math.random() * 2)
-                const item = new [Metal, Explo][index]
+                const item = [create_metal, create_explo][index]()
                 this.parent.add_entity_to_pos(create_loot(item), this.pos_world)
             }
             
@@ -118,7 +118,7 @@ function create_bot() {
 }
 
 function create_loot(item) {
-    const entity = new Entity(3, 3, 'loot.png')
+    const entity = create_entity(3, 3, 'loot.png')
     const loot = {
         item,
         on_collision_start(event) {

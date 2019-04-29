@@ -11,9 +11,15 @@ const World = Matter.World
 const Vector = Matter.Vector
 const Events = Matter.Events
 
-const Entity = require('./entity.js')
+const create_entity = require('./entity.js')
 const Pos = require('./pos.js')
-const {BuildingPackage, Wrench, Shredder, Explo, Enlargment} = require('./box.js')
+const {
+    create_building_package,
+    create_wrench, 
+    create_shredder, 
+    create_explo, 
+    create_enlargment
+} = require('./box.js')
 const {
     create_brick, 
     create_ladder, 
@@ -33,14 +39,14 @@ function create_world() {
         },
 
         add_entity(entity) {
-            entity.parent = this
+            entity.set_parent(this)
             this.entites.push(entity)
             World.add(this.engine.world, entity.body)        
         },
     
         remove_entity(entity) {
             entity.on_remove({player: entity})
-            entity.parent = null
+            entity.set_parent(null)
             World.remove(this.world, entity.body)
             let index = this.entites.findIndex(e => e.id == entity.id)
             this.entites.splice(index, 1)
@@ -72,7 +78,7 @@ function create_world() {
 }
 
 function create_ship(width, height) {
-    const entity = new Entity(
+    const entity = create_entity(
         width,
         height,
         '',
@@ -155,19 +161,19 @@ function create_ship(width, height) {
     ship.add_entity_to_grid(create_brick(), {x: 2, y: 4})
     ship.add_entity_to_grid(create_brick(), {x: 3, y: 4})
     ship.add_entity_to_grid(create_helm(), {x: 9, y: 5})
-    ship.add_entity_to_grid(new BuildingPackage(create_helm), {x: 9, y: 5})
-    ship.add_entity_to_grid(new Explo(), {x: 1, y: 6})
-    ship.add_entity_to_grid(new Explo(), {x: 5, y: 6})
-    ship.add_entity_to_grid(new Wrench(), {x: 5, y: 5})
-    ship.add_entity_to_grid(new Shredder(), {x: 5, y: 4})
-    ship.add_entity_to_grid(new Enlargment(), {x: 5, y: 3})
-    ship.add_entity_to_grid(new BuildingPackage(create_turret), {x: 5, y: 2})
+    ship.add_entity_to_grid(create_building_package(create_helm), {x: 9, y: 5})
+    ship.add_entity_to_grid(create_explo(), {x: 1, y: 6})
+    ship.add_entity_to_grid(create_explo(), {x: 5, y: 6})
+    ship.add_entity_to_grid(create_wrench(), {x: 5, y: 5})
+    ship.add_entity_to_grid(create_shredder(), {x: 5, y: 4})
+    ship.add_entity_to_grid(create_enlargment(), {x: 5, y: 3})
+    ship.add_entity_to_grid(create_building_package(create_turret), {x: 5, y: 2})
 
     return ship
 }
 
 function create_bullet(lifetime=1500) {
-    const entity = new Entity(
+    const entity = create_entity(
             1,
             1,
             'wrench.png'

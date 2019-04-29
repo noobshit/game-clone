@@ -3,14 +3,14 @@ module.exports = create_player
 const {Box} = require('./box.js')
 const Cursor = require('../shared/cursor.js')
 const collision = require('./collision.js')
-const Entity = require('./entity.js')
+const create_entity = require('./entity.js')
 const Matter = require('matter-js')
 const Body = Matter.Body
 const World = Matter.World
 const Constraint = Matter.Constraint
 
 function create_player(socket) {
-    const entity = new Entity(
+    const entity = create_entity(
         0.8,
         1.6,
         null,
@@ -79,11 +79,11 @@ function create_player(socket) {
     
         grab_item: {
             target({entites}) {
-                return entites.find(e => e instanceof Box)
+                return entites.find(e => e.is_box)
             },
             can_execute({player, entites}) {
                 return player.item == null 
-                && entites.some(e => e instanceof Box)
+                && entites.some(e => e.is_box)
             },
             execute(event) {
                 const {player} = event
