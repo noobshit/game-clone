@@ -29,7 +29,7 @@ function create_building(width, height, image_key, options) {
                 x: pos.left + state.offset.x,
                 y: pos.top + state.offset.y
             })
-            let bodies = Composite.allBodies(state.world)
+            let bodies = Composite.allBodies(state.get_world())
             let can_collide_with = bodies.filter(
                 bodyB => Detector.canCollide(bodyA.collisionFilter, bodyB.collisionFilter)
             )

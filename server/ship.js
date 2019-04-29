@@ -41,13 +41,13 @@ function create_world() {
         add_entity(entity) {
             entity.set_parent(this)
             this.entites.push(entity)
-            World.add(this.engine.world, entity.body)        
+            World.add(this.get_world(), entity.body)        
         },
     
         remove_entity(entity) {
             entity.on_remove({player: entity})
             entity.set_parent(null)
-            World.remove(this.world, entity.body)
+            World.remove(this.get_world(), entity.body)
             let index = this.entites.findIndex(e => e.id == entity.id)
             this.entites.splice(index, 1)
         },

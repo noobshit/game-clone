@@ -20,7 +20,6 @@ function create_entity(width, height, image_key, options={}) {
         parent: null,
         holded_by: null,
         is_background: false,
-        map: null,
         hp_max: 0,
         hp: 0,
         type: 'entity',
@@ -31,32 +30,15 @@ function create_entity(width, height, image_key, options={}) {
             execute: _ => {}
         },
 
-        get world() {
-            return this.get_world()
-        },
-
         get_world() {
             if (this.parent != null) {
-                return this.parent.world
+                return this.parent.get_world()
             } else {
                 return null
             }
         },
 
-        get map() {
-            if (this.parent != null) {
-                return this.parent.map
-            } else {
-                return this._map
-            }
-        },
-
-        set map(value) {
-            this._map = value    
-        },
-
         get bounds() {
-            const {x, y} = this.position
             return {
                 left: this.body.bounds.min.x,
                 right: this.body.bounds.max.x,
@@ -157,8 +139,8 @@ function create_entity(width, height, image_key, options={}) {
         on_remove(event) {
             if (this.holded_by != null) {
                 const player = this.holded_by
-                if (player.drop_item.can_execute(event)) {
-                    player.drop_item.execute(event)
+                if (player.drop_item.can_execute({player, entites: [this]})) {
+                    player.drop_item.execute({player, entites: [this]})
                 }
             }
         },

@@ -83,7 +83,7 @@ function create_player(socket) {
             },
             can_execute({player, entites}) {
                 return player.item == null 
-                && entites.some(e => e.is_box)
+                && this.target({entites})
             },
             execute(event) {
                 const {player} = event
@@ -98,7 +98,7 @@ function create_player(socket) {
                     bodyB: player.item.body
                 })
                 player.item.constraint = constraint
-                World.add(player.world, constraint)
+                World.add(player.get_world(), constraint)
             }    
         },
         
@@ -108,8 +108,6 @@ function create_player(socket) {
             },
             execute({player}) {
                 if (player.using_building) {
-                    console.log('wut')
-                    console.log(player.using_building.image_key)
                     player.using_building.set_used_by(null)
                     player.using_building = null
                 }
@@ -117,7 +115,7 @@ function create_player(socket) {
                     player.item.holded_by = null
                     player.item.body.collisionFilter = player.item.collisionFilter
                     delete player.item.collisionFilter
-                    World.remove(player.world, player.item.constraint)
+                    World.remove(player.get_world(), player.item.constraint)
                     delete player.item.constraint
                     player.item = null
                 } 
