@@ -1,25 +1,31 @@
-const types = {
+const type = {
     DEFAULT: 1,
     BUILD: 2,
     GRAB: 3,
 }
 
-class Cursor {
-    constructor(action, options) {
-        this.action = action
-        this.target = null
-        this.can_use = null
-        this.data = null
-
-        Object.assign(this, options)
+function create(action, options) {
+    const state = {
+        action,
+        target: null,
+        can_use: null,
+        data: null,
     }
 
-    static get type() {
-        return types
-    }
+    return Object.assign(
+        state, 
+        options
+    )
 
 }
 
+Cursor = {
+    type
+}
+
 if (typeof module !== 'undefined') {
-    module.exports = Cursor
+    module.exports = {
+        type,
+        create
+    }
 } 

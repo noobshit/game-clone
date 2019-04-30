@@ -36,7 +36,7 @@ function create_player(socket) {
             if (this.item && this.item.use.can_execute(event)) {
                 this.cursor = this.item.get_cursor(event)
             } else if (this.grab_item.can_execute(event)) {
-                this.cursor = new Cursor(
+                this.cursor = Cursor.create(
                     Cursor.type.GRAB, 
                     {
                         can_use: true,
@@ -48,9 +48,9 @@ function create_player(socket) {
             } else if (this.item) {
                 this.cursor = this.item.get_cursor(event)
             } else if (this.grab_item.target(event) != null) {
-                this.cursor = new Cursor(Cursor.type.GRAB, {can_use: false})
+                this.cursor = Cursor.create(Cursor.type.GRAB, {can_use: false})
             } else {
-                this.cursor = new Cursor(Cursor.type.DEFAULT)
+                this.cursor = Cursor.create(Cursor.type.DEFAULT)
             }
         },
     

@@ -180,7 +180,7 @@ function create_building_package(building_class) {
         },
 
         get_cursor(event) {
-            return new Cursor(
+            return Cursor.create(
                 Cursor.type.BUILD, 
                 {
                     can_use: this.use.can_execute(event), 

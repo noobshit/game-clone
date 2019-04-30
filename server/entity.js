@@ -129,7 +129,7 @@ function create_entity(width, height, image_key, options={}) {
             if (target) {
                 target = target.get_display_data()
             }
-            return new Cursor(
+            return Cursor.create(
                 Cursor.type.DEFAULT, {
                     target,
                     can_use: this.use.can_execute(event)
