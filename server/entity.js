@@ -135,10 +135,6 @@ function create_entity(width, height, image_key, options={}) {
         set_parent(value) {
             this.parent = value
         },
-
-        on_collision_start(event) {
-
-        },
     }
 
     state.body.entity = state

@@ -117,14 +117,15 @@ function create_bot() {
 function create_loot(item) {
     const entity = create_entity(3, 3, 'loot.png')
     const loot = {
-        item,
-        on_collision_start(event) {
-            if (event.collided_with == Ship) {
-                event.collided_with.add_loot(this.item)
-                this.parent.remove_entity(this)
-            }
-        }
+        item
     }
+
+    entity.events.on('collision_start', function(event) {
+        if (event.collided_with.is_ship) {
+            event.collided_with.add_loot(entity.item)
+            entity.parent.remove_entity(entity)
+        }
+    })
 
     return Object.assign(
         entity,

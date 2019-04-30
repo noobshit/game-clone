@@ -38,10 +38,10 @@ function create_world() {
                 const entityB = this.get_entity_from_body(pair.bodyB)
     
                 if (entityA && entityB) {
-                    entityA.on_collision_start({
+                    entityA.events.emit('collision_start', {
                         collided_with: entityB 
                     })
-                    entityB.on_collision_start({
+                    entityB.events.emit('collision_start', {
                         collided_with: entityA 
                     })
                 } 

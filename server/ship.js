@@ -38,6 +38,7 @@ function create_ship(width, height) {
     )
         
     const state = {
+        is_ship: true,
         hp_max: 1000,
         hp: 1000,
         hatch_queue: [],
@@ -129,13 +130,6 @@ function create_bullet(lifetime=1500) {
         lifetime,
         created: Date.now(),
         damage: 100,
-    
-        on_collision_start(event) {
-            if (event.collided_with.hp > 0) {
-                event.collided_with.events.emit('damage', {amount: this.damage})
-            } 
-            this.parent.remove_entity(this)
-        },
     }
 
     entity.events.on('tick', function() {
@@ -143,6 +137,13 @@ function create_bullet(lifetime=1500) {
         if (has_expired && entity.parent) {
             entity.parent.remove_entity(entity)
         }
+    })
+
+    entity.events.on('collision_start', function(event) {
+        if (event.collided_with.hp > 0) {
+            event.collided_with.events.emit('damage', {amount: entity.damage})
+        } 
+        entity.parent.remove_entity(entity)
     })
 
     return Object.assign(
