@@ -70,12 +70,6 @@ function create_player(socket) {
             }
         },
     
-        on_remove(event) {
-            if (this.drop_item.can_execute(event)) {
-                this.drop_item.execute(event)
-            }
-        },
-    
         grab_item: {
             target({entites}) {
                 return entites.find(e => e.is_box)
@@ -124,6 +118,12 @@ function create_player(socket) {
     }
 
     Body.setInertia(entity.body, Infinity)
+
+    entity.events.on('remove', (event) => {
+        if (entity.drop_item.can_execute(event)) {
+            entity.drop_item.execute(event)
+        }
+    })
 
     return Object.assign(
         entity,

@@ -39,10 +39,6 @@ function create_game_map(width, height) {
         add_ship(ship) {
             this.add_entity_to_pos(ship, {x: 500, y: 500})
         },
-    
-        on_tick() {
-            this.entites.forEach(e => e.on_tick())
-        },
     }
 
     const game_map = Object.assign(
@@ -84,33 +80,33 @@ function create_bot() {
     const bot = {
         hp_max: 1000,
         hp: 1000,
-        
-        on_tick() {
-            if (Math.random() < 1 / 20) {
-                const bullet = create_bullet(1500)
-                const pos = {
-                    x: Math.random() * 2000,
-                    y: Math.random() * 2000
-                }
-    
-                this.parent.add_entity_to_pos(bullet, pos)
-            }
-        },
-
-        on_death() {        
-            const length = Math.floor(Math.random() * 5) + 1
-            for (let i = 0; i < length; i++) {
-                let index = Math.floor(Math.random() * 2)
-                const item = [create_metal, create_explo][index]()
-                this.parent.add_entity_to_pos(create_loot(item), this.pos_world)
-            }
-            
-            this.hp = this.hp_max
-            const x = Math.random() * 3000
-            const y = Math.random() * 3000
-            Body.setPosition(this.body, {x, y})
-        }
     }
+
+    entity.events.on('tick', function() {
+        if (Math.random() < 1 / 20) {
+            const bullet = create_bullet(1500)
+            const pos = {
+                x: Math.random() * 2000,
+                y: Math.random() * 2000
+            }
+
+            entity.parent.add_entity_to_pos(bullet, pos)
+        }
+    })
+
+    entity.events.on('death', function() {
+        const length = Math.floor(Math.random() * 5) + 1
+        for (let i = 0; i < length; i++) {
+            let index = Math.floor(Math.random() * 2)
+            const item = [create_metal, create_explo][index]()
+            entity.parent.add_entity_to_pos(create_loot(item), entity.pos_world)
+        }
+        
+        entity.hp = entity.hp_max
+        const x = Math.random() * 3000
+        const y = Math.random() * 3000
+        Body.setPosition(entity.body, {x, y})
+    })
 
     return Object.assign(
         entity, 

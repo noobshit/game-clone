@@ -72,14 +72,6 @@ function create_ship(width, height) {
             }
         },
     
-        on_tick() {
-            this.entites.forEach(e => e.on_tick())
-        },
-    
-        on_death() {
-            this.respawn()
-        },
-    
         respawn() {
             this.hp = this.hp_max
             const x = Math.random() * 3000
@@ -93,6 +85,10 @@ function create_ship(width, height) {
         create_world(),
         state
     )
+
+    ship.events.on('death', function() {
+        ship.respawn()
+    })
         
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
@@ -133,21 +129,21 @@ function create_bullet(lifetime=1500) {
         lifetime,
         created: Date.now(),
         damage: 100,
-
-        on_tick() {
-            const has_expired = this.created + this.lifetime < Date.now()
-            if (has_expired && this.parent) {
-                this.parent.remove_entity(this)
-            }
-        },
     
         on_collision_start(event) {
             if (event.collided_with.hp > 0) {
-                event.collided_with.on_damage(this.damage)
+                event.collided_with.events.emit('damage', {amount: this.damage})
             } 
             this.parent.remove_entity(this)
         },
     }
+
+    entity.events.on('tick', function() {
+        const has_expired = entity.created + entity.lifetime < Date.now()
+        if (has_expired && entity.parent) {
+            entity.parent.remove_entity(entity)
+        }
+    })
 
     return Object.assign(
         entity, 

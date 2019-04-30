@@ -2,6 +2,7 @@ module.exports = {
     create_world
 }
 
+const EventEmitter = require('events')
 const Matter = require('matter-js')
 const Engine = Matter.Engine
 const World = Matter.World
@@ -11,6 +12,7 @@ function create_world() {
     const world = {
         engine: Engine.create(),
         entites: [],
+        world_events: new EventEmitter(),
         
         get_world() {
             return this.engine.world
@@ -23,7 +25,7 @@ function create_world() {
         },
     
         remove_entity(entity) {
-            entity.on_remove({player: entity})
+            entity.events.emit('remove', ({player: entity}))
             entity.set_parent(null)
             World.remove(this.get_world(), entity.body)
             let index = this.entites.findIndex(e => e.id == entity.id)
@@ -52,5 +54,9 @@ function create_world() {
         },
     }
     Events.on(world.engine, 'collisionStart', (e) => world.handle_collisions(e))
+    
+    world.world_events.on('tick', function() {
+        world.entites.forEach(e => e.events.emit('tick'))
+    })
     return world
 }

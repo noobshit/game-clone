@@ -1,5 +1,6 @@
 const SMALL_BLOCK_SIZE = 32
 const Matter = require('matter-js')
+const EventEmmiter = require('events')
 const Body = Matter.Body
 const Bodies = Matter.Bodies
 
@@ -16,6 +17,7 @@ function create_entity(width, height, image_key, options={}) {
         width,
         height,
         image_key,
+        events: new EventEmmiter(),
         body: Bodies.rectangle(0, 0, width, height, options),
         parent: null,
         holded_by: null,
@@ -118,14 +120,6 @@ function create_entity(width, height, image_key, options={}) {
             execute: _ => {} 
         },
 
-        on_tick() {
-
-        },
-
-        on_collision_start() {
-
-        },
-
         get_cursor(event) {
             let target = this.use.target(event)
             if (target) {
@@ -138,34 +132,33 @@ function create_entity(width, height, image_key, options={}) {
                 })
         },
 
-        on_remove(event) {
-            if (this.holded_by != null) {
-                const player = this.holded_by
-                if (player.drop_item.can_execute({player, entites: [this]})) {
-                    player.drop_item.execute({player, entites: [this]})
-                }
-            }
-        },
-
         set_parent(value) {
             this.parent = value
         },
 
-        on_damage(amount) {
-            this.hp -= amount
-            if (this.hp <= 0) {
-                this.on_death()
-            }
-        },
+        on_collision_start(event) {
 
-        on_death() {
-            console.log('on_death')
         },
-
     }
 
-    state.body.entity = this
+    state.body.entity = state
     state.id = state.generate_id()
+
+    state.events.on('remove', (event) => {
+        if (state.holded_by != null) {
+            const player = state.holded_by
+            if (player.drop_item.can_execute({player, entites: [state]})) {
+                player.drop_item.execute({player, entites: [state]})
+            }
+        }
+    })
+
+    state.events.on('damage', ({amount}) => {
+        state.hp -= amount
+        if (state.hp <= 0) {
+            state.events.emit('death')
+        }
+    })
     return state
 }
 
