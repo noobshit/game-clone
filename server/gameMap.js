@@ -3,7 +3,8 @@ module.exports = create_game_map
 
 const create_entity = require('./entity.js')
 const Matter = require('matter-js')
-const {Ship, create_bullet, create_world} = require('./ship.js')
+const {Ship, create_bullet} = require('./ship.js')
+const {create_world} = require('./world.js')
 const {create_metal, create_explo} = require('./box.js')
 const Body = Matter.Body
 
