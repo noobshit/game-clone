@@ -69,7 +69,7 @@ var displayer = {
             displayer.ctx.rotate(building.angle)
             displayer.ctx.fillRect(-offset.x, -offset.y, building.width, building.height)
             displayer.ctx.restore()
-        } else if (cursor.action == Cursor.type.GRAB) {
+        } else if (cursor.target) {
             let target = cursor.target[0]
             if (cursor.can_use) {
                 displayer.ctx.strokeStyle = '#00FF0055'
