@@ -5,10 +5,7 @@ module.exports = {
 
 const Matter = require('matter-js')
 const Body = Matter.Body
-const Engine = Matter.Engine
-const World = Matter.World
 const Vector = Matter.Vector
-const Events = Matter.Events
 
 const create_entity = require('./entity.js')
 const {create_world} = require('./world.js')

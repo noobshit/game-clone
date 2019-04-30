@@ -1,6 +1,5 @@
 module.exports = create_player
 
-const {Box} = require('./box.js')
 const Cursor = require('../shared/cursor.js')
 const collision = require('./collision.js')
 const create_entity = require('./entity.js')
