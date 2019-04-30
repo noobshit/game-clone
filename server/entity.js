@@ -39,11 +39,13 @@ function create_entity(width, height, image_key, options={}) {
         },
 
         get bounds() {
+            const {x, y} = this.position
+    
             return {
-                left: this.body.bounds.min.x,
-                right: this.body.bounds.max.x,
-                top: this.body.bounds.min.y,
-                bottom: this.body.bounds.max.y,
+                left: this.body.bounds.min.x - x + this.offset.x,
+                right: this.body.bounds.max.x - x + this.offset.x,
+                top: this.body.bounds.min.y - y + this.offset.y,
+                bottom: this.body.bounds.max.y - y + this.offset.y,
             }
         },
 
