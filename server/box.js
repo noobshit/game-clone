@@ -119,7 +119,7 @@ function create_enlargment() {
                     
                     const pos = Pos.to_grid({
                         x: event.pos_game.x,
-                        y: event.ship.da.bottom
+                        y: event.ship.bounds.bottom
                     })
                     pos.x += 1
                     pos.y -= 1
