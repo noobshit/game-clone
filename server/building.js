@@ -189,14 +189,14 @@ function create_hatch() {
     
     const state = {
         factory_function: create_hatch,
-
-        on_tick() {
-            const item_to_add = this.parent.hatch_queue.shift()
-            if (item_to_add) {
-                this.parent.add_entity_to_grid(item_to_add, this.pos_grid)
-            }
-        }
     }
+
+    building.events.on('tick', function() {
+        const item_to_add = building.parent.hatch_queue.shift()
+        if (item_to_add) {
+            building.parent.add_entity_to_grid(item_to_add, building.pos_grid)
+        }
+    })
 
     return Object.assign(
         building,
