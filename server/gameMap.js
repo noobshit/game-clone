@@ -122,7 +122,7 @@ function create_loot(item) {
 
     entity.events.on('collision_start', function(event) {
         if (event.collided_with.is_ship) {
-            event.collided_with.add_loot(entity.item)
+            event.collided_with.gather_loot(entity.item)
             entity.parent.remove_entity(entity)
         }
     })

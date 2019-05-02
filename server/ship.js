@@ -43,7 +43,7 @@ function create_ship(width, height) {
         hp: 1000,
         hatch_queue: [],
     
-        add_loot(item) {
+        gather_loot(item) {
             this.hatch_queue.push(item)
         },
 
