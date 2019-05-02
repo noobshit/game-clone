@@ -199,18 +199,18 @@ function create_building_package(building_class) {
         },
 
         get use() {
-            let building_package = box
+            let package = box
             return {
                 target(event) {
                     return null
                 },
                 can_execute(event){
-                    return building_package.building.can_build(Pos.to_snap(event.pos_game))
+                    return package.building.can_build(Pos.to_snap(event.pos_game))
                 },
                 execute(event) {
-                    building_package.building.build(event.pos_grid)        
-                    building_package.building = null
-                    building_package.parent.remove_entity(building_package)
+                    package.building.build(event.pos_grid)        
+                    package.building = null
+                    package.parent.remove_entity(package)
                 }
             }
         },
