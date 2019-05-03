@@ -33,8 +33,9 @@ function add_data(entity) {
     entity.top = entity.y - entity.height / 2
 }
 
-function send_menu_choice(command, option, amount) {
+function send_menu_choice(command, menu_owner, option, amount) {
     socket.emit('menu_choice', {
+        menu_owner,
         command,
         option,
         amount
