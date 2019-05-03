@@ -41,8 +41,6 @@ function create_building(width, height, image_key, options) {
                 && bounds.top < pos.y
                 && bounds.bottom > pos.y
             
-            console.log('Bounds', bounds)
-            console.log('Pos', pos)
             return is_not_colliding && pos_is_inside_ship
         },
 
