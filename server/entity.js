@@ -32,6 +32,10 @@ function create_entity(width, height, image_key, options={}) {
             execute: _ => {}
         },
 
+        set_used_by(value) {
+            this.used_by = value
+        },
+
         get_world() {
             if (this.parent != null) {
                 return this.parent.get_world()

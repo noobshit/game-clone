@@ -103,6 +103,17 @@ const game = {
         }
     },
 
+    on_menu_choice(socket_id, data) {
+        const player = players.get(socket_id)
+        const factory = player.using_building
+        if (!factory) {
+            return
+        }
+        const choosen_option = factory.options[data.option]
+        const entity = choosen_option.factory_function()
+        player.parent.add_entity_to_grid(entity, factory.pos_grid)
+    },
+
     tick() {
         game.ship.world_events.emit('tick')
         game.map.world_events.emit('tick')
@@ -140,6 +151,10 @@ const events = {
     on_disconnect(socket_id) {
         game.remove_player(socket_id)
     },
+
+    on_menu_choice(socket_id, data) {
+        game.on_menu_choice(socket_id, data)
+    }
 }
 
 module.exports = game

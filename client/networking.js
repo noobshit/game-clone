@@ -19,6 +19,11 @@ socket.on('update', (data) => {
     }
 })
 
+socket.on('show_menu', (data) => {
+    console.log('show_menu', data)
+    show_factory_menu(data)
+})
+
 function debug(cmd) {
     socket.emit('debug', cmd)
 }
@@ -26,4 +31,12 @@ function debug(cmd) {
 function add_data(entity) {
     entity.left = entity.x - entity.width / 2
     entity.top = entity.y - entity.height / 2
+}
+
+function send_menu_choice(command, option, amount) {
+    socket.emit('menu_choice', {
+        command,
+        option,
+        amount
+    })
 }

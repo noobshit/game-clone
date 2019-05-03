@@ -19,13 +19,13 @@ const {
 } = require('./box.js')
 const {
     create_brick, 
-    create_ladder, 
-    create_factory, 
+    create_ladder,  
     create_turret, 
     create_helm, 
     create_hatch
 } = require('./building.js')
 
+const {create_factory} = require('./factory.js')
 
 function create_ship(width, height) {
     const entity = create_entity(

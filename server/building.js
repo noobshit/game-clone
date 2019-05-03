@@ -1,7 +1,6 @@
 module.exports = {
     create_turret,
     create_brick,
-    create_factory,
     create_helm,
     create_ladder,
     create_building,
@@ -143,28 +142,6 @@ function create_ladder() {
 
     const state = {
         factory_function: create_ladder,
-    }
-
-    return Object.assign(
-        building,
-        state
-    )
-}
-
-
-function create_factory() {
-    const building = create_building(
-        2,
-        2,
-        'factory.png',
-        {
-            isStatic: true,
-            collisionFilter: collision.filter.BUILDING
-        }
-    )
-
-    const state = {
-        factory_function: create_factory
     }
 
     return Object.assign(
