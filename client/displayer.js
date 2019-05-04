@@ -50,25 +50,26 @@ var displayer = {
         displayer.canvas.style.cursor = 'default'
         displayer.ctx.save()
         if (cursor.action == Cursor.type.BUILD) {
-            let building = cursor.data[0]
             displayer.ctx.globalAlpha = 0.65
-            displayer.draw_entity(building)
-            if (cursor.can_use) {
-                displayer.ctx.fillStyle = '#00FF0055'
-                displayer.canvas.style.cursor = 'pointer'
-            } else {
-                displayer.ctx.fillStyle = '#FF000055'
-                displayer.canvas.style.cursor = 'not-allowed'        
+            for (let building of cursor.data) {
+                displayer.draw_entity(building)
+                if (cursor.can_use) {
+                    displayer.ctx.fillStyle = '#00FF0055'
+                    displayer.canvas.style.cursor = 'pointer'
+                } else {
+                    displayer.ctx.fillStyle = '#FF000055'
+                    displayer.canvas.style.cursor = 'not-allowed'        
+                }
+                displayer.ctx.save()
+                let offset =  {
+                    x: building.width / 2,
+                    y: building.height / 2
+                }
+                displayer.ctx.translate(building.x, building.y)
+                displayer.ctx.rotate(building.angle)
+                displayer.ctx.fillRect(-offset.x, -offset.y, building.width, building.height)
+                displayer.ctx.restore()
             }
-            displayer.ctx.save()
-            let offset =  {
-                x: building.width / 2,
-                y: building.height / 2
-            }
-            displayer.ctx.translate(building.x, building.y)
-            displayer.ctx.rotate(building.angle)
-            displayer.ctx.fillRect(-offset.x, -offset.y, building.width, building.height)
-            displayer.ctx.restore()
         } else if (cursor.target) {
             let target = cursor.target[0]
             if (cursor.can_use) {
