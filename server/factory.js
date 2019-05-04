@@ -58,27 +58,36 @@ function create_factory() {
     const state = {
         options,
         factory_function: create_factory,
-        metal: 0,
-        explo: 0,
+        metal: 100,
+        explo: 100,
 
         left_button_down: {
             target(event) {
                 return this
             },
-            can_execute(event) {
-                return true
+            can_execute({player}) {
+                return !player.using_building
             },
-            execute(event) {
-                event.player.using_building = building
-                console.log('show_factory_menu')
-                menu_options = options.map(
-                    (entry, index) => ({
-                        option: index,
-                        product: entry.product,
-                        cost: entry.cost
-                    })
-                )
-                menu.show_factory_menu(event.player, building, menu_options)
+            execute({player, ship}) {
+                if (player.item) {
+                    if (player.item.type === 'metal') {
+                        building.metal += player.item.stack_amount
+                        ship.remove_entity(player.item)
+                    } else if (player.item.type === 'explo') {
+                        building.explo += player.item.stack_amount
+                        ship.remove_entity(player.item)
+                    }
+                } else {
+                    player.using_building = building
+                    menu_options = options.map(
+                        (entry, index) => ({
+                            option: index,
+                            product: entry.product,
+                            cost: entry.cost
+                        })
+                    )
+                    menu.show_factory_menu(player, building, menu_options)
+                }
             }
         },
     }
