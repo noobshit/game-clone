@@ -23,6 +23,13 @@ Pos = {
             x: pos_grid.x * SMALL_BLOCK_SIZE + entity.offset.x,
             y: pos_grid.y * SMALL_BLOCK_SIZE + entity.offset.y,
         }
+    },
+    is_inside(pos, bounds) {
+        return bounds.left < pos.x 
+        && bounds.right > pos.x
+        && bounds.top < pos.y
+        && bounds.bottom > pos.y
+    
     }
 }
 

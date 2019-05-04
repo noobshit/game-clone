@@ -15,6 +15,7 @@ const Composite = Matter.Composite
 const Vector = Matter.Vector
 const collision = require('./collision.js')
 const create_entity = require('./entity.js')
+const Pos = require('./pos.js')
 
 
 function create_building(width, height, image_key, options) {
@@ -35,12 +36,7 @@ function create_building(width, height, image_key, options) {
             let collisions = Query.collides(bodyA, can_collide_with)
             let is_not_colliding = collisions.length == 0
             let bounds = state.parent.bounds
-            let pos_is_inside_ship = bounds.left < pos.x 
-                && bounds.right > pos.x
-                && bounds.top < pos.y
-                && bounds.bottom > pos.y
-            
-            return is_not_colliding && pos_is_inside_ship
+            return is_not_colliding && Pos.is_inside(pos, bounds)
         },
 
         build(pos_grid) {
