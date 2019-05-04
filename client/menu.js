@@ -48,4 +48,16 @@ function show_factory_menu(data) {
     root.innerHTML = ''
     const table = create_factory_menu(data.menu_owner, data.options)
     root.appendChild(table)
+
+    const close_button = document.createElement('button')
+    close_button.textContent = 'close'
+    close_button.onclick = hide_menu
+    root.appendChild(close_button)
+    root.style.display = ''
+}
+
+function hide_menu() {
+    const root = document.getElementById('menu')
+    root.style.display = 'none' 
+    send_menu_close()
 }

@@ -117,6 +117,13 @@ const game = {
         )
     },
 
+    on_menu_close(socket_id) {
+        const player = players.get(socket_id)
+        if (player) {
+            player.using_building = null
+        }
+    },
+
     tick() {
         game.ship.world_events.emit('tick')
         game.map.world_events.emit('tick')
@@ -157,6 +164,10 @@ const events = {
 
     on_menu_choice(socket_id, data) {
         game.on_menu_choice(socket_id, data)
+    },
+
+    on_menu_close(socket_id) {
+        game.on_menu_close(socket_id)
     }
 }
 

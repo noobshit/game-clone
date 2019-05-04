@@ -41,3 +41,7 @@ function send_menu_choice(command, menu_owner, option, amount) {
         amount
     })
 }
+
+function send_menu_close() {
+    socket.emit('menu_close')
+}

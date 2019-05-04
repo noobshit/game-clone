@@ -28,6 +28,7 @@ io.on('connection', (socket) => {
     socket.on('input', data => events.on_input(id, data))
     socket.on('disconnect', data => events.on_disconnect(id))
     socket.on('menu_choice', data => events.on_menu_choice(id, data))
+    socket.on('menu_close', _ => events.on_menu_close(id))
     sockets.push(socket)
 })
 
