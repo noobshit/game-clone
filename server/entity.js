@@ -72,11 +72,13 @@ function create_entity(width, height, image_key, options={}) {
         get pos_world() {
             if (this.parent && this.parent.position) {
                 return {
-                    x: this.body.position.x + this.parent.position.left,
-                    y: this.body.position.y + this.parent.position.top 
+                    x: this.position.x + this.parent.pos_world.left,
+                    y: this.position.y + this.parent.pos_world.top,
+                    left:  this.position.left + this.parent.pos_world.left,
+                    top: this.position.top + this.parent.pos_world.top
                 }
             } else {
-                return this.body.position
+                return this.position
             }
         },
         
@@ -87,6 +89,11 @@ function create_entity(width, height, image_key, options={}) {
             }
         },
 
+        get angle() {
+            return this.body.angle
+            
+        },
+
         get_display_data() {
             return [{
                 id: this.id,
@@ -94,7 +101,7 @@ function create_entity(width, height, image_key, options={}) {
                 y:  this.pos_world.y,
                 width: this.width,
                 height: this.height,
-                angle: this.body.angle,
+                angle: this.angle,
                 image_key: this.image_key,
                 is_background: this.is_background
             }]
