@@ -16,7 +16,7 @@ const {
     create_shredder, 
     create_explo, 
     create_enlargment
-} = require('./box.js')
+} = require('./items')
 const {
     create_brick, 
     create_ladder,   

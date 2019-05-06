@@ -5,7 +5,7 @@ const create_entity = require('./entity.js')
 const Matter = require('matter-js')
 const {Ship, create_bullet} = require('./ship.js')
 const {create_world} = require('./world.js')
-const {create_metal, create_explo} = require('./box.js')
+const {create_metal, create_explo} = require('./items')
 const Body = Matter.Body
 
 const SMALL_BLOCK_SIZE = 32

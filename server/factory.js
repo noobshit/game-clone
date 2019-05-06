@@ -4,7 +4,7 @@ module.exports = {
 
 const buildings = require('./building.js')
 const collision = require('./collision.js')
-const box = require('./box.js')
+const box = require('./items')
 const menu = require('./menu.js')
 const package = box.create_building_package
 
