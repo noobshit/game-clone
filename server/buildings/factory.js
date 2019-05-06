@@ -1,51 +1,20 @@
-module.exports = {
-    create_factory,
-}
+module.exports.create_factory = create_factory
 
-const buildings = require('./building.js')
-const collision = require('./collision.js')
-const box = require('./items')
-const menu = require('./menu.js')
-const package = box.create_building_package
-
-const options =  [
-    {
-        factory_function: _ => package(buildings.create_brick),
-        product: {
-            amount: 1,
-            label: 'Brick'
-        },
-        cost: {
-            metal: 2,
-            explo: 0
-        }
-    },
-    {
-        factory_function: _ => package(buildings.create_ladder),
-        product: {
-            amount: 1,
-            label: 'Ladder'
-        },
-        cost: {
-            metal: 4,
-            explo: 0
-        }
-    },
-    {
-        factory_function: _ => box.create_wrench(),
-        product: {
-            amount: 1,
-            label: 'Wrench'
-        },
-        cost: {
-            metal: 4,
-            explo: 0
-        }
-    },
-]
+const Matter = require('matter-js')
+const Body = Matter.Body
+const Query = Matter.Query
+const Detector = Matter.Detector
+const Composite = Matter.Composite
+const Vector = Matter.Vector
+const collision = require('../collision.js')
+const {create_building} = require('./building')
+const {create_brick} = require('./brick')
+const {create_ladder} = require('./ladder')
+const box = require('../items')
+const menu = require('../menu.js')
 
 function create_factory() {
-    const building = buildings.create_building(
+    const building = create_building(
         2,
         2,
         'factory.png',
@@ -111,3 +80,39 @@ function create_factory() {
         state
     )
 }
+
+const options =  [
+    {
+        factory_function: _ => box.create_building_package(create_brick),
+        product: {
+            amount: 1,
+            label: 'Brick'
+        },
+        cost: {
+            metal: 2,
+            explo: 0
+        }
+    },
+    {
+        factory_function: _ => box.create_building_package(create_ladder),
+        product: {
+            amount: 1,
+            label: 'Ladder'
+        },
+        cost: {
+            metal: 4,
+            explo: 0
+        }
+    },
+    {
+        factory_function: _ => box.create_wrench(),
+        product: {
+            amount: 1,
+            label: 'Wrench'
+        },
+        cost: {
+            metal: 4,
+            explo: 0
+        }
+    },
+]

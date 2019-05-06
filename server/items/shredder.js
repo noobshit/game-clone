@@ -1,6 +1,6 @@
-module.exports = create_shredder
+module.exports.create_shredder = create_shredder
 
-const create_box = require('./box.js')
+const {create_box} = require('./box.js')
 
 function create_shredder() {
     const box = create_box('shredder.png')

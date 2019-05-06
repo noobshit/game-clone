@@ -1,4 +1,4 @@
-module.exports = create_box
+module.exports.create_box = create_box
 
 const create_entity = require('../entity.js')
 const collison = require('../collision.js')

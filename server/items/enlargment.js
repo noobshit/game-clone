@@ -1,7 +1,7 @@
-module.exports = create_enlargment
+module.exports.create_enlargment = create_enlargment
 
-const create_box = require('./box.js')
-const {create_brick} = require('../building.js')
+const {create_box} = require('./box.js')
+const {create_brick} = require('../buildings')
 const Pos = require('../pos.js')
 const SMALL_BLOCK_SIZE = 32
 

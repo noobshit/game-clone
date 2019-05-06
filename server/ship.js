@@ -21,12 +21,10 @@ const {
     create_brick, 
     create_ladder,   
     create_helm, 
-    create_hatch
-} = require('./building.js')
-
-const {create_turret} = require('./turret.js')
-
-const {create_factory} = require('./factory.js')
+    create_hatch,
+    create_turret,
+    create_factory
+} = require('./buildings')
 
 function create_ship(width, height) {
     const entity = create_entity(

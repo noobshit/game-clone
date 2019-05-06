@@ -1,7 +1,7 @@
-module.exports = create_wrench
+module.exports.create_wrench = create_wrench
 
-const create_box = require('./box.js')
-const create_building_package = require('./building_package')
+const {create_box} = require('./box.js')
+const {create_building_package} = require('./building_package')
 
 function create_wrench() {
     const box = create_box('wrench.png')

@@ -1,7 +1,7 @@
-module.exports = create_metal
+module.exports.create_metal = create_metal
 
-const create_box = require('./box.js')
-const stackable = require('./stackable')
+const {create_box} = require('./box.js')
+const {stackable} = require('./stackable')
 
 function create_metal(amount=1) {
     const box = create_box('metal.png')

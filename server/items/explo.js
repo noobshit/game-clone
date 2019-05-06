@@ -1,7 +1,7 @@
-module.exports = create_explo
+module.exports.create_explo = create_explo
 
-const create_box = require('./box.js')
-const stackable = require('./stackable')
+const {create_box} = require('./box.js')
+const {stackable} = require('./stackable')
 
 function create_explo(amount=1) {
     const box = create_box('explo.png')

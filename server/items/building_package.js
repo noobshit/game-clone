@@ -1,6 +1,6 @@
-module.exports = create_building_package
+module.exports.create_building_package = create_building_package
 
-const create_box = require('./box.js')
+const {create_box} = require('./box.js')
 const Cursor = require('../../shared/cursor.js')
 const Pos = require('../pos.js')
 

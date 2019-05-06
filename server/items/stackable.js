@@ -1,4 +1,4 @@
-module.exports = stackable
+module.exports.stackable = stackable
 
 function stackable(entity, stack_amount=1, stack_limit=16) {
     const state = {

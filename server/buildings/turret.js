@@ -1,8 +1,8 @@
-module.exports = {create_turret}
+module.exports.create_turret = create_turret
 
 const {create_building} = require('./building.js')
-const create_entity = require('./entity')
-const collision = require('./collision.js')
+const create_entity = require('../entity')
+const collision = require('../collision.js')
 
 const Matter = require('matter-js')
 const Body = Matter.Body
