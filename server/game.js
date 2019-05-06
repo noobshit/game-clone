@@ -145,6 +145,7 @@ const game = {
     },
 
     init(io) {
+        game.sockets = []
         game.input_buffer = new Map() 
         game.ship = create_ship(12, 8)
         game.map = create_game_map(40, 40)
@@ -152,21 +153,14 @@ const game = {
 
         game.ship_2 = create_ship(12, 8)
         game.map.add_ship(game.ship_2)
-        game.sockets = []
 
         io.on('connection', (socket) => { 
             let {id} = socket
-            events.on_connection(id, socket)
-        
-            socket.on('debug', function(cmd){
-                let data = eval(cmd)
-                console.log(data)
-                socket.emit('debug_answer', data)
-            })
-            socket.on('input', data => events.on_input(id, data))
-            socket.on('disconnect', data => events.on_disconnect(id))
-            socket.on('menu_choice', data => events.on_menu_choice(id, data))
-            socket.on('menu_close', _ => events.on_menu_close(id))
+            game.add_player(id, socket)
+            socket.on('input', data => game.process_input(id, data))
+            socket.on('disconnect', data => game.remove_player(id))
+            socket.on('menu_choice', data => game.on_menu_choice(id, data))
+            socket.on('menu_close', _ => game.on_menu_close(id))
             game.sockets.push(socket)
         })
 
@@ -178,29 +172,5 @@ const game = {
     },
 }
 
-
-const events = {
-    on_input(socket_id, data) {
-        game.process_input(socket_id, data)
-    },
-
-    on_connection(socket_id, socket) {
-        game.add_player(socket_id, socket)
-    },
-
-    on_disconnect(socket_id) {
-        game.remove_player(socket_id)
-    },
-
-    on_menu_choice(socket_id, data) {
-        game.on_menu_choice(socket_id, data)
-    },
-
-    on_menu_close(socket_id) {
-        game.on_menu_close(socket_id)
-    }
-}
-
 module.exports = game
 game.players = players
-game.events = events
