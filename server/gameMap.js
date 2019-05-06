@@ -65,18 +65,22 @@ function create_game_map(width, height) {
 }
 
 function create_block() {
-    return create_entity(
-        8, 
-        8,
-        'brick.png',
-        {
+    return create_entity({
+        width: 8, 
+        height: 8,
+        image_key: 'brick.png',
+        options: {
             isStatic: true,
         }
-    )
+    })
 }
 
 function create_bot() {
-    const entity = create_entity(8, 8, 'bot.png')
+    const entity = create_entity({
+        width: 8, 
+        height: 8, 
+        image_key:'bot.png'
+    })
     const bot = {
         hp_max: 1000,
         hp: 1000,
@@ -115,7 +119,11 @@ function create_bot() {
 }
 
 function create_loot(item) {
-    const entity = create_entity(3, 3, 'loot.png')
+    const entity = create_entity({
+        width: 3, 
+        height: 3,
+        image_key: 'loot.png'
+    })
     const loot = {
         item
     }

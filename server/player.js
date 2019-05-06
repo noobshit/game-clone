@@ -9,17 +9,17 @@ const World = Matter.World
 const Constraint = Matter.Constraint
 
 function create_player(socket) {
-    const entity = create_entity(
-        0.8,
-        1.6,
-        null,
-        {
+    const entity = create_entity({
+        width: 0.8,
+        height: 1.6,
+        image_key: null,
+        options: {
             friction: 0.5,
             frictionStatic: 0.1,
             restitution: 0.5,
             collisionFilter: collision.filter.PLAYER
         }
-    )
+    })
 
     const state = {
         socket,

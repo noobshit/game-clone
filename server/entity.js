@@ -8,7 +8,7 @@ const Cursor = require('../shared/cursor.js')
 const Pos = require('./pos.js')
 
 const Entity = {}
-function create_entity(width, height, image_key, options={}) {
+function create_entity({width, height, image_key, options={}}) {
     
     width *= SMALL_BLOCK_SIZE
     height *= SMALL_BLOCK_SIZE

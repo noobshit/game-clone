@@ -27,14 +27,13 @@ const {
 } = require('./buildings')
 
 function create_ship(width, height) {
-    const entity = create_entity(
-        width,
-        height,
-        '',
-        {
+    const entity = create_entity({
+            width,
+            height,
+            options: {
             inertia: Infinity
         }
-    )
+    })
         
     const state = {
         is_ship: true,
@@ -119,11 +118,11 @@ function create_ship(width, height) {
 }
 
 function create_bullet(lifetime=1500) {
-    const entity = create_entity(
-            1,
-            1,
-            'wrench.png'
-    )
+    const entity = create_entity({
+            width: 1,
+            height: 1,
+            image_key: 'wrench.png'
+    })
 
     const state = {
         lifetime,
