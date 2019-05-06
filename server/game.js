@@ -125,14 +125,26 @@ const game = {
     },
 
     tick() {
+        game.sockets = game.sockets.filter(socket => socket.connected)
+
         game.ship.world_events.emit('tick')
         game.map.world_events.emit('tick')
         Engine.update(game.ship.engine)
         Engine.update(game.map.engine)
         game.process_input_buffer()
+    
+        game.sockets.forEach(socket => {
+            let player = game.players.get(socket.id)
+            socket.emit('update', {
+                entites: player.parent.get_display_data(),
+                player: player.get_display_data(),
+                cursor: player.cursor,
+                map: game.get_map(),
+            })
+        })
     },
 
-    init() {
+    init(io) {
         game.input_buffer = new Map() 
         game.ship = create_ship(12, 8)
         game.map = create_game_map(40, 40)
@@ -140,13 +152,31 @@ const game = {
 
         game.ship_2 = create_ship(12, 8)
         game.map.add_ship(game.ship_2)
+        game.sockets = []
+
+        io.on('connection', (socket) => { 
+            let {id} = socket
+            events.on_connection(id, socket)
+        
+            socket.on('debug', function(cmd){
+                let data = eval(cmd)
+                console.log(data)
+                socket.emit('debug_answer', data)
+            })
+            socket.on('input', data => events.on_input(id, data))
+            socket.on('disconnect', data => events.on_disconnect(id))
+            socket.on('menu_choice', data => events.on_menu_choice(id, data))
+            socket.on('menu_close', _ => events.on_menu_close(id))
+            game.sockets.push(socket)
+        })
+
+        setInterval(game.tick, 1000 / 60)
     },
 
     get_map() {
         return game.map.get_display_data()
     },
 }
-game.init()
 
 
 const events = {
