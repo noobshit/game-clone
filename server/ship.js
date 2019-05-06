@@ -19,11 +19,12 @@ const {
 } = require('./box.js')
 const {
     create_brick, 
-    create_ladder,  
-    create_turret, 
+    create_ladder,   
     create_helm, 
     create_hatch
 } = require('./building.js')
+
+const {create_turret} = require('./turret.js')
 
 const {create_factory} = require('./factory.js')
 
