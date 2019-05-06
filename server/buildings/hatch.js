@@ -12,15 +12,15 @@ const Pos = require('../pos.js')
 const {create_building} = require('./building')
 
 function create_hatch() {
-    const building = create_building(
-        1,
-        1,
-        'hatch.png',
-        {
+    const building = create_building({
+        width: 1,
+        height: 1,
+        image_key: 'hatch.png',
+        options: {
             isStatic: true,
             collisionFilter: collision.filter.BUILDING
         }
-    )
+    })
     
     const state = {
         factory_function: create_hatch,

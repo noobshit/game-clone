@@ -11,7 +11,7 @@ const create_entity = require('../entity.js')
 const Pos = require('../pos.js')
 
 
-function create_building(width, height, image_key, options) {
+function create_building({width, height, image_key, options}) {
     const entity = create_entity({width, height, image_key, options})
     const behaviour = (state) => ({
         is_building: true,

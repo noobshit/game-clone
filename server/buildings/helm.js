@@ -4,14 +4,14 @@ const {create_building} = require('./building')
 
 
 function create_helm() {
-    const building = create_building(
-            2,
-            2,
-            'helm.png', 
-            {
+    const building = create_building({
+            width: 2,
+            height: 2,
+            image_key: 'helm.png', 
+            options: {
                 isStatic: true,
             }   
-    )
+    })
 
     const state = Object.assign(
         building,

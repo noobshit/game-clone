@@ -14,15 +14,15 @@ const box = require('../items')
 const menu = require('../menu.js')
 
 function create_factory() {
-    const building = create_building(
-        2,
-        2,
-        'factory.png',
-        {
+    const building = create_building({
+        width: 2,
+        height: 2,
+        image_key: 'factory.png',
+        options: {
             isStatic: true,
             collisionFilter: collision.filter.BUILDING
         }
-    )
+    })
 
     const state = {
         options,
