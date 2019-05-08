@@ -1,6 +1,6 @@
-const {create_ship} = require('./ship.js')
-const create_player = require('./player.js')
-const create_game_map = require('./gameMap.js')
+const {create_ship} = require('./ship')
+const create_player = require('./player')
+const {create_game_map} = require('./overworld')
 
 const Matter = require('matter-js')
 const Body = Matter.Body
