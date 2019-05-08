@@ -2,7 +2,7 @@ module.exports.create_bot = create_bot
 
 const create_entity = require('../entity.js')
 const Matter = require('matter-js')
-const {create_bullet} = require('../ship.js')
+const {create_bullet} = require('./bullet.js')
 const {create_metal, create_explo} = require('../items')
 const Body = Matter.Body
 
