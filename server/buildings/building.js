@@ -14,12 +14,15 @@ function create_building({width, height, image_key, options}) {
     const behaviour = (state) => ({
         is_building: true,
 
-        can_build(pos) {
-            let bodyA = state.body
-            Body.setPosition(bodyA, {
+        set_position(pos) {
+            Body.setPosition(state.body, {
                 x: pos.left + state.offset.x,
                 y: pos.top + state.offset.y
             })
+        },
+
+        can_build() {
+            let bodyA = state.body
             let bodies = Composite.allBodies(state.get_world())
             let can_collide_with = bodies.filter(
                 bodyB => Detector.canCollide(bodyA.collisionFilter, bodyB.collisionFilter)
@@ -27,7 +30,7 @@ function create_building({width, height, image_key, options}) {
             let collisions = Query.collides(bodyA, can_collide_with)
             let is_not_colliding = collisions.length == 0
             let bounds = state.parent.bounds
-            return is_not_colliding && Pos.is_inside(pos, bounds)
+            return is_not_colliding && Pos.is_inside(state.position, bounds)
         },
 
         build(pos_grid) {

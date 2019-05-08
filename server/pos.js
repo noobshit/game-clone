@@ -1,6 +1,8 @@
 const SMALL_BLOCK_SIZE = 32
 
 Pos = {
+    SMALL_BLOCK_SIZE: 32,
+
     to_grid(pos) {
         return {
             x: Math.floor(pos.x / SMALL_BLOCK_SIZE),

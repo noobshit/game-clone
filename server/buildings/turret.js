@@ -3,154 +3,125 @@ module.exports.create_turret = create_turret
 const {create_building} = require('./building.js')
 const create_entity = require('../entity')
 const collision = require('../collision.js')
+const Pos = require('../pos')
 
 const Matter = require('matter-js')
 const Body = Matter.Body
 
 function create_turret() {
-    return create_vertical_turret()
+    const turret_horizontal = create_turret_body({
+        width: 3,
+        height: 1,
+        factory_function: create_turret
+    })
+
+    return Object.assign(
+        turret_horizontal,
+        turret_behaviour(turret_horizontal)
+    )
+
 }
 
-function create_vertical_turret() {
-    const building = create_building(
-        1, 
-        3,
-        'brick.png',
-        {
+function turret_behaviour(turret) {
+    return {
+        get_display_data() {
+            return [ 
+                ...turret.base.get_display_data(), 
+                ...turret.barrel.get_display_data()
+            ]
+        },
+
+        set_barrel_angle(angle) {
+            const angle_diff = angle - turret.barrel.angle
+            Body.rotate(
+                turret.barrel.body, 
+                angle_diff, 
+                turret.barrel.offset
+            )
+        },
+
+        set_position(pos) {
+            const ship = turret.parent
+            let angle = 0
+            if (pos.top == 0) {
+                angle = 0 * Math.PI / 2
+            }
+            else if (pos.right == ship.width) {
+                angle = 1 * Math.PI / 2
+            }
+            else if (pos.bottom == ship.height) {
+                angle = 2 * Math.PI / 2
+            }
+            else if (pos.left == 0) {
+                angle = 3 * Math.PI / 2
+            } 
+            Body.setAngle(turret.body, angle)
+            Body.setAngle(turret.base.body, angle)
+            turret.set_barrel_angle(angle - Math.PI / 2)
+
+            Body.setPosition(turret.body, {
+                x: pos.left + turret.offset.x,
+                y: pos.top + turret.offset.y
+            })
+        },
+
+        can_build() {
+            return true
+        }
+
+    }
+} 
+
+function create_turret_body({width, height, factory_function}) {
+
+    const building = create_building({
+        width, 
+        height,
+        image_key: 'brick.png',
+        options: {
             isStatic: true,
             collisionFilter: collision.filter.BUILDING
         }
-    )
+    })
 
-    const base = create_entity(
-        1,
-        3,
-        'brick.png',
-        {
+    const base = create_building({
+        width,
+        height,
+        image_key: 'brick.png',
+        options: {
             isStatic: true
         }
-    )
-
-    const barrel = create_entity(
-        3, 
-        0.5,
-        'turret_barrel.png',
-        {
-            isStatic: true
-        }
-    )
-    barrel.is_background = false
-
-    const turret = Object.assign(
-        building,
-        {
-            base,
-            barrel,
-            factory_function: create_turret,
-        }
-    )
+    })
     
-    for (let part of [barrel, base]) {
-        part.parent = turret
-        part.translate(turret.offset)
-        part.id = turret.id
-    }
+    const barrel = create_entity({
+        width: 3, 
+        height: 0.5,
+        image_key: 'turret_barrel.png',
+        options: {
+            isStatic: true
+        }
+    })
+    barrel.is_background = false
     barrel.translate({
         x: barrel.offset.x, 
         y: 0
     })
-    
-    const behaviour = {
-        get_display_data() {
-            return [ 
-                ...turret.base.get_display_data(), 
-                ...turret.barrel.get_display_data()
-            ]
-        },
-
-        rotate(angle) {
-            Body.rotate(
-                turret.barrel.body, 
-                angle, 
-                turret.offset
-            )
-        }
-    }
-    behaviour.rotate(0)
-    return Object.assign(
-        turret,
-        behaviour
-    )
-}
-
-function create_horizontal_turret() {
-    const building = create_building(
-        3, 
-        1,
-        'brick.png',
-        {
-            isStatic: true,
-            collisionFilter: collision.filter.BUILDING
-        }
-    )
-
-    const base = create_entity(
-        3,
-        1,
-        'brick.png',
-        {
-            isStatic: true
-        }
-    )
-
-    const barrel = create_entity(
-        3, 
-        0.5,
-        'turret_barrel.png',
-        {
-            isStatic: true
-        }
-    )
-    barrel.is_background = false
 
     const turret = Object.assign(
         building,
         {
             base,
             barrel,
-            factory_function: create_turret,
+            factory_function,
         }
     )
     
     for (let part of [barrel, base]) {
         part.parent = turret
         part.translate(turret.offset)
+        part.factory_function = factory_function
         part.id = turret.id
     }
-    barrel.translate({
-        x: turret.offset.x, 
-        y: 0
-    })
     
-    const behaviour = {
-        get_display_data() {
-            return [ 
-                ...turret.base.get_display_data(), 
-                ...turret.barrel.get_display_data()
-            ]
-        },
-
-        rotate(angle) {
-            Body.rotate(
-                turret.barrel.body, 
-                angle, 
-                turret.offset
-            )
-        }
-    }
-    behaviour.rotate(-Math.PI / 2)
-    return Object.assign(
-        turret,
-        behaviour
-    )
+    return turret
 }

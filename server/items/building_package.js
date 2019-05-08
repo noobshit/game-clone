@@ -26,7 +26,8 @@ function create_building_package(building_class) {
                     return null
                 },
                 can_execute(event){
-                    return package.building.can_build(Pos.to_snap(event.pos_game))
+                    package.building.set_position(Pos.to_snap(event.pos_game))
+                    return package.building.can_build()
                 },
                 execute(event) {
                     package.building.build(event.pos_grid)        
