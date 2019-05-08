@@ -1,11 +1,5 @@
 module.exports.create_factory = create_factory
 
-const Matter = require('matter-js')
-const Body = Matter.Body
-const Query = Matter.Query
-const Detector = Matter.Detector
-const Composite = Matter.Composite
-const Vector = Matter.Vector
 const collision = require('../collision.js')
 const {create_building} = require('./building')
 const {create_brick} = require('./brick')

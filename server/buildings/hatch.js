@@ -1,14 +1,6 @@
 module.exports.create_hatch = create_hatch
 
-const Matter = require('matter-js')
-const Body = Matter.Body
-const Query = Matter.Query
-const Detector = Matter.Detector
-const Composite = Matter.Composite
-const Vector = Matter.Vector
 const collision = require('../collision.js')
-const create_entity = require('../entity.js')
-const Pos = require('../pos.js')
 const {create_building} = require('./building')
 
 function create_hatch() {

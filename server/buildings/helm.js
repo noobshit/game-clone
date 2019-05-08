@@ -2,7 +2,6 @@ module.exports.create_helm = create_helm
 
 const {create_building} = require('./building')
 
-
 function create_helm() {
     const building = create_building({
             width: 2,

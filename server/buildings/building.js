@@ -5,8 +5,6 @@ const Body = Matter.Body
 const Query = Matter.Query
 const Detector = Matter.Detector
 const Composite = Matter.Composite
-const Vector = Matter.Vector
-const collision = require('../collision.js')
 const create_entity = require('../entity.js')
 const Pos = require('../pos.js')
 
