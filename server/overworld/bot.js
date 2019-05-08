@@ -4,6 +4,7 @@ const create_entity = require('../entity.js')
 const Matter = require('matter-js')
 const {create_bullet} = require('./bullet.js')
 const {create_metal, create_explo} = require('../items')
+const {create_loot} = require('./loot')
 const Body = Matter.Body
 
 function create_bot() {
