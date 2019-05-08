@@ -29,6 +29,11 @@ function create_game_map(width, height) {
             Body.setPosition(entity.body, pos)
             this.add_entity(entity)
         },
+
+        add_entity_to_random_pos(entity) {
+            this.add_entity(entity)
+            this.set_random_position_of(entity)
+        },
     
         get_display_data() {
             return this.entites.map(e => e.get_display_data()).flat()
@@ -37,6 +42,12 @@ function create_game_map(width, height) {
         add_ship(ship) {
             this.add_entity_to_pos(ship, {x: 500, y: 500})
         },
+
+        set_random_position_of(entity) {
+            const x = Math.random() * 3000
+            const y = Math.random() * 3000
+            Body.setPosition(entity.body, {x, y})
+        }
     }
 
     const game_map = Object.assign(
