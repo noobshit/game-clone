@@ -3,10 +3,10 @@ module.exports.create_turret = create_turret
 const {create_building} = require('./building.js')
 const create_entity = require('../entity')
 const collision = require('../collision.js')
-const Pos = require('../pos')
 
 const Matter = require('matter-js')
 const Body = Matter.Body
+const Vector = Matter.Vector
 
 function create_turret() {
     const turret_horizontal = create_turret_body({
@@ -67,8 +67,12 @@ function turret_behaviour(turret) {
 
         can_build() {
             return true
-        }
+        },
 
+        follow_point(point) {
+            const angle = Vector.angle(turret.body.position, point)
+            this.set_barrel_angle(angle)
+        }
     }
 } 
 
@@ -113,6 +117,7 @@ function create_turret_body({width, height, factory_function}) {
             base,
             barrel,
             factory_function,
+            type: 'turret'
         }
     )
     

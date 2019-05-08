@@ -49,7 +49,7 @@ function create_ship(width, height) {
             const turret = this.entites.find(e => e.type === 'turret')
             if (turret) {
                 const bullet = create_bullet(1500) 
-                const vect = Vector.rotate({x: 100, y: 0}, turret.angle)
+                const vect = Vector.rotate({x: 100, y: 0}, turret.barrel.angle)
                 const pos = Vector.add(vect, turret.pos_world)
                 const velocity = Vector.div(vect, 5)
                 Body.setVelocity(bullet.body, velocity)
