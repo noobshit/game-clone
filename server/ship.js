@@ -9,21 +9,6 @@ const Vector = Matter.Vector
 const create_entity = require('./entity.js')
 const {create_world} = require('./world.js')
 const Pos = require('./pos.js')
-const {
-    create_building_package,
-    create_wrench, 
-    create_shredder, 
-    create_explo, 
-    create_enlargment
-} = require('./items')
-const {
-    create_brick, 
-    create_ladder,   
-    create_helm, 
-    create_hatch,
-    create_turret,
-    create_factory
-} = require('./buildings')
 
 const {create_bullet} = require('./overworld')
 
@@ -89,31 +74,6 @@ function create_ship(width, height) {
     ship.events.on('death', function() {
         ship.respawn()
     })
-        
-    for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-            if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
-                ship.add_entity_to_grid(create_brick(), {x, y})
-            }
-        }
-    }
-
-    ship.add_entity_to_grid(create_hatch(), {x: 1, y: 1})
-    ship.add_entity_to_grid(create_factory(), {x: 7, y: 5})
-    ship.add_entity_to_grid(create_ladder(), {x: 4, y: 4})
-    ship.add_entity_to_grid(create_ladder(), {x: 4, y: 5})
-    ship.add_entity_to_grid(create_ladder(), {x: 4, y: 6})
-    ship.add_entity_to_grid(create_brick(), {x: 1, y: 4})
-    ship.add_entity_to_grid(create_brick(), {x: 2, y: 4})
-    ship.add_entity_to_grid(create_brick(), {x: 3, y: 4})
-    ship.add_entity_to_grid(create_helm(), {x: 9, y: 5})
-    ship.add_entity_to_grid(create_building_package(create_helm), {x: 9, y: 5})
-    ship.add_entity_to_grid(create_explo(), {x: 1, y: 6})
-    ship.add_entity_to_grid(create_explo(), {x: 5, y: 6})
-    ship.add_entity_to_grid(create_wrench(), {x: 5, y: 5})
-    ship.add_entity_to_grid(create_shredder(), {x: 5, y: 4})
-    ship.add_entity_to_grid(create_enlargment(), {x: 5, y: 3})
-    ship.add_entity_to_grid(create_building_package(create_turret), {x: 5, y: 2})
 
     return ship
 }

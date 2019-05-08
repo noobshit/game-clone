@@ -7,6 +7,21 @@ const Body = Matter.Body
 const Engine = Matter.Engine
 const Vector = Matter.Vector
 const players = new Map()
+const {
+    create_building_package,
+    create_wrench, 
+    create_shredder, 
+    create_explo, 
+    create_enlargment
+} = require('./items')
+const {
+    create_brick, 
+    create_ladder,   
+    create_helm, 
+    create_hatch,
+    create_turret,
+    create_factory
+} = require('./buildings')
 
 const game = {
     add_player(socket_id, socket) {
@@ -147,11 +162,11 @@ const game = {
     init(io) {
         game.sockets = []
         game.input_buffer = new Map() 
-        game.ship = create_ship(12, 8)
         game.map = create_game_map(40, 40)
+        game.ship = game.create_starting_ship()
         game.map.add_ship(game.ship)
 
-        game.ship_2 = create_ship(12, 8)
+        game.ship_2 = game.create_starting_ship()
         game.map.add_ship(game.ship_2)
 
         io.on('connection', (socket) => { 
@@ -170,6 +185,39 @@ const game = {
     get_map() {
         return game.map.get_display_data()
     },
+
+    create_starting_ship() {
+        const width = 12
+        const height = 8
+        const ship = create_ship(width, height)
+
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
+                    ship.add_entity_to_grid(create_brick(), {x, y})
+                }
+            }
+        }
+    
+        ship.add_entity_to_grid(create_hatch(), {x: 1, y: 1})
+        ship.add_entity_to_grid(create_factory(), {x: 7, y: 5})
+        ship.add_entity_to_grid(create_ladder(), {x: 4, y: 4})
+        ship.add_entity_to_grid(create_ladder(), {x: 4, y: 5})
+        ship.add_entity_to_grid(create_ladder(), {x: 4, y: 6})
+        ship.add_entity_to_grid(create_brick(), {x: 1, y: 4})
+        ship.add_entity_to_grid(create_brick(), {x: 2, y: 4})
+        ship.add_entity_to_grid(create_brick(), {x: 3, y: 4})
+        ship.add_entity_to_grid(create_helm(), {x: 9, y: 5})
+        ship.add_entity_to_grid(create_building_package(create_helm), {x: 9, y: 5})
+        ship.add_entity_to_grid(create_explo(), {x: 1, y: 6})
+        ship.add_entity_to_grid(create_explo(), {x: 5, y: 6})
+        ship.add_entity_to_grid(create_wrench(), {x: 5, y: 5})
+        ship.add_entity_to_grid(create_shredder(), {x: 5, y: 4})
+        ship.add_entity_to_grid(create_enlargment(), {x: 5, y: 3})
+        ship.add_entity_to_grid(create_building_package(create_turret), {x: 5, y: 2})
+
+        return ship
+    }
 }
 
 module.exports = game
