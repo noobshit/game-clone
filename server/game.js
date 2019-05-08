@@ -11,6 +11,7 @@ const {
     create_building_package,
     create_wrench, 
     create_shredder, 
+    create_metal,
     create_explo, 
     create_enlargment
 } = require('./items')
@@ -22,6 +23,8 @@ const {
     create_turret,
     create_factory
 } = require('./buildings')
+
+const {create_bot, create_loot} = require('./overworld')
 
 const game = {
     add_player(socket_id, socket) {
@@ -162,7 +165,7 @@ const game = {
     init(io) {
         game.sockets = []
         game.input_buffer = new Map() 
-        game.map = create_game_map(40, 40)
+        game.map = game.create_starting_map()
         game.ship = game.create_starting_ship()
         game.map.add_ship(game.ship)
 
@@ -217,6 +220,18 @@ const game = {
         ship.add_entity_to_grid(create_building_package(create_turret), {x: 5, y: 2})
 
         return ship
+    },
+
+    create_starting_map() {
+        const game_map = create_game_map(40, 40)
+        
+        game_map.add_entity_to_pos(create_bot(), {x: 2000, y: 1000})
+        game_map.add_entity_to_pos(create_bot(), {x: 3000, y: 1000})
+        game_map.add_entity_to_pos(create_bot(), {x: 1000, y: 1000})
+        game_map.add_entity_to_pos(create_loot(create_explo()), {x: 1000, y: 500})
+        game_map.add_entity_to_pos(create_loot(create_metal()), {x: 1000, y: 700})
+
+        return game_map
     }
 }
 
