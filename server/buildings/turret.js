@@ -3,6 +3,7 @@ module.exports.create_turret = create_turret
 const {create_building} = require('./building.js')
 const create_entity = require('../entity')
 const collision = require('../collision.js')
+const Pos = require('../pos')
 
 const Matter = require('matter-js')
 const Body = Matter.Body
@@ -60,13 +61,24 @@ function turret_behaviour(turret) {
             turret.set_barrel_angle(angle - Math.PI / 2)
 
             Body.setPosition(turret.body, {
-                x: pos.left + turret.offset.x,
-                y: pos.top + turret.offset.y
+                x: pos.left + turret.offset.x % 32,  
+                y: pos.top + turret.offset.y % 32
             })
         },
 
         can_build() {
-            return true
+            const pos = Pos.to_snap(turret.position)
+            const ship = turret.parent
+
+            return Pos.is_inside(pos, ship.bounds)
+            && (pos.top == 0
+            || pos.right == ship.width
+            || pos.bottom == ship.height
+            || pos.left == 0)
+        },
+        
+        build() {
+            turret.parent.add_entity(turret)
         },
 
         follow_point(point) {
