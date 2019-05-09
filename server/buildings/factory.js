@@ -72,7 +72,6 @@ function create_factory() {
         const choice = building.production_queue[0]
         if (choice.cost.metal > building.metal
             || choice.cost.explo > building.explo) {
-                console.log('Not enough resources')
                 return
         }
         else {
@@ -82,7 +81,7 @@ function create_factory() {
 
             building.task = create_task({
                 entity: building,
-                duration: 1500,
+                duration: choice.time,
                 on_finish: () => {
                     const product = choice.factory_function()
                     building.parent.add_entity_to_grid(product, building.pos_grid)
@@ -111,7 +110,8 @@ const options =  [
         cost: {
             metal: 2,
             explo: 0
-        }
+        },
+        time: 3000,
     },
     {
         factory_function: _ => box.create_building_package(create_ladder),
@@ -122,7 +122,8 @@ const options =  [
         cost: {
             metal: 4,
             explo: 0
-        }
+        },
+        time: 3000,
     },
     {
         factory_function: _ => box.create_wrench(),
@@ -133,6 +134,7 @@ const options =  [
         cost: {
             metal: 4,
             explo: 0
-        }
+        },
+        time: 7000,
     },
 ]
