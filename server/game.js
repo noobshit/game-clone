@@ -143,10 +143,14 @@ const game = {
     },
 
     tick() {
+        const now = Date.now()
+        const dt = now - game.last_update
+        game.last_update = now
+
         game.sockets = game.sockets.filter(socket => socket.connected)
 
-        game.ship.world_events.emit('tick')
-        game.map.world_events.emit('tick')
+        game.ship.world_events.emit('tick', dt)
+        game.map.world_events.emit('tick', dt)
         Engine.update(game.ship.engine)
         Engine.update(game.map.engine)
         game.process_input_buffer()
