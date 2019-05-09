@@ -1,6 +1,12 @@
-function show_factory_menu({owner, options}) {
+function show_factory_menu({owner, options, production_queue}) {
     const root = document.getElementById('menu')
     root.innerHTML = ''
+
+
+    const queue_table = document.createElement('table')
+    queue_table.innerHTML = create_factory_queue(owner, production_queue)
+    root.appendChild(queue_table)
+
     const table = create_factory_menu(owner, options)
     root.appendChild(table)
 
@@ -15,6 +21,20 @@ function hide_menu() {
     const root = document.getElementById('menu')
     root.style.display = 'none' 
     send_menu_close()
+}
+
+function create_factory_queue(owner, production_queue) {
+    let html = ''
+
+    for (let entry of production_queue) {
+        html += `
+        <tr>
+            <td>${entry.product.label}</td>
+            <td>
+        </tr>`
+    }
+
+    return html
 }
 
 function create_factory_menu(owner, options) {

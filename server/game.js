@@ -137,7 +137,8 @@ const game = {
 
     on_menu_close(socket_id) {
         const player = players.get(socket_id)
-        if (player) {
+        if (player && player.using_building) {
+            player.using_building.set_used_by(null)
             player.using_building = null
         }
     },

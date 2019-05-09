@@ -44,28 +44,40 @@ function create_factory() {
                     }
                 } else {
                     player.using_building = building
-                    menu_options = options.map(
-                        (entry, index) => ({
-                            option: index,
-                            ...entry
-                        })
-                    )
-                    console.log(menu_options)
-                    menu.show_factory_menu({
-                        player,  
-                        data: {
-                            owner: building.id,
-                            options: menu_options
-                        }
-                    })
+                    building.set_used_by(player)
+                    building.show_menu(player)
                 }
             }
         },
+
+        show_menu() {
+            const player = building.used_by
+            if (!player) {
+                return
+            }
+
+            menu_options = options.map(
+                (entry, index) => ({
+                    option: index,
+                    ...entry
+                })
+            )
+
+            menu.show_factory_menu({
+                player,  
+                data: {
+                    owner: building.id,
+                    options: menu_options,
+                    production_queue: building.production_queue
+                }
+            })
+        }
     }
 
     building.events.on('menu_choice', function(data) {
         const choice = building.options[data.option]
         building.production_queue.push(choice)
+        building.show_menu()
     })
 
     building.events.on('tick', function() {
@@ -91,6 +103,7 @@ function create_factory() {
                 on_finish: () => {
                     const product = choice.factory_function()
                     building.parent.add_entity_to_grid(product, building.pos_grid)
+                    building.show_menu()
                 },
                 on_cancel: () => {
                     building.metal += choice.cost.metal
