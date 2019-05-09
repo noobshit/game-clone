@@ -4,6 +4,7 @@ const collision = require('../collision.js')
 const {create_building} = require('./building')
 const {create_brick} = require('./brick')
 const {create_ladder} = require('./ladder')
+const {create_task} = require('../task')
 const box = require('../items')
 const menu = require('../menu.js')
 
@@ -23,6 +24,7 @@ function create_factory() {
         factory_function: create_factory,
         metal: 100,
         explo: 100,
+        production_queue: [],
 
         left_button_down: {
             target(event) {
@@ -57,17 +59,41 @@ function create_factory() {
 
     building.events.on('menu_choice', function(data) {
         const choice = building.options[data.option]
+        building.production_queue.push(choice)
+    })
+
+    building.events.on('tick', function() {
+        const is_already_producing = building.task && building.task.is_in_progress
+        const nothing_to_produce = building.production_queue.length == 0
+        if (is_already_producing || nothing_to_produce) {
+            return
+        }
+
+        const choice = building.production_queue[0]
         if (choice.cost.metal > building.metal
             || choice.cost.explo > building.explo) {
                 console.log('Not enough resources')
-            }
+                return
+        }
         else {
+            building.production_queue.shift()
             building.metal -= choice.cost.metal
             building.explo -= choice.cost.explo
-            const product = choice.factory_function()
-            building.parent.add_entity_to_grid(product, building.pos_grid)
+
+            building.task = create_task({
+                entity: building,
+                duration: 1500,
+                on_finish: () => {
+                    const product = choice.factory_function()
+                    building.parent.add_entity_to_grid(product, building.pos_grid)
+                },
+                on_cancel: () => {
+                    building.metal += choice.cost.metal
+                    building.explo += choice.cost.explo
+                }
+            }).start()
         }
-    })
+    }) 
 
     return Object.assign(
         building,
