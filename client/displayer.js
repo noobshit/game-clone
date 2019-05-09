@@ -120,6 +120,38 @@ var displayer = {
             )
             displayer.ctx.restore()
         }
+
+        if (entity.task) {
+            displayer.ctx.save()
+            
+            const offset =  {
+                x: entity.width / 2,
+                y: entity.height / 2
+            }
+
+            displayer.ctx.translate(entity.x, entity.y)
+            const task_bar_pos = {
+                x: -offset.x + entity.width * 0.05,
+                y: -offset.y - 12,
+                width: entity.width * 0.9,
+                height: 10
+            }
+            displayer.ctx.fillRect(
+                task_bar_pos.x,
+                task_bar_pos.y,
+                task_bar_pos.width,
+                task_bar_pos.height
+            )
+
+            displayer.ctx.fillStyle = '#00FF00FF'
+            displayer.ctx.fillRect(
+                task_bar_pos.x,
+                task_bar_pos.y,
+                task_bar_pos.width * entity.task.percent_done / 100,
+                task_bar_pos.height
+            )
+            displayer.ctx.restore()
+        }
     },
 
     zoom_in() {

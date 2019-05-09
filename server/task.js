@@ -13,6 +13,11 @@ function create_task({
             return is_in_progress
         },
 
+        get percent_done() {
+            const time_elapsed = Date.now() - behaviour.start_time
+            return Math.min(100, time_elapsed * 100 / duration)
+        },
+
         start() {
             behaviour.start_time = Date.now()
             entity.events.on('tick', behaviour.on_tick)

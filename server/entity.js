@@ -25,6 +25,7 @@ function create_entity({width, height, image_key, options={}}) {
         hp_max: 0,
         hp: 0,
         type: 'entity',
+        task: null,
 
         left_button_down: {
             target: _ => null,
@@ -95,7 +96,7 @@ function create_entity({width, height, image_key, options={}}) {
         },
 
         get_display_data() {
-            return [{
+            const display_data = {
                 id: this.id,
                 x: this.pos_world.x,
                 y:  this.pos_world.y,
@@ -103,8 +104,17 @@ function create_entity({width, height, image_key, options={}}) {
                 height: this.height,
                 angle: this.angle,
                 image_key: this.image_key,
-                is_background: this.is_background
-            }]
+                is_background: this.is_background,
+            }
+
+            if (this.task && this.task.is_in_progress) {
+                const {percent_done} = this.task
+                display_data.task = {
+                    percent_done
+                }
+            }
+            
+            return [display_data]
         },
 
         generate_id() {
