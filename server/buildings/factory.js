@@ -47,11 +47,17 @@ function create_factory() {
                     menu_options = options.map(
                         (entry, index) => ({
                             option: index,
-                            product: entry.product,
-                            cost: entry.cost
+                            ...entry
                         })
                     )
-                    menu.show_factory_menu(player, building, menu_options)
+                    console.log(menu_options)
+                    menu.show_factory_menu({
+                        player,  
+                        data: {
+                            owner: building.id,
+                            options: menu_options
+                        }
+                    })
                 }
             }
         },

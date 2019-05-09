@@ -1,4 +1,23 @@
-function create_factory_menu(menu_owner, options) {
+function show_factory_menu({owner, options}) {
+    const root = document.getElementById('menu')
+    root.innerHTML = ''
+    const table = create_factory_menu(owner, options)
+    root.appendChild(table)
+
+    const close_button = document.createElement('button')
+    close_button.textContent = 'close'
+    close_button.onclick = hide_menu
+    root.appendChild(close_button)
+    root.style.display = ''
+}
+
+function hide_menu() {
+    const root = document.getElementById('menu')
+    root.style.display = 'none' 
+    send_menu_close()
+}
+
+function create_factory_menu(owner, options) {
     const table = document.createElement('table')
     table.classList.add('zui-table')
     table.classList.add('zui-table-horizontal')
@@ -13,7 +32,7 @@ function create_factory_menu(menu_owner, options) {
             .add_text_td(entry.product.label)
             .add_text_td(entry.cost.metal)
             .add_text_td(entry.cost.explo)
-            .add_button('+1', _ => send_menu_choice('add', menu_owner, entry.option, 1))
+            .add_button('+1', _ => send_menu_choice('add', owner, entry.option, 1))
     }
 
    return table
@@ -41,23 +60,4 @@ class Tr {
         this.tr.appendChild(td)
         return this
     }
-}
-
-function show_factory_menu(data) {
-    const root = document.getElementById('menu')
-    root.innerHTML = ''
-    const table = create_factory_menu(data.menu_owner, data.options)
-    root.appendChild(table)
-
-    const close_button = document.createElement('button')
-    close_button.textContent = 'close'
-    close_button.onclick = hide_menu
-    root.appendChild(close_button)
-    root.style.display = ''
-}
-
-function hide_menu() {
-    const root = document.getElementById('menu')
-    root.style.display = 'none' 
-    send_menu_close()
 }
