@@ -13,10 +13,10 @@ Pos = {
         let snapped = {
             x: pos.x,
             y: pos.y,
-            left: pos.x - Math.abs(pos.x % SMALL_BLOCK_SIZE),
-            right: pos.x - Math.abs(pos.x % SMALL_BLOCK_SIZE) + SMALL_BLOCK_SIZE,
-            top: pos.y - Math.abs(pos.y % SMALL_BLOCK_SIZE),
-            bottom: pos.y - Math.abs(pos.y % SMALL_BLOCK_SIZE) + SMALL_BLOCK_SIZE,
+            left: Math.floor(pos.x / SMALL_BLOCK_SIZE) * SMALL_BLOCK_SIZE,
+            right: Math.floor(pos.x / SMALL_BLOCK_SIZE) * SMALL_BLOCK_SIZE + SMALL_BLOCK_SIZE,
+            top: Math.floor(pos.y / SMALL_BLOCK_SIZE) * SMALL_BLOCK_SIZE,
+            bottom: Math.floor(pos.y / SMALL_BLOCK_SIZE) * SMALL_BLOCK_SIZE + SMALL_BLOCK_SIZE,
         }
         return snapped
     },
